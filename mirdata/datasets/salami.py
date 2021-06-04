@@ -20,6 +20,7 @@ from typing import BinaryIO, Optional, TextIO, Tuple
 
 import librosa
 import numpy as np
+import logging
 
 from mirdata import annotations, core, download_utils, io, jams_utils
 
@@ -92,6 +93,8 @@ class Track(core.Track):
         sections_annotator_1_lowercase (SectionData): annotations in hierarchy level 1 from annotator 1
         sections_annotator_2_uppercase (SectionData): annotations in hierarchy level 0 from annotator 2
         sections_annotator_2_lowercase (SectionData): annotations in hierarchy level 1 from annotator 2
+        sections_uppercase (annotations.MultiAnnotator): annotations in hierarchy level 0
+        sections_lowercase (annotations.MultiAnnotator): annotations in hierarchy level 1
     """
 
     def __init__(
@@ -158,19 +161,67 @@ class Track(core.Track):
         return self._track_metadata.get("genre")
 
     @core.cached_property
+    def sections_uppercase(self) -> Optional[annotations.MultiAnnotator]:
+        return annotations.MultiAnnotator(
+            [
+                self._track_metadata.get("annotator_1_id"),
+                self._track_metadata.get("annotator_2_id"),
+            ],
+            [
+                load_sections(self.sections_annotator1_uppercase_path),
+                load_sections(self.sections_annotator2_uppercase_path),
+            ],
+            annotations.SectionData,
+        )
+
+    @core.cached_property
+    def sections_lowercase(self) -> Optional[annotations.MultiAnnotator]:
+        return annotations.MultiAnnotator(
+            [
+                self._track_metadata.get("annotator_1_id"),
+                self._track_metadata.get("annotator_2_id"),
+            ],
+            [
+                load_sections(self.sections_annotator1_lowercase_path),
+                load_sections(self.sections_annotator2_lowercase_path),
+            ],
+            annotations.SectionData,
+        )
+
+    @core.cached_property
     def sections_annotator_1_uppercase(self) -> Optional[annotations.SectionData]:
+        logging.warning(
+            "Deprecation warning: sections_anntotator_1_uppercase is deprecated starting "
+            "in version 0.3.4b3 and will be removed in a future version. "
+            "Use sections_uppercase in the future."
+        )
         return load_sections(self.sections_annotator1_uppercase_path)
 
     @core.cached_property
     def sections_annotator_1_lowercase(self) -> Optional[annotations.SectionData]:
+        logging.warning(
+            "Deprecation warning: sections_annotator_1_lowercase is deprecated starting "
+            "in version 0.3.4b3 and will be removed in a future version. "
+            "Use sections_lowercase in the future."
+        )
         return load_sections(self.sections_annotator1_lowercase_path)
 
     @core.cached_property
     def sections_annotator_2_uppercase(self) -> Optional[annotations.SectionData]:
+        logging.warning(
+            "Deprecation warning: sections_anntotator_2_uppercase is deprecated starting "
+            "in version 0.3.4b3 and will be removed in a future version. "
+            "Use sections_uppercase in the future."
+        )
         return load_sections(self.sections_annotator2_uppercase_path)
 
     @core.cached_property
     def sections_annotator_2_lowercase(self) -> Optional[annotations.SectionData]:
+        logging.warning(
+            "Deprecation warning: sections_annotator_2_lowercase is deprecated starting "
+            "in version 0.3.4b3 and will be removed in a future version. "
+            "Use sections_lowercase in the future."
+        )
         return load_sections(self.sections_annotator2_lowercase_path)
 
     @property
@@ -196,17 +247,17 @@ class Track(core.Track):
             multi_section_data=[
                 (
                     [
-                        (self.sections_annotator_1_uppercase, 0),
-                        (self.sections_annotator_1_lowercase, 1),
+                        (self.sections_uppercase.annotations[0], 0),
+                        (self.sections_lowercase.annotations[0], 1),
                     ],
-                    "annotator_1",
+                    self.sections_lowercase.annotators[0],
                 ),
                 (
                     [
-                        (self.sections_annotator_2_uppercase, 0),
-                        (self.sections_annotator_2_lowercase, 1),
+                        (self.sections_uppercase.annotations[1], 0),
+                        (self.sections_lowercase.annotations[1], 1),
                     ],
-                    "annotator_2",
+                    self.sections_lowercase.annotators[1],
                 ),
             ],
             metadata=self._track_metadata,
@@ -229,7 +280,7 @@ def load_audio(fpath: str) -> Tuple[np.ndarray, float]:
 
 
 @io.coerce_to_string_io
-def load_sections(fhandle: TextIO) -> annotations.SectionData:
+def load_sections(fhandle: TextIO) -> Optional[annotations.SectionData]:
     """Load salami sections data from a file
 
     Args:
@@ -247,6 +298,8 @@ def load_sections(fhandle: TextIO) -> annotations.SectionData:
         secs.append(line[1])
     times = np.array(times)  # type: ignore
     secs = np.array(secs)  # type: ignore
+    if len(times) == 0:
+        return None
 
     # remove sections with length == 0
     times_revised = np.delete(times, np.where(np.diff(times) == 0))

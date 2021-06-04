@@ -27,6 +27,35 @@ def test_repr():
     )
 
 
+def test_multiannotator():
+    # test good data
+    annotators = ["annotator_1", "annotator_2"]
+    labels_1 = ["Vocals", "Guitar"]
+    labels_2 = ["Vocals", "Drums"]
+    intervals_1 = np.array([[0.0, 0.1], [0.5, 1.5]])
+    intervals_2 = np.array([[0.0, 1.0], [0.5, 1.0]])
+    multi_annot = [
+        annotations.EventData(intervals_1, "s", labels_1, "open"),
+        annotations.EventData(intervals_2, "s", labels_2, "open"),
+    ]
+    events = annotations.MultiAnnotator(annotators, multi_annot, annotations.EventData)
+
+    assert events.annotations[0].events == labels_1
+    assert events.annotators[1] == "annotator_2"
+    assert np.allclose(events.annotations[1].intervals, intervals_2)
+
+    # test bad data
+    bad_labels = ["Is a", "Number", 5]
+    pytest.raises(TypeError, annotations.MultiAnnotator, annotators, bad_labels)
+    pytest.raises(TypeError, annotations.MultiAnnotator, [0, 1], multi_annot)
+    pytest.raises(
+        TypeError,
+        annotations.MultiAnnotator,
+        annotators,
+        [["bad", "format"], ["indeed"]],
+    )
+
+
 def test_beat_data():
     times = np.array([1.0, 2.0])
     positions = np.array([3, 4])

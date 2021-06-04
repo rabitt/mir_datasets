@@ -35,6 +35,8 @@ def test_track():
     }
 
     expected_property_types = {
+        "sections_uppercase": annotations.MultiAnnotator,
+        "sections_lowercase": annotations.MultiAnnotator,
         "sections_annotator_1_uppercase": annotations.SectionData,
         "sections_annotator_1_lowercase": annotations.SectionData,
         "sections_annotator_2_uppercase": annotations.SectionData,
@@ -81,6 +83,12 @@ def test_track():
     }
 
     # test that cached properties don't fail and have the expected type
+    assert type(track.sections_uppercase) is annotations.MultiAnnotator
+    assert type(track.sections_lowercase) is annotations.MultiAnnotator
+    assert track.sections_uppercase.annotations[1] is None
+    assert track.sections_lowercase.annotations[1] is None
+
+    # test deprecated attributes for coverage
     assert type(track.sections_annotator_1_uppercase) is annotations.SectionData
     assert type(track.sections_annotator_1_lowercase) is annotations.SectionData
     assert track.sections_annotator_2_uppercase is None
@@ -104,6 +112,12 @@ def test_track():
     }
 
     # test that cached properties don't fail and have the expected type
+    assert track.sections_uppercase.annotators[0] is None
+    assert track.sections_lowercase.annotations[0] is None
+    assert type(track.sections_uppercase) is annotations.MultiAnnotator
+    assert type(track.sections_lowercase) is annotations.MultiAnnotator
+
+    # test deprecated attributes for coverage
     assert track.sections_annotator_1_uppercase is None
     assert track.sections_annotator_1_lowercase is None
     assert type(track.sections_annotator_2_uppercase) is annotations.SectionData
@@ -200,6 +214,15 @@ def test_load_sections():
     # load none
     section_data_none = salami.load_sections(None)
     assert section_data_none is None
+
+    # load an empty file
+    sections_path = (
+        "tests/resources/mir_datasets/salami/"
+        + "salami-data-public-hierarchy-corrections/annotations/2/parsed/textfile1_uppercase_empty.txt"
+    )
+
+    section_data = salami.load_sections(sections_path)
+    assert section_data is None
 
 
 def test_load_metadata():

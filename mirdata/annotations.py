@@ -79,6 +79,26 @@ class Annotation(object):
         return repr_str
 
 
+class MultiAnnotator(object):
+    """Multiple annotator class.
+    This class should be used for datasets with multiple annotators (e.g. multiple annotators per track).
+
+    Attributes:
+        annotators (list): list with annotator ids
+        annotations (list): list of annotations (e.g. [beat_data1, beat_data2] each with
+                             type BeatData or  [chord_data1, chord_data2] each with type chord data
+
+    """
+
+    def __init__(self, annotators, annotations, dtype) -> None:
+        validate_array_like(annotators, list, str, none_allowed=True)
+        validate_array_like(annotations, list, dtype, none_allowed=True)
+        validate_lengths_equal([annotators, annotations])
+
+        self.annotators = annotators
+        self.annotations = annotations
+
+
 class BeatData(Annotation):
     """BeatData class
 
@@ -376,8 +396,9 @@ class F0Data(Annotation):
             ]
         )
 
-        return np.array(index), convert_amplitude_units(
-            voicing, self.voicing_unit, amplitude_unit
+        return (
+            np.array(index),
+            convert_amplitude_units(voicing, self.voicing_unit, amplitude_unit),
         )
 
     def to_matrix(
@@ -708,8 +729,9 @@ class MultiF0Data(Annotation):
                 if t != -1 and f != -1
             ]
         )
-        return np.array(index), convert_amplitude_units(
-            confidence_out, conf_unit, amplitude_unit
+        return (
+            np.array(index),
+            convert_amplitude_units(confidence_out, conf_unit, amplitude_unit),
         )
 
     def to_matrix(
@@ -1383,7 +1405,9 @@ def closest_index(input_array, target_array):
     return indexes
 
 
-def validate_array_like(array_like, expected_type, expected_dtype, none_allowed=False):
+def validate_array_like(
+    array_like, expected_type, expected_dtype, check_child=False, none_allowed=False
+):
     """Validate that array-like object is well formed
 
     If array_like is None, validation passes automatically.
@@ -1392,11 +1416,12 @@ def validate_array_like(array_like, expected_type, expected_dtype, none_allowed=
         array_like (array-like): object to validate
         expected_type (type): expected type, either list or np.ndarray
         expected_dtype (type): expected dtype
+        check_child (bool): if True, checks if all elements of array are children of expected_dtype
         none_allowed (bool): if True, allows array to be None
 
     Raises:
         TypeError: if type/dtype does not match expected_type/expected_dtype
-        ValueError: if array
+        ValueError: if array is empty but it shouldn't be
 
     """
     if array_like is None:
@@ -1416,7 +1441,9 @@ def validate_array_like(array_like, expected_type, expected_dtype, none_allowed=
         )
 
     if expected_type == list and not all(
-        isinstance(n, expected_dtype) for n in array_like
+        isinstance(n, expected_dtype)
+        for n in array_like
+        if not ((n is None) and none_allowed)
     ):
         raise TypeError(f"List elements should all have type {expected_dtype}")
 
