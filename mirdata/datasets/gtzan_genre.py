@@ -33,8 +33,8 @@ BIBTEX = """@article{tzanetakis2002gtzan,
 }"""
 
 INDEXES = {
-    "default": "1.0",
-    "test": "1.0",
+    "default": "mini",
+    "test": "mini",
     "1.0": core.Index(
         filename="gtzan_genre_index_1.0.json",
         partial_download=["all", "tempo_beat_annotations"],
@@ -46,12 +46,6 @@ INDEXES = {
 }
 
 REMOTES = {
-    "all": download_utils.RemoteFileMetadata(
-        filename="genres.tar.gz",
-        url="http://opihi.cs.uvic.ca/sound/genres.tar.gz",
-        checksum="5b3d6dddb579ab49814ab86dba69e7c7",
-        destination_dir="gtzan_genre",
-    ),
     "mini": download_utils.RemoteFileMetadata(
         filename="main.zip",
         url="https://github.com/TempoBeatDownbeat/gtzan_mini/archive/refs/heads/main.zip",
@@ -63,6 +57,10 @@ REMOTES = {
         checksum="4baa58112697a8087de04558d6e97442",
     ),
 }
+
+DOWNLOAD_INFO = """
+    Unfortunately most of the Gtzan dataset is not available for download. You can download the mini version of the dataset.
+"""
 
 LICENSE_INFO = "Unfortunately we couldn't find the license information for the GTZAN_genre dataset."
 
@@ -207,6 +205,7 @@ class Dataset(core.Dataset):
             bibtex=BIBTEX,
             indexes=INDEXES,
             remotes=REMOTES,
+            download_info=DOWNLOAD_INFO,
             license_info=LICENSE_INFO,
         )
 

@@ -38,11 +38,9 @@ from mirdata import io
 try:
     import DALI
 except ImportError as E:
-    logging.error(
-        "In order to use dali you must have dali-dataset installed. "
-        "Please reinstall mirdata using `pip install 'mirdata[dali]'"
+    raise ImportError(
+        "An error occured when importing this dataset. Most likely this is due to a dependency not being installed, in this case DALI."
     )
-    raise
 
 BIBTEX = """@inproceedings{Meseguer-Brocal_2018,
     Title = {DALI: a large Dataset of synchronized Audio, LyrIcs and notes, automatically created using teacher-student

@@ -57,11 +57,9 @@ from smart_open import open
 try:
     from openpyxl import load_workbook as get_xlxs
 except ImportError:
-    logging.error(
-        "In order to use CompMusic Hindustani Music Rhythm you must have openpyxl installed. "
-        "Please reinstall mirdata using `pip install 'mirdata[compmusic_hindustani_rhythm]'"
+    raise ImportError(
+        "An error occured when importing this dataset. Most likely this is due to a dependency not being installed, in this case openpyxl."
     )
-    raise
 
 BIBTEX = """
 @inproceedings{Srinivasamurthy2016,

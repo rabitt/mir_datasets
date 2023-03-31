@@ -1,8 +1,27 @@
 import os
+from unittest.case import _AssertRaisesContext
 import numpy as np
+import pytest
 from mirdata import annotations
-from mirdata.datasets import compmusic_hindustani_rhythm
+from unittest import mock
+
+
+try:
+    from mirdata.datasets import compmusic_hindustani_rhythm
+except ImportError:
+    raise ImportError(
+        "An error occured when importing this dataset. Most likely this is due to a dependency not being installed, in this case openpyxl."
+    )
+
 from tests.test_utils import run_track_tests
+from unittest.mock import patch
+
+
+@mock.patch("mirdata.datasets.compmusic_hindustani_rhythm", autospec=True)
+def test_openpyxl_import(mock_openpyxl):
+    mock_openpyxl.side_effect = ImportError
+    with pytest.raises(ImportError):
+        raise ImportError("openpyxl is not installed")
 
 
 def test_track():

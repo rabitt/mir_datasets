@@ -21,11 +21,9 @@ from mirdata import core, io, jams_utils, download_utils
 try:
     import music21
 except ImportError:
-    logging.error(
-        "In order to use haydn_op20 you must have music21 installed. "
-        "Please reinstall mirdata using `pip install 'mirdata[haydn_op20]'"
+    raise ImportError(
+        "An error occured when importing this dataset. Most likely this is due to a dependency not being installed, in this case music21."
     )
-    raise ImportError
 
 from mirdata.annotations import KeyData, ChordData
 

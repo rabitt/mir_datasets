@@ -1,14 +1,14 @@
 import logging
 import os
 
+import pytest
+
 try:
     import DALI
 except ImportError:
-    logging.error(
-        "In order to test dali you must have dali-dataset installed. "
-        "Please reinstall mirdata using `pip install 'mirdata[dali]' and re-run the tests"
+    raise ImportError(
+        "An error occured when importing this dataset. Most likely this is due to a dependency not being installed, in this case DALI."
     )
-    raise ImportError
 
 from mirdata.datasets import dali
 from mirdata import annotations

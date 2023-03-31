@@ -27,6 +27,7 @@ if __name__ == "__main__":
             "Topic :: Multimedia :: Sound/Audio :: Analysis",
             "Programming Language :: Python :: 3.6",
             "Programming Language :: Python :: 3.7",
+            "Programming Language :: Python :: 3.8",
         ],
         keywords="mir dataset loader audio",
         license="BSD-3-Clause",
@@ -59,6 +60,9 @@ if __name__ == "__main__":
                 "types-PyYAML",
                 "types-chardet",
                 "smart_open[all] >= 5.0.0",
+                "openpyxl==3.0.7",
+                "dali-dataset==1.1",
+                "music21==6.7.1",
             ],
             "docs": [
                 "numpydoc",

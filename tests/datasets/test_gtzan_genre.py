@@ -15,7 +15,7 @@ def test_track():
         "genre": "country",
         "audio_path": os.path.join(
             os.path.normpath("tests/resources/mir_datasets/gtzan_genre/"),
-            "gtzan_genre/genres/country/country.00000.wav",
+            "gtzan_mini-main/genres/country/country.00000.wav",
         ),
         "beats_path": os.path.join(
             os.path.normpath("tests/resources/mir_datasets/gtzan_genre/"),

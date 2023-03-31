@@ -1,8 +1,21 @@
 import os
 import numpy as np
+import pytest
 from mirdata import annotations
-from mirdata.datasets import compmusic_carnatic_rhythm
+
+try:
+    from mirdata.datasets import compmusic_carnatic_rhythm
+except ImportError:
+    raise ImportError(
+        "An error occured when importing this dataset. Most likely this is due to a dependency not being installed, in this case openpyxl."
+    )
+
 from tests.test_utils import run_track_tests
+
+
+def test_importError():
+    with pytest.raises(ImportError):
+        raise (ImportError)
 
 
 def test_track():

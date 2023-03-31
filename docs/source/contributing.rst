@@ -32,14 +32,12 @@ To install ``mirdata`` for development purposes:
       .. code-block:: console
 
           pip install .
-          pip install .[tests]
-          pip install .[docs]
-          pip install .[dali]
-          pip install .[haydn_op20]
+          pip install ."[tests]"
+          pip install ."[docs]"
 
 
 We recommend to install `pyenv <https://github.com/pyenv/pyenv#installation>`_ to manage your Python versions
-and install all ``mirdata`` requirements. You will want to install the latest versions of Python 3.6 and 3.7.
+and install all ``mirdata`` requirements. You will want to install the latest versions of Python 3.6, 3.7 and 3.8.
 Once ``pyenv`` and the Python versions are configured, install ``pytest``. Make sure you installed all the pytest
 plugins to automatically test your code successfully. Finally, run:
 
@@ -490,11 +488,10 @@ it should be imported as follows:
     try:
         import asdf
     except ImportError:
-        logging.error(
+        raise ImportError(
             "In order to use example_dataset you must have asdf installed. "
             "Please reinstall mirdata using `pip install 'mirdata[example_dataset]'"
         )
-        raise ImportError
 
 
 .. _multiple_versions:
