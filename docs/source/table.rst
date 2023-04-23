@@ -437,6 +437,17 @@
      - .. image:: https://licensebuttons.net/l/by/4.0/80x15.png
           :target: https://creativecommons.org/licenses/by/4.0/
 
+   * - Small_4MuLA
+     - - audio: ❌
+       - annotations: ✅
+       - features: ✅
+     - - :ref:`genre`
+       - :ref:`lyrics`
+
+     - 9661
+     - .. image:: https://licensebuttons.net/l/by-sa/4.0/80x15.png
+          :target: https://creativecommons.org/licenses/by-sa/4.0
+
    * - Tinysol
      - - audio: ✅
        - annotations: ✅
@@ -446,6 +457,17 @@
      - 2913
      - .. image:: https://licensebuttons.net/l/by/4.0/80x15.png
           :target: https://creativecommons.org/licenses/by/4.0/
+
+   * - Tiny_4MuLA
+     - - audio: ❌
+       - annotations: ✅
+       - features: ✅
+     - - :ref:`genre`
+       - :ref:`lyrics`
+
+     - 1988
+     - .. image:: https://licensebuttons.net/l/by-sa/4.0/80x15.png
+          :target: https://creativecommons.org/licenses/by-sa/4.0
 
    * - Tonality ClassicalDB
      - - audio: 🧮

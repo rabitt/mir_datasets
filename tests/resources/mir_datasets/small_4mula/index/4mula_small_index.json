@@ -1,0 +1,35 @@
+{
+  "version": "1.0",
+  "tracks": {
+    "3ade68b6g3429fda3": {
+      "melspectrogram": [
+        "melspectrogram/3ade68b6g3429fda3.npy",
+        "ac9bec7dfc7059acf1b13f4e5aefab1c"
+      ],
+      "annotation": [
+        "annotation/3ade68b6g3429fda3.tsv",
+        "329724af41b68ad450fe9d30d1558cae"
+      ]
+    },
+    "3ade68b8g0954a0b3": {
+      "melspectrogram": [
+        "melspectrogram/3ade68b8g0954a0b3.npy",
+        "8f0f06483c2a0292f99a873b7dd0353e"
+      ],
+      "annotation": [
+        "annotation/3ade68b8g0954a0b3.tsv",
+        "af0faabc9784181231780818a885baec"
+      ]
+    },
+    "3ade68b8g1a06e0b3": {
+      "melspectrogram": [
+        "melspectrogram/3ade68b8g1a06e0b3.npy",
+        "ce17d2b1b3adb2cf054ec075542ccd96"
+      ],
+      "annotation": [
+        "annotation/3ade68b8g1a06e0b3.tsv",
+        "96fa2446a69a39f0367a8e02d9c50193"
+      ]
+    }
+  }
+}

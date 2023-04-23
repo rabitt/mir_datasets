@@ -353,7 +353,6 @@ saraga_hindustani
    :members:
    :inherited-members:
 
-
 slakh
 ^^^^^^^^^^^^^^^^^
 
@@ -362,10 +361,26 @@ slakh
    :inherited-members:
 
 
+small_4mula
+^^^^^^^^^^^
+
+.. automodule:: mirdata.datasets.small_4mula
+   :members:
+   :inherited-members:
+
+
 tinysol
 ^^^^^^^
 
 .. automodule:: mirdata.datasets.tinysol
+   :members:
+   :inherited-members:
+
+
+tiny_4mula
+^^^^^^^^^^
+
+.. automodule:: mirdata.datasets.tiny_4mula
    :members:
    :inherited-members:
 

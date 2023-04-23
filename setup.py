@@ -59,6 +59,7 @@ if __name__ == "__main__":
                 "types-PyYAML",
                 "types-chardet",
                 "smart_open[all] >= 5.0.0",
+                "pyarrow>=3.0.0",
             ],
             "docs": [
                 "numpydoc",
