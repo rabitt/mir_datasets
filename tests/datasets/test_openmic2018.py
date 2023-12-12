@@ -1,5 +1,4 @@
 import os
-import shutil
 
 from mirdata import download_utils
 from mirdata.datasets import openmic2018

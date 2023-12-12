@@ -1,8 +1,7 @@
 import os
 
-from tests.test_utils import run_track_tests
-
 from mirdata.datasets import mridangam_stroke
+from tests.test_utils import run_track_tests
 
 
 def test_track():
@@ -47,6 +46,6 @@ def test_to_jams():
     # Test the tonic parser
     parsed_tonic = jam.sandbox.tonic
     assert parsed_tonic == "B"
-    assert (
-        parsed_tonic in mridangam_stroke.TONIC_DICT
-    ), "Stroke {} not in stroke dictionary".format(parsed_tonic)
+    assert parsed_tonic in mridangam_stroke.TONIC_DICT, "Stroke {} not in stroke dictionary".format(
+        parsed_tonic
+    )

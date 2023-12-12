@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-import pytest
+import os
+
 import numpy as np
+import pytest
+
 from mirdata import annotations
 from mirdata.datasets import compmusic_carnatic_varnam
 from tests.test_utils import run_track_tests
-import os
 
 
 def test_track():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
 
@@ -29,9 +29,7 @@ def test_track():
             os.path.normpath(
                 "tests/resources/mir_datasets/compmusic_carnatic_varnam/carnatic_varnam_1.1/"
             ),
-            os.path.normpath(
-                "Notations_Annotations/annotations/taalas/abhogi/dharini.svl"
-            ),
+            os.path.normpath("Notations_Annotations/annotations/taalas/abhogi/dharini.svl"),
         ),
         "notation_path": os.path.join(
             os.path.normpath(
@@ -69,9 +67,7 @@ def test_track():
 
 def test_to_jams():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
     jam = track.to_jams()
@@ -224,9 +220,7 @@ def test_to_jams():
 
 def test_load_metadata():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
     parsed_tonic = track.tonic
@@ -235,9 +229,7 @@ def test_load_metadata():
 
 def test_load_taala():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
     taala_path = track.taala_path
@@ -266,17 +258,13 @@ def test_load_taala():
 
 def test_load_notation():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
     notation_path = track.notation_path
     taala_path = track.taala_path
     structure_path = track.structure_path
-    parsed_data = compmusic_carnatic_varnam.load_notation(
-        notation_path, taala_path, structure_path
-    )
+    parsed_data = compmusic_carnatic_varnam.load_notation(notation_path, taala_path, structure_path)
     with pytest.raises(FileNotFoundError):
         parsed_data = compmusic_carnatic_varnam.load_notation(
             "a/fake/path", taala_path, structure_path
@@ -347,9 +335,7 @@ def test_load_notation():
 
 def test_load_mbid():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
     notation_path = track.notation_path
@@ -361,9 +347,7 @@ def test_load_mbid():
 
 def test_load_moorchanas():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
     notation_path = track.notation_path
@@ -378,9 +362,7 @@ def test_load_moorchanas():
 
 def test_load_audio():
     default_trackid = "dharini_abhogi"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_varnam"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_varnam")
     dataset = compmusic_carnatic_varnam.Dataset(data_home)
     track = dataset.track(default_trackid)
     audio_path = track.audio_path

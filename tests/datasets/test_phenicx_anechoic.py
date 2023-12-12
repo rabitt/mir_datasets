@@ -1,11 +1,11 @@
 import os
-import shutil
+
 import numpy as np
 import pytest
 
-from mirdata.datasets import phenicx_anechoic
 from mirdata import annotations, download_utils
-from tests.test_utils import run_track_tests, run_multitrack_tests
+from mirdata.datasets import phenicx_anechoic
+from tests.test_utils import run_multitrack_tests, run_track_tests
 
 
 def test_track():
@@ -100,9 +100,7 @@ def test_to_jams():
 
 def test_load_score():
     # load a file which exists
-    score_path = (
-        "tests/resources/mir_datasets/phenicx_anechoic/annotations/beethoven/violin.txt"
-    )
+    score_path = "tests/resources/mir_datasets/phenicx_anechoic/annotations/beethoven/violin.txt"
     note_data = phenicx_anechoic.load_score(score_path)
 
     # check types
@@ -241,9 +239,7 @@ def test_get_notes_for_instrument():
     dataset = phenicx_anechoic.Dataset(data_home)
     mtrack = dataset.multitrack(default_trackid)
 
-    note_data = mtrack.get_notes_for_instrument(
-        instrument="violin", notes_property="notes"
-    )
+    note_data = mtrack.get_notes_for_instrument(instrument="violin", notes_property="notes")
 
     # check types
     assert type(note_data) == annotations.NoteData

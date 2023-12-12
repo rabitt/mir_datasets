@@ -39,16 +39,12 @@ def test_load_notes_from_midi():
 
 
 def test_load_multif0_from_midi():
-    midi_file = (
-        "tests/resources/mir_datasets/slakh/babyslakh_16k/Track00001/MIDI/S08.mid"
-    )
+    midi_file = "tests/resources/mir_datasets/slakh/babyslakh_16k/Track00001/MIDI/S08.mid"
     multif0_from_file = io.load_multif0_from_midi(midi_file)
     midi = io.load_midi(midi_file)
     multif0_from_midi = io.load_multif0_from_midi(midi=midi)
     for mf0_data in [multif0_from_file, multif0_from_midi]:
-        assert np.allclose(
-            mf0_data.times[2885:2887], np.array([22.5362376, 22.54404912])
-        )
+        assert np.allclose(mf0_data.times[2885:2887], np.array([22.5362376, 22.54404912]))
         assert mf0_data.time_unit == "s"
         assert mf0_data.frequency_list[2885:2887] == [[], [77.0, 89.0]]
         assert mf0_data.frequency_unit == "midi"

@@ -1,10 +1,9 @@
 import os
-import pytest
-import xml.etree.ElementTree as ET
 
-from tests.test_utils import run_track_tests
+import pytest
 
 from mirdata.datasets import idmt_smt_audio_effects
+from tests.test_utils import run_track_tests
 
 TEST_DATA_HOME = os.path.normpath("tests/resources/mir_datasets/idmt_smt_audio_effects")
 

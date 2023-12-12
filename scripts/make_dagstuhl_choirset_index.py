@@ -1,8 +1,9 @@
 import argparse
 import glob
-from mirdata.validate import md5
 import json
 import os
+
+from mirdata.validate import md5
 
 DATASET_INDEX_PATH = "../mirdata/datasets/indexes/dagstuhl_choirset_index.json"
 
@@ -27,7 +28,6 @@ def make_dataset_index(data_path):
     )
 
     for ip, piece in enumerate(pieces):
-
         index["multitracks"][piece] = {}
 
         ## add mixture audios
@@ -81,13 +81,9 @@ def make_dataset_index(data_path):
 
         ## add each track inside the multitrack
 
-        audio_files = sorted(
-            glob.glob(os.path.join(audio_dir, "{}*.wav".format(piece)))
-        )
+        audio_files = sorted(glob.glob(os.path.join(audio_dir, "{}*.wav".format(piece))))
 
-        singers = [
-            singer.split("_")[-2] for singer in audio_files if not "Stereo" in singer
-        ]
+        singers = [singer.split("_")[-2] for singer in audio_files if not "Stereo" in singer]
 
         # second step to remove piano from singers
         singers = [singer for singer in singers if "Piano" not in singer]
@@ -99,7 +95,6 @@ def make_dataset_index(data_path):
         index["multitracks"][piece]["tracks"] = []
 
         for sidx, singer in enumerate(sorted(singers)):
-
             track_name = "{}_{}".format(piece, singer)
 
             # define fields as None
@@ -121,16 +116,13 @@ def make_dataset_index(data_path):
 
             mics = [
                 mic.split("_")[-1].split(".")[0]
-                for mic in glob.glob(
-                    os.path.join(audio_dir, "{}_{}*.wav".format(piece, singer))
-                )
+                for mic in glob.glob(os.path.join(audio_dir, "{}_{}*.wav".format(piece, singer)))
                 if mic not in ["SPL", "SPR"]
             ]
 
             ### add all fields for each track
 
             for mic in mics:
-
                 ## add audio
                 audio_stem_dir = os.path.join(
                     data_path,
@@ -228,9 +220,7 @@ def make_dataset_index(data_path):
         )
 
     ## add the manual annotations to their corresponding tracks
-    manual_files = sorted(
-        glob.glob(os.path.join(data_path, "annotations_csv_F0_manual", "*.csv"))
-    )
+    manual_files = sorted(glob.glob(os.path.join(data_path, "annotations_csv_F0_manual", "*.csv")))
     for mf in manual_files:
         track_name = "_".join(os.path.basename(mf).split("_")[:-1])
 
@@ -252,8 +242,6 @@ def main(args):
 #
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make Dagstuhl ChoirSet index file.")
-    PARSER.add_argument(
-        "data_path", type=str, help="Path to Dagstuhl ChoirSet data folder."
-    )
+    PARSER.add_argument("data_path", type=str, help="Path to Dagstuhl ChoirSet data folder.")
 
     main(PARSER.parse_args())

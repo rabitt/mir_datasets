@@ -1,5 +1,4 @@
-"""Tests for example dataset
-"""
+"""Tests for example dataset."""
 import numpy as np
 import pytest
 
@@ -37,7 +36,6 @@ def test_track():
 
 
 def test_to_jams():
-
     default_trackid = "some_id"
     data_home = "tests/resources/mir_datasets/dataset"
     dataset = example.Dataset(data_home, version="test")
@@ -73,4 +71,3 @@ def test_metadata():
     dataset = example.Dataset(data_home, version="test")
     metadata = dataset._metadata
     assert metadata["some_id"] == "something"
-

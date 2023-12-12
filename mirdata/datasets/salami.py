@@ -1,4 +1,4 @@
-"""SALAMI Dataset Loader
+"""SALAMI Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -12,19 +12,17 @@
     https://github.com/DDMAL/salami-data-public/pull/15.
 
     For more details, please visit: https://github.com/DDMAL/salami-data-public
-
 """
 import csv
 import os
 from typing import Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
-
 
 BIBTEX = """@inproceedings{smith2011salami,
     title={Design and creation of a large-scale database of structural annotations.},
@@ -67,7 +65,7 @@ http://creativecommons.org/publicdomain/zero/1.0/legalcode.
 
 
 class Track(core.Track):
-    """salami Track class
+    """Salami Track class.
 
     Args:
         track_id (str): track id of the track
@@ -164,21 +162,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Tuple[np.ndarray, float]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -212,21 +208,19 @@ def load_audio(fpath: str) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fpath, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_sections(fhandle: TextIO) -> annotations.SectionData:
-    """Load salami sections data from a file
+    """Load salami sections data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to section annotation file
 
     Returns:
         SectionData: section data
-
     """
     times = []
     secs = []
@@ -250,9 +244,7 @@ def load_sections(fhandle: TextIO) -> annotations.SectionData:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The salami dataset
-    """
+    """The salami dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -271,9 +263,7 @@ class Dataset(core.Dataset):
     def _metadata(self):
         metadata_path = os.path.join(
             self.data_home,
-            os.path.join(
-                "salami-data-public-hierarchy-corrections", "metadata", "metadata.csv"
-            ),
+            os.path.join("salami-data-public-hierarchy-corrections", "metadata", "metadata.csv"),
         )
 
         try:

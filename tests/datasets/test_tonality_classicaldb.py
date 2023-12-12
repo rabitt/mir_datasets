@@ -50,9 +50,7 @@ def test_track():
 
     audio, sr = track.audio
     assert sr == 44100, "sample rate {} is not 44100".format(sr)
-    assert audio.shape == (88200,), "audio shape {} was not (88200,)".format(
-        audio.shape
-    )
+    assert audio.shape == (88200,), "audio shape {} was not (88200,)".format(audio.shape)
 
 
 def test_to_jams():
@@ -62,8 +60,7 @@ def test_to_jams():
     jam = track.to_jams()
     assert jam["sandbox"]["key"] == "D major", "key does not match expected"
     assert (
-        jam["file_metadata"]["title"]
-        == "01-Allegro__Gloria_in_excelsis_Deo_in_D_Major - D"
+        jam["file_metadata"]["title"] == "01-Allegro__Gloria_in_excelsis_Deo_in_D_Major - D"
     ), "title does not match expected"
 
     assert "spectrum" in jam["sandbox"]
@@ -148,9 +145,7 @@ musicbrainz_metadata_annotated = {
 
 def test_load_musicbrainz_metadata():
     musicbrainz_metadata_path = "tests/resources/mir_datasets/tonality_classicaldb/musicbrainz_metadata/01-Allegro__Gloria_in_excelsis_Deo_in_D_Major - D.json"
-    musicbrainz_metadata_data = tonality_classicaldb.load_musicbrainz(
-        musicbrainz_metadata_path
-    )
+    musicbrainz_metadata_data = tonality_classicaldb.load_musicbrainz(musicbrainz_metadata_path)
     print(musicbrainz_metadata_data)
     assert type(musicbrainz_metadata_data) == dict
     assert musicbrainz_metadata_data == musicbrainz_metadata_annotated

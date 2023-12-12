@@ -56,7 +56,7 @@ def test_to_jams():
     dataset = acousticbrainz_genre.Dataset(data_home, version="test")
     track = dataset.track(trackid)
 
-    jam = track.to_jams()
+    track.to_jams()
 
 
 def test_filter_index():
@@ -83,18 +83,14 @@ def test_filter_index():
 
 
 def test_download(httpserver):
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/acousticbrainz_genre_download"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/acousticbrainz_genre_download")
 
     if os.path.exists(data_home):
         shutil.rmtree(data_home)
 
     httpserver.serve_content(
         open(
-            os.path.normpath(
-                "tests/resources/download/acousticbrainz_genre_index.json.zip"
-            ),
+            os.path.normpath("tests/resources/download/acousticbrainz_genre_index.json.zip"),
             "rb",
         ).read()
     )
@@ -112,9 +108,7 @@ def test_download(httpserver):
     dataset.download()
 
     assert os.path.exists(data_home)
-    assert os.path.exists(
-        os.path.join(data_home, "acousticbrainz_genre_index.json.zip")
-    )
+    assert os.path.exists(os.path.join(data_home, "acousticbrainz_genre_index.json.zip"))
 
     httpserver.serve_content(
         open(
@@ -140,9 +134,7 @@ def test_download(httpserver):
 
     assert os.path.exists(data_home)
     assert os.path.exists(os.path.join(data_home, "acousticbrainz-mediaeval-train"))
-    assert os.path.exists(
-        os.path.join(data_home, "acousticbrainz-mediaeval-train", "01")
-    )
+    assert os.path.exists(os.path.join(data_home, "acousticbrainz-mediaeval-train", "01"))
     assert os.path.exists(
         os.path.join(
             data_home,

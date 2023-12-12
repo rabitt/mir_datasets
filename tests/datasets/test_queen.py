@@ -1,4 +1,5 @@
 import os
+
 import numpy as np
 
 from mirdata import annotations
@@ -44,9 +45,7 @@ def test_track():
 
     audio, sr = track.audio
     assert sr == 44100, "sample rate {} is not 44100".format(sr)
-    assert audio.shape == (144384,), "audio shape {} was not (144384,)".format(
-        audio.shape
-    )
+    assert audio.shape == (144384,), "audio shape {} was not (144384,)".format(audio.shape)
 
 
 def test_to_jams():
@@ -122,9 +121,7 @@ def test_to_jams():
         None,
     ], "key confidence does not match expected"
 
-    assert (
-        jam["file_metadata"]["title"] == "01 Bohemian Rhapsody"
-    ), "title does not match expected"
+    assert jam["file_metadata"]["title"] == "01 Bohemian Rhapsody", "title does not match expected"
     assert jam["file_metadata"]["artist"] == "Queen", "artist does not match expected"
 
 
@@ -165,14 +162,8 @@ def test_load_sections():
     assert type(section_data.intervals) == np.ndarray
     assert type(section_data.labels) == list
 
-    assert np.array_equal(
-        section_data.intervals[:, 0], np.array([0.0, 0.4, 49.072, 108.392])
-    )
-    assert np.array_equal(
-        section_data.intervals[:, 1], np.array([0.4, 49.072, 108.392, 156.32])
-    )
-    assert np.array_equal(
-        section_data.labels, np.array(["silence", "intro", "verse", "verse"])
-    )
+    assert np.array_equal(section_data.intervals[:, 0], np.array([0.0, 0.4, 49.072, 108.392]))
+    assert np.array_equal(section_data.intervals[:, 1], np.array([0.4, 49.072, 108.392, 156.32]))
+    assert np.array_equal(section_data.labels, np.array(["silence", "intro", "verse", "verse"]))
 
     assert queen.load_sections(None) is None

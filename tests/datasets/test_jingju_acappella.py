@@ -1,14 +1,14 @@
+import os
+
 import numpy as np
+
 from mirdata import annotations
 from mirdata.datasets import compmusic_jingju_acappella
 from tests.test_utils import run_track_tests
-import os
 
 
 def test_track():
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_jingju_acappella"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_jingju_acappella")
     track_id = "lseh-Tan_Yang_jia-Hong_yang_dong-qm"
 
     dataset = compmusic_jingju_acappella.Dataset(data_home)
@@ -17,40 +17,28 @@ def test_track():
     expected_attributes = {
         "track_id": "lseh-Tan_Yang_jia-Hong_yang_dong-qm",
         "audio_path": os.path.join(
-            os.path.normpath(
-                "tests/resources/mir_datasets/compmusic_jingju_acappella/"
-            ),
+            os.path.normpath("tests/resources/mir_datasets/compmusic_jingju_acappella/"),
             "wav/laosheng/lseh-Tan_Yang_jia-Hong_yang_dong-qm.wav",
         ),
         "phrase_path": os.path.join(
-            os.path.normpath(
-                "tests/resources/mir_datasets/compmusic_jingju_acappella/"
-            ),
+            os.path.normpath("tests/resources/mir_datasets/compmusic_jingju_acappella/"),
             "annotation_txt/laosheng/lseh-Tan_Yang_jia-Hong_yang_dong-qm_phrase.txt",
         ),
         "phrase_char_path": os.path.join(
-            os.path.normpath(
-                "tests/resources/mir_datasets/compmusic_jingju_acappella/"
-            ),
+            os.path.normpath("tests/resources/mir_datasets/compmusic_jingju_acappella/"),
             "annotation_txt/laosheng/lseh-Tan_Yang_jia-Hong_yang_dong-qm_phrase_char.txt",
         ),
         "phoneme_path": os.path.join(
-            os.path.normpath(
-                "tests/resources/mir_datasets/compmusic_jingju_acappella/"
-            ),
+            os.path.normpath("tests/resources/mir_datasets/compmusic_jingju_acappella/"),
             "annotation_txt/laosheng/lseh-Tan_Yang_jia-Hong_yang_dong-qm_phoneme.txt",
         ),
         "syllable_path": os.path.join(
-            os.path.normpath(
-                "tests/resources/mir_datasets/compmusic_jingju_acappella/"
-            ),
+            os.path.normpath("tests/resources/mir_datasets/compmusic_jingju_acappella/"),
             "annotation_txt/laosheng/lseh-Tan_Yang_jia-Hong_yang_dong-qm_syllable.txt",
         ),
         "title": "Türk Müziğinde 75 Büyük Bestekar/ 75 Great Composers In Turkish Classical Music",
         "textgrid_path": os.path.join(
-            os.path.normpath(
-                "tests/resources/mir_datasets/compmusic_jingju_acappella/"
-            ),
+            os.path.normpath("tests/resources/mir_datasets/compmusic_jingju_acappella/"),
             "textgrid/laosheng/lseh-Tan_Yang_jia-Hong_yang_dong-qm.TextGrid",
         ),
         "work": "“叹杨家投宋主心血用尽”——《洪羊洞》（杨延昭）",
@@ -250,12 +238,8 @@ def test_load_syllable():
     assert type(parsed_syllable.lyrics) is list
 
     # Check values
-    assert np.array_equal(
-        parsed_syllable.intervals[:, 0], np.array([0.00, 1.06, 2.65, 2.94])
-    )
-    assert np.array_equal(
-        parsed_syllable.intervals[:, 1], np.array([1.06, 2.65, 2.94, 3.76])
-    )
+    assert np.array_equal(parsed_syllable.intervals[:, 0], np.array([0.00, 1.06, 2.65, 2.94]))
+    assert np.array_equal(parsed_syllable.intervals[:, 1], np.array([1.06, 2.65, 2.94, 3.76]))
     assert np.array_equal(parsed_syllable.lyrics, np.array(["", "tan", "", "yang"]))
 
     assert compmusic_jingju_acappella.load_syllable(None) is None
@@ -271,7 +255,4 @@ def test_load_metadata():
 
     assert metadata[track_id]["work"] == "“叹杨家投宋主心血用尽”——《洪羊洞》（杨延昭）"
     assert metadata[track_id]["details"] is None
-    assert (
-        metadata["data_home"]
-        == "tests/resources/mir_datasets/compmusic_jingju_acappella"
-    )
+    assert metadata["data_home"] == "tests/resources/mir_datasets/compmusic_jingju_acappella"

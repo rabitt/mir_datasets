@@ -1,5 +1,4 @@
-"""
-TONAS Loader
+"""TONAS Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -38,21 +37,18 @@ TONAS Loader
     - Transcriptions: Gomez, E., Bonada, J. (in Press). Towards Computer-Assisted Flamenco Transcription: An
     Experimental Comparison of Automatic Transcription Algorithms As Applied to A Cappella Singing.
     Computer Music Journal.
-
-
 """
 import csv
 import logging
 import os
-from typing import TextIO, Tuple, Optional
+from typing import Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import annotations, jams_utils, core, io
-
+from mirdata import annotations, core, io, jams_utils
 
 BIBTEX = """
 Music material:
@@ -104,7 +100,7 @@ to Music Technology Group, Universitat Pompeu Fabra. All Rights Reserved.
 
 
 class Track(core.Track):
-    """TONAS track class
+    """TONAS track class.
 
     Args:
         track_id (str): track id of the track
@@ -124,7 +120,6 @@ class Track(core.Track):
         f0_automatic (F0Data): automatically extracted f0
         f0_corrected (F0Data): manually corrected f0 annotations
         notes (NoteData): annotated notes
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -153,12 +148,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Tuple[np.ndarray, float]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -183,11 +177,10 @@ class Track(core.Track):
         return load_notes(self.notes_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -206,14 +199,13 @@ def load_audio(fhandle: str) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=44100, mono=True)
 
 
 # no decorator because of https://github.com/mir-dataset-loaders/mirdata/issues/503
 def load_f0(fpath: str, corrected: bool) -> Optional[annotations.F0Data]:
-    """Load TONAS f0 annotations
+    """Load TONAS f0 annotations.
 
     Args:
         fpath (str): path pointing to f0 annotation file
@@ -222,7 +214,6 @@ def load_f0(fpath: str, corrected: bool) -> Optional[annotations.F0Data]:
 
     Returns:
         F0Data: predominant f0 melody
-
     """
     times = []
     freqs = []
@@ -254,14 +245,13 @@ def load_f0(fpath: str, corrected: bool) -> Optional[annotations.F0Data]:
 
 @io.coerce_to_string_io
 def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
-    """Load TONAS note data from the annotation files
+    """Load TONAS note data from the annotation files.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a notes annotation file
 
     Returns:
         NoteData: note annotations
-
     """
     intervals = []
     pitches = []
@@ -290,14 +280,13 @@ def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
 
 @io.coerce_to_string_io
 def _load_tuning_frequency(fhandle: TextIO) -> float:
-    """Load tuning frequency of the track with re
+    """Load tuning frequency of the track with re.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a notes annotation file
 
     Returns:
         tuning_frequency (float): returns new tuning frequency considering the deviation
-
     """
 
     # Compute tuning frequency
@@ -310,7 +299,7 @@ def _load_tuning_frequency(fhandle: TextIO) -> float:
 
 
 def _midi_to_hz(midi_note, tuning_deviation):
-    """Function to convert MIDI to Hz with certain tuning freq
+    """Function to convert MIDI to Hz with certain tuning freq.
 
     Args:
         midi_note (float): note represented in midi value
@@ -318,7 +307,6 @@ def _midi_to_hz(midi_note, tuning_deviation):
 
     Returns:
         (float): note in Hz considering the new tuning frequency
-
     """
     tuning_frequency = 440 * (
         2 ** (tuning_deviation / 1200)
@@ -328,9 +316,7 @@ def _midi_to_hz(midi_note, tuning_deviation):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The TONAS dataset
-    """
+    """The TONAS dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

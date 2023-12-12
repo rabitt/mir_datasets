@@ -1,4 +1,4 @@
-"""Mridangam Stroke Dataset Loader
+"""Mridangam Stroke Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -38,15 +38,14 @@
     Attribution 3.0 Unported (CC BY 3.0) License.
 
     For more details, please visit: https://compmusic.upf.edu/mridangam-stroke-dataset
-
 """
 
 import os
+from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
-from typing import BinaryIO, Optional, Tuple
+from deprecated.sphinx import deprecated
 
 from mirdata import core, download_utils, io, jams_utils
 
@@ -98,7 +97,7 @@ LICENSE_INFO = "Creative Commons Attribution 3.0 Unported (CC BY 3.0) License."
 
 
 class Track(core.Track):
-    """Mridangam Stroke track class
+    """Mridangam Stroke track class.
 
     Args:
         track_id (str): track id of the track
@@ -109,7 +108,6 @@ class Track(core.Track):
         audio_path (str): audio path
         stroke_name (str): name of the Mridangam stroke present in Track
         tonic (str): tonic of the stroke in the Track
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -119,33 +117,29 @@ class Track(core.Track):
 
         # Parse stroke name annotation from audio file name
         self.stroke_name = self.audio_path.split("__")[2].split("-")[0]
-        assert (
-            self.stroke_name in STROKE_DICT
-        ), "Stroke {} not in stroke dictionary".format(self.stroke_name)
+        assert self.stroke_name in STROKE_DICT, "Stroke {} not in stroke dictionary".format(
+            self.stroke_name
+        )
 
         # Parse tonic annotation from audio file name
         self.tonic = os.path.basename(os.path.dirname(self.audio_path))
-        assert self.tonic in TONIC_DICT, "Tonic {} not in tonic dictionary".format(
-            self.tonic
-        )
+        assert self.tonic in TONIC_DICT, "Tonic {} not in tonic dictionary".format(self.tonic)
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -170,9 +164,7 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The mridangam_stroke dataset
-    """
+    """The mridangam_stroke dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -186,8 +178,6 @@ class Dataset(core.Dataset):
             license_info=LICENSE_INFO,
         )
 
-    @deprecated(
-        reason="Use mirdata.datasets.mridangam_stroke.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.mridangam_stroke.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)

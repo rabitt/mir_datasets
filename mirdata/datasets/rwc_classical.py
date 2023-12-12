@@ -1,4 +1,4 @@
-"""RWC Classical Dataset Loader
+"""RWC Classical Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -47,15 +47,14 @@
         120: 6th beat
 
     For more details, please visit: https://staff.aist.go.jp/m.goto/RWC-MDB/rwc-mdb-c.html
-
 """
 import csv
 import os
 from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
@@ -120,7 +119,7 @@ See https://staff.aist.go.jp/m.goto/RWC-MDB/ for more details.
 
 
 class Track(core.Track):
-    """rwc_classical Track class
+    """rwc_classical Track class.
 
     Args:
         track_id (str): track id of the track
@@ -143,7 +142,6 @@ class Track(core.Track):
     Cached Properties:
         sections (SectionData): human-labeled section annotations
         beats (BeatData): human-labeled beat annotations
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -196,21 +194,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -230,21 +226,19 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_sections(fhandle: TextIO) -> Optional[annotations.SectionData]:
-    """Load rwc section data from a file
+    """Load rwc section data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to sections annotation file
 
     Returns:
         SectionData: section data
-
     """
     begs = []  # timestamps of section beginnings
     ends = []  # timestamps of section endings
@@ -272,7 +266,6 @@ def _position_in_bar(beat_positions, beat_times):
     Returns:
         * np.ndarray - normalized beat positions
         * np.ndarray - normalized time stamps
-
     """
     # Remove -1
     _beat_positions = np.delete(beat_positions, np.where(beat_positions == -1))
@@ -292,23 +285,20 @@ def _position_in_bar(beat_positions, beat_times):
     if not downbeat_positions[0] == 0:
         timesig_next_bar = beat_positions_corrected[downbeat_positions[1] - 1]
         for b in range(1, downbeat_positions[0] + 1):
-            beat_positions_corrected[downbeat_positions[0] - b] = (
-                timesig_next_bar - b + 1
-            )
+            beat_positions_corrected[downbeat_positions[0] - b] = timesig_next_bar - b + 1
 
     return beat_positions_corrected, beat_times_corrected
 
 
 @io.coerce_to_string_io
 def load_beats(fhandle: TextIO) -> annotations.BeatData:
-    """Load rwc beat data from a file
+    """Load rwc beat data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to beats annotation file
 
     Returns:
         BeatData: beat data
-
     """
 
     beat_times = []  # timestamps of beat interval beginnings
@@ -322,42 +312,33 @@ def load_beats(fhandle: TextIO) -> annotations.BeatData:
         np.array(beat_positions), np.array(beat_times)
     )
 
-    return annotations.BeatData(
-        beat_times, "s", beat_positions_in_bar.astype(int), "bar_index"
-    )
+    return annotations.BeatData(beat_times, "s", beat_positions_in_bar.astype(int), "bar_index")
 
 
 def _duration_to_sec(duration):
-    """Convert min:sec duration values to seconds
+    """Convert min:sec duration values to seconds.
 
     Args:
         duration (str): duration in form min:sec
 
     Returns:
         float: duration in seconds
-
     """
     if type(duration) == str:
         if ":" in duration:
             if len(duration.split(":")) <= 2:
                 minutes, secs = duration.split(":")
             else:
-                minutes, secs, _ = duration.split(
-                    ":"
-                )  # mistake in annotation in RM-J044
+                minutes, secs, _ = duration.split(":")  # mistake in annotation in RM-J044
             total_secs = float(minutes) * 60 + float(secs)
             return total_secs
     else:
-        raise ValueError(
-            "Expected duration to have type str, got {}".format(type(duration))
-        )
+        raise ValueError("Expected duration to have type str, got {}".format(type(duration)))
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The rwc_classical dataset
-    """
+    """The rwc_classical dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -412,9 +393,7 @@ class Dataset(core.Dataset):
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.rwc_classical.load_sections", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.rwc_classical.load_sections", version="0.3.4")
     def load_sections(self, *args, **kwargs):
         return load_sections(*args, **kwargs)
 

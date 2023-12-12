@@ -10,10 +10,11 @@ except ImportError:
     )
     raise ImportError
 
-from mirdata.datasets import dali
-from mirdata import annotations
-from tests.test_utils import run_track_tests
 import numpy as np
+
+from mirdata import annotations
+from mirdata.datasets import dali
+from tests.test_utils import run_track_tests
 
 
 def test_track():
@@ -68,8 +69,7 @@ def test_track():
 
 def test_load_notes():
     notes_path = (
-        "tests/resources/mir_datasets/dali/annotations/"
-        + "4b196e6c99574dd49ad00d56e132712b.gz"
+        "tests/resources/mir_datasets/dali/annotations/" + "4b196e6c99574dd49ad00d56e132712b.gz"
     )
     note_data = dali.load_annotations_granularity(notes_path, "notes")
 
@@ -84,8 +84,7 @@ def test_load_notes():
 
 def test_load_words():
     data_path = (
-        "tests/resources/mir_datasets/dali/annotations/"
-        + "4b196e6c99574dd49ad00d56e132712b.gz"
+        "tests/resources/mir_datasets/dali/annotations/" + "4b196e6c99574dd49ad00d56e132712b.gz"
     )
     word_data = dali.load_annotations_granularity(data_path, "words")
 
@@ -100,8 +99,7 @@ def test_load_words():
 
 def test_load_lines():
     data_path = (
-        "tests/resources/mir_datasets/dali/annotations/"
-        + "4b196e6c99574dd49ad00d56e132712b.gz"
+        "tests/resources/mir_datasets/dali/annotations/" + "4b196e6c99574dd49ad00d56e132712b.gz"
     )
     line_data = dali.load_annotations_granularity(data_path, "lines")
 
@@ -116,8 +114,7 @@ def test_load_lines():
 
 def test_load_paragraphs():
     data_path = (
-        "tests/resources/mir_datasets/dali/annotations/"
-        + "4b196e6c99574dd49ad00d56e132712b.gz"
+        "tests/resources/mir_datasets/dali/annotations/" + "4b196e6c99574dd49ad00d56e132712b.gz"
     )
     par_data = dali.load_annotations_granularity(data_path, "paragraphs")
 
@@ -133,8 +130,7 @@ def test_load_paragraphs():
 
 def test_load_dali_object():
     data_path = (
-        "tests/resources/mir_datasets/dali/annotations/"
-        + "4b196e6c99574dd49ad00d56e132712b.gz"
+        "tests/resources/mir_datasets/dali/annotations/" + "4b196e6c99574dd49ad00d56e132712b.gz"
     )
     dali_data = dali.load_annotations_class(data_path)
 

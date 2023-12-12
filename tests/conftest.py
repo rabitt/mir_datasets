@@ -1,11 +1,10 @@
-import pytest
 import os
+
+import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--local", action="store_true", default=False, help="run local tests"
-    )
+    parser.addoption("--local", action="store_true", default=False, help="run local tests")
     parser.addoption("--dataset", type=str, default="", help="dataset to test locally")
     parser.addoption(
         "--dataset-version",
@@ -16,9 +15,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--skip-download", action="store_true", default=False, help="skip download step"
     )
-    parser.addoption(
-        "--report-file", type=str, default="", help="dataset to test locally"
-    )
+    parser.addoption("--report-file", type=str, default="", help="dataset to test locally")
 
 
 @pytest.fixture(scope="session")
@@ -74,9 +71,7 @@ def pytest_sessionfinish(session, exitstatus):
         report += "Running time: " + str(session.config.option.durations_min) + "\n"
         passed_amount = sum(1 for result in session.results.values() if result.passed)
         failed_amount = sum(1 for result in session.results.values() if result.failed)
-        report += "There are {} passed and {} failed tests \n".format(
-            passed_amount, failed_amount
-        )
+        report += "There are {} passed and {} failed tests \n".format(passed_amount, failed_amount)
         print(report)
         file_destination = session.config.option.report_file
         if os.path.isdir(os.path.dirname(file_destination)):

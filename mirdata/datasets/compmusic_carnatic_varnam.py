@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""CompMusic Carnatic Varnam Dataset Loader
+"""CompMusic Carnatic Varnam Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -28,7 +28,7 @@
     **Sections**
     The notation is given a single time per section, however, to align the svaras with the tala annotations, structure
     information is given. The structure is given in yaml format, specifying the order of the sections, and how many svaras
-    are sung per each tala tick. Broadly, there are just two only cases, 2 svaras per tick, and 4 svaras per tick. 
+    are sung per each tala tick. Broadly, there are just two only cases, 2 svaras per tick, and 4 svaras per tick.
     The structure information has been added in the 1.1 version of the dataset.
 
     **Possible uses of the dataset**
@@ -37,13 +37,13 @@
     availability of a machine readable notation files allows the dataset to be used for audio-score alignment.
 """
 
-import os
 import csv
 import glob
-import librosa
-
-import numpy as np
+import os
 from xml.dom import minidom
+
+import librosa
+import numpy as np
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
@@ -78,13 +78,11 @@ INDEXES = {
     "1.1": core.Index(filename="compmusic_carnatic_varnam_index_1.1.json"),
 }
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non Commercial No Derivatives 4.0 International"
-)
+LICENSE_INFO = "Creative Commons Attribution Non Commercial No Derivatives 4.0 International"
 
 
 class Track(core.Track):
-    """CompMusic Carnatic Varnam Track class
+    """CompMusic Carnatic Varnam Track class.
 
     Args:
         track_id (str): track id of the track
@@ -103,7 +101,6 @@ class Track(core.Track):
         mbid (str): musicbrainz id of the composition
         arohanam (list, str): arohanam annotation of the related raaga
         avarohanam (list, str): avarohanam annotation of the related raaga
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -125,15 +122,11 @@ class Track(core.Track):
 
     @core.cached_property
     def notation(self):
-        return load_notation(self.notation_path, self.taala_path, self.structure_path)[
-            0
-        ]
+        return load_notation(self.notation_path, self.taala_path, self.structure_path)[0]
 
     @core.cached_property
     def sections(self):
-        return load_notation(self.notation_path, self.taala_path, self.structure_path)[
-            1
-        ]
+        return load_notation(self.notation_path, self.taala_path, self.structure_path)[1]
 
     @core.cached_property
     def mbid(self):
@@ -153,21 +146,19 @@ class Track(core.Track):
 
     @property
     def audio(self):
-        """The track's audio
+        """The track's audio.
 
         Returns:
            * np.ndarray - audio signal
            * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -194,7 +185,6 @@ def load_audio(audio_path):
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     if audio_path is None:
         return None
@@ -203,7 +193,7 @@ def load_audio(audio_path):
 
 @io.coerce_to_string_io
 def load_taala(fhandle):
-    """Load taala annotation
+    """Load taala annotation.
 
     Args:
         taala_path (str): Local path where the taala annotation is stored.
@@ -230,14 +220,12 @@ def load_taala(fhandle):
         beat_times.append(float(points[beat].getAttribute("frame")) / fs)
         beat_positions.append(0)
 
-    return annotations.BeatData(
-        np.array(beat_times), "s", np.array(beat_positions), "global_index"
-    )
+    return annotations.BeatData(np.array(beat_times), "s", np.array(beat_positions), "global_index")
 
 
 # no decorator here because we need three paths
 def load_notation(note_path, taala_path, structure_path):
-    """Load notation and structure
+    """Load notation and structure.
 
     Args:
         note_path (str): Local path where the note annotation is stored.
@@ -249,7 +237,6 @@ def load_notation(note_path, taala_path, structure_path):
 
     Returns:
         EventData: melodic notation for track
-
     """
     try:
         note_file = open(note_path, "r")
@@ -272,9 +259,7 @@ def load_notation(note_path, taala_path, structure_path):
         structure_reader = csv.reader(structure_file, delimiter=":")
     except FileNotFoundError:
         raise FileNotFoundError(
-            "structure_path {} does not exist, have you run .download()?".format(
-                structure_path
-            )
+            "structure_path {} does not exist, have you run .download()?".format(structure_path)
         )
 
     start_times = []
@@ -308,9 +293,7 @@ def load_notation(note_path, taala_path, structure_path):
         events.append(row[-1].replace("'", "").replace(" ", "").replace(":", ""))
 
     notation_dict = {}
-    section_dict = {
-        events.index(x): x for x in list(np.unique([x[0] for x in structure]))
-    }
+    section_dict = {events.index(x): x for x in list(np.unique([x[0] for x in structure]))}
     start_idxs = sorted(section_dict.keys())
     end_idxs = sorted(section_dict.keys())[1:] + [len(events)]
     for start, end in zip(start_idxs, end_idxs):
@@ -332,26 +315,21 @@ def load_notation(note_path, taala_path, structure_path):
             for x in np.arange(len(not_per_sec), step=4):
                 # notes = [not_per_sec[x], not_per_sec[x+1], not_per_sec[x+2], not_per_sec[x+3]]
                 notes = (
-                    not_per_sec[x]
-                    + not_per_sec[x + 1]
-                    + not_per_sec[x + 2]
-                    + not_per_sec[x + 3]
+                    not_per_sec[x] + not_per_sec[x + 1] + not_per_sec[x + 2] + not_per_sec[x + 3]
                 )
                 events.append(notes)
         section_end = end_times[len(events) - 1]
         intervals.append([section_start, section_end])
         section_labels.append(section[0])
 
-    notes = annotations.EventData(
-        np.array([start_times, end_times]).T, "s", events, "open"
-    )
+    notes = annotations.EventData(np.array([start_times, end_times]).T, "s", events, "open")
     sections = annotations.SectionData(np.array(intervals), "s", section_labels, "open")
     return notes, sections
 
 
 @io.coerce_to_string_io
 def load_mbid(fhandle):
-    """Load musicbrainz id
+    """Load musicbrainz id.
 
     Args:
         fhandle (str or file-like): Local path where the annotation is stored.
@@ -359,7 +337,6 @@ def load_mbid(fhandle):
 
     Returns:
         string: musicbrainz id for the composition
-
     """
     reader = csv.reader(fhandle, delimiter=":")
     for row in reader:
@@ -369,7 +346,7 @@ def load_mbid(fhandle):
 
 @io.coerce_to_string_io
 def load_moorchanas(fhandle):
-    """Load arohanam and avarohanam annotations
+    """Load arohanam and avarohanam annotations.
 
     Args:
         fhandle (str or file-like): Local path where moorchana annotation is stored.
@@ -377,7 +354,6 @@ def load_moorchanas(fhandle):
 
     Returns:
         (list, string): section annotation for track
-
     """
     notes = []
     reader = csv.reader(fhandle, delimiter="-")
@@ -386,12 +362,8 @@ def load_moorchanas(fhandle):
             break
         notes.append(str(row[-1].replace(" ", "")))
 
-    arohanam_ind = (
-        notes.index("arohana:") + 1
-    )  # Get left boundary of arohanam notations
-    avarohanam_ind = (
-        notes.index("avarohana:") + 1
-    )  # Get left boundary of avarohanam notations
+    arohanam_ind = notes.index("arohana:") + 1  # Get left boundary of arohanam notations
+    avarohanam_ind = notes.index("avarohana:") + 1  # Get left boundary of avarohanam notations
 
     arohanam = notes[arohanam_ind : avarohanam_ind - 1]  # Get arohanam
     avarohanam = notes[avarohanam_ind:]  # Get avarohanam
@@ -401,9 +373,7 @@ def load_moorchanas(fhandle):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The compmusic_carnatic_varnam dataset
-    """
+    """The compmusic_carnatic_varnam dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -419,7 +389,7 @@ class Dataset(core.Dataset):
 
     @core.cached_property
     def _metadata(self):
-        """Load tonic
+        """Load tonic.
 
         Args:
             fhandle (str or file-like): Local path where tonic annotations are stored.
@@ -428,7 +398,6 @@ class Dataset(core.Dataset):
 
         Returns:
             (float): tonic
-
         """
         data_folder = self.remotes["all"].filename.replace(".zip", "")
         tonics_dict = {}
@@ -444,9 +413,7 @@ class Dataset(core.Dataset):
             reader = csv.reader(f, delimiter=":")
         except FileNotFoundError:
             raise FileNotFoundError(
-                "tonics_path {} does not exist, have you run .download()?".format(
-                    tonics_path
-                )
+                "tonics_path {} does not exist, have you run .download()?".format(tonics_path)
             )
         for line in reader:
             tonics_dict[line[0]] = float(line[1])

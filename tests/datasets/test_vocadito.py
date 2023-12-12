@@ -1,10 +1,9 @@
 import os
-from typing import List
 
 import numpy as np
 
-from mirdata.datasets import vocadito
 from mirdata import annotations
+from mirdata.datasets import vocadito
 from tests.test_utils import run_track_tests
 
 
@@ -103,9 +102,7 @@ def test_load_f0():
 
     # check values
     assert len(f0_data.times) == 5722
-    assert np.allclose(
-        f0_data.times[:2], np.array([0.0, 0.00580499]), atol=1e-5, rtol=0
-    )
+    assert np.allclose(f0_data.times[:2], np.array([0.0, 0.00580499]), atol=1e-5, rtol=0)
     assert len(f0_data.frequencies) == 5722
     assert np.allclose(f0_data.frequencies[:2], np.array([0.0, 0.0]), atol=1e-5, rtol=0)
     assert len(f0_data.voicing) == 5722
@@ -113,9 +110,7 @@ def test_load_f0():
 
 
 def test_load_notes():
-    notes_path = (
-        "tests/resources/mir_datasets/vocadito/Annotations/Notes/vocadito_1_notesA1.csv"
-    )
+    notes_path = "tests/resources/mir_datasets/vocadito/Annotations/Notes/vocadito_1_notesA1.csv"
     note_data = vocadito.load_notes(notes_path)
 
     # check types
@@ -135,9 +130,7 @@ def test_load_notes():
 
 
 def test_load_lyrics():
-    lyrics_path = (
-        "tests/resources/mir_datasets/vocadito/Annotations/Lyrics/vocadito_1_lyrics.txt"
-    )
+    lyrics_path = "tests/resources/mir_datasets/vocadito/Annotations/Lyrics/vocadito_1_lyrics.txt"
     lyrics_data = vocadito.load_lyrics(lyrics_path)
 
     assert lyrics_data == [

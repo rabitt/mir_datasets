@@ -1,16 +1,16 @@
 import argparse
-import hashlib
+import glob
 import json
 import os
-import glob
+
 from mirdata.validate import md5
 
-
-HINDUSTANI_RHYTHM_INDEX_PATH = "../mirdata/datasets/indexes/compmusic_hindustani_rhythm_full_index_1.0.json"
+HINDUSTANI_RHYTHM_INDEX_PATH = (
+    "../mirdata/datasets/indexes/compmusic_hindustani_rhythm_full_index_1.0.json"
+)
 
 
 def make_compmusic_hindustani_rhythm_index(dataset_data_path):
-
     cmr_index = {
         "version": "1.0",
         "tracks": {},
@@ -26,13 +26,31 @@ def make_compmusic_hindustani_rhythm_index(dataset_data_path):
                 md5(os.path.join(dataset_data_path, "audio", filename)),
             ),
             "beats": (
-                os.path.join(dataset_folder_name, "annotations", "beats", filename.replace(".wav", ".beats")),
-                md5(os.path.join(dataset_data_path, "annotations", "beats", filename.replace(".wav", ".beats"))),
+                os.path.join(
+                    dataset_folder_name, "annotations", "beats", filename.replace(".wav", ".beats")
+                ),
+                md5(
+                    os.path.join(
+                        dataset_data_path,
+                        "annotations",
+                        "beats",
+                        filename.replace(".wav", ".beats"),
+                    )
+                ),
             ),
             "meter": (
-                os.path.join(dataset_folder_name, "annotations", "meter", filename.replace(".wav", ".meter")),
-                md5(os.path.join(dataset_data_path, "annotations", "meter", filename.replace(".wav", ".meter"))),
-            )
+                os.path.join(
+                    dataset_folder_name, "annotations", "meter", filename.replace(".wav", ".meter")
+                ),
+                md5(
+                    os.path.join(
+                        dataset_data_path,
+                        "annotations",
+                        "meter",
+                        filename.replace(".wav", ".meter"),
+                    )
+                ),
+            ),
         }
 
     with open(HINDUSTANI_RHYTHM_INDEX_PATH, "w") as fhandle:

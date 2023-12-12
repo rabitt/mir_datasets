@@ -1,10 +1,10 @@
 import os
-import numpy as np
 
-from tests.test_utils import run_track_tests
+import numpy as np
 
 from mirdata import annotations
 from mirdata.datasets import tonas
+from tests.test_utils import run_track_tests
 
 TEST_DATA_HOME = os.path.normpath("tests/resources/mir_datasets/tonas")
 
@@ -111,9 +111,7 @@ def test_load_melody():
     assert type(f0_data_automatic._confidence) is np.ndarray
 
     # check values
-    assert np.array_equal(
-        f0_data_corrected.times, np.array([0.197, 0.209, 0.221, 0.232])
-    )
+    assert np.array_equal(f0_data_corrected.times, np.array([0.197, 0.209, 0.221, 0.232]))
     assert np.array_equal(
         f0_data_corrected.frequencies, np.array([0.000, 379.299, 379.299, 379.299])
     )
@@ -124,12 +122,8 @@ def test_load_melody():
     )
 
     # check values
-    assert np.array_equal(
-        f0_data_automatic.times, np.array([0.197, 0.209, 0.221, 0.232])
-    )
-    assert np.array_equal(
-        f0_data_automatic.frequencies, np.array([0.000, 0.000, 143.918, 143.918])
-    )
+    assert np.array_equal(f0_data_automatic.times, np.array([0.197, 0.209, 0.221, 0.232]))
+    assert np.array_equal(f0_data_automatic.frequencies, np.array([0.000, 0.000, 143.918, 143.918]))
     assert np.array_equal(f0_data_automatic.voicing, np.array([0.0, 0.0, 1.0, 1.0]))
     assert np.array_equal(
         f0_data_automatic._confidence,
@@ -159,18 +153,12 @@ def test_load_notes():
     assert np.array_equal(
         notes_data.intervals[:, 0], np.array([0.216667, 0.65, 2.183333, 2.566667])
     )
-    assert np.array_equal(
-        notes_data.intervals[:, 1], np.array([0.65, 1.666667, 2.566666, 2.9])
-    )
+    assert np.array_equal(notes_data.intervals[:, 1], np.array([0.65, 1.666667, 2.566666, 2.9]))
     assert np.array_equal(
         notes_data.pitches,
-        np.array(
-            [388.8382625732775, 411.9597888711769, 388.8382625732775, 411.9597888711769]
-        ),
+        np.array([388.8382625732775, 411.9597888711769, 388.8382625732775, 411.9597888711769]),
     )
-    assert np.array_equal(
-        notes_data.confidence, np.array([0.018007, 0.010794, 0.00698, 0.03265])
-    )
+    assert np.array_equal(notes_data.confidence, np.array([0.018007, 0.010794, 0.00698, 0.03265]))
 
 
 def test_load_audio():

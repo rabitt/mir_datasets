@@ -1,8 +1,10 @@
 import os
+
 import numpy as np
-from tests.test_utils import run_track_tests
+
 from mirdata import annotations
 from mirdata.datasets import gtzan_genre
+from tests.test_utils import run_track_tests
 
 TEST_DATA_HOME = os.path.normpath("tests/resources/mir_datasets/gtzan_genre")
 
@@ -46,13 +48,9 @@ def test_load_beats():
     )
     beat_data = gtzan_genre.load_beats(beats_path)
 
-    assert (
-        type(beat_data) == annotations.BeatData
-    ), "beat_data is not type annotations.BeatData"
+    assert type(beat_data) == annotations.BeatData, "beat_data is not type annotations.BeatData"
     assert type(beat_data.times) == np.ndarray, "beat_data.times is not an np.ndarray"
-    assert (
-        type(beat_data.positions) == np.ndarray
-    ), "beat_data.positions is not an np.ndarray"
+    assert type(beat_data.positions) == np.ndarray, "beat_data.positions is not an np.ndarray"
 
     assert np.array_equal(
         beat_data.times, np.array([0.113, 0.829, 1.537, 2.28, 2.992])
@@ -73,9 +71,7 @@ def test_load_beats():
     assert np.array_equal(
         beat_data.times, np.array([0.113, 0.829, 1.537, 2.28, 2.992])
     ), "beat_data.times different than expected"
-    assert np.array_equal(
-        beat_data.positions, None
-    ), "beat_data.positions different from expected"
+    assert np.array_equal(beat_data.positions, None), "beat_data.positions different from expected"
 
 
 def test_load_tempo():
@@ -87,9 +83,7 @@ def test_load_tempo():
 
     assert type(tempo_data) == float, "tempo_data is not type float"
 
-    assert np.array_equal(
-        tempo_data, 8.553000000000000114e01
-    ), "tempo_data different than expected"
+    assert np.array_equal(tempo_data, 8.553000000000000114e01), "tempo_data different than expected"
 
 
 def test_hiphop():

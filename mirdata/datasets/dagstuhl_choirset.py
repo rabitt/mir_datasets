@@ -1,4 +1,4 @@
-"""Dagstuhl ChoirSet Dataset Loader
+"""Dagstuhl ChoirSet Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -42,13 +42,13 @@
     (4) Joint Research Centre, European Commission, Seville, ES
 """
 import csv
-from typing import BinaryIO, Optional, TextIO, Tuple, List
+from typing import BinaryIO, List, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
-from mirdata import download_utils, jams_utils, core, annotations, io
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @article{RosenzweigCWSGM20_DCS_TISMIR,
@@ -87,7 +87,7 @@ Creative Commons Attribution 4.0 International
 
 
 class Track(core.Track):
-    """Dagstuhl ChoirSet Track class
+    """Dagstuhl ChoirSet Track class.
 
     Args:
         track_id (str): track id of the track
@@ -114,7 +114,6 @@ class Track(core.Track):
         f0_pyin_lrx (F0Data): algorithm-labeled (pyin) f0 annotations for larynx microphone
         f0_manual_lrx (F0Data): manually labeled f0 annotations for larynx microphone
         score (NoteData): time-aligned score representation
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -181,7 +180,6 @@ class Track(core.Track):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_dyn_path)
 
@@ -192,7 +190,6 @@ class Track(core.Track):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_hsm_path)
 
@@ -203,7 +200,6 @@ class Track(core.Track):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_lrx_path)
 
@@ -236,7 +232,7 @@ class Track(core.Track):
 
 
 class MultiTrack(core.MultiTrack):
-    """Dagstuhl ChoirSet multitrack class
+    """Dagstuhl ChoirSet multitrack class.
 
     Args:
         mtrack_id (str): multitrack id
@@ -256,12 +252,9 @@ class MultiTrack(core.MultiTrack):
         beat (annotations.BeatData): Beat annotation
         notes (annotations.NoteData): Note annotation
         multif0 (annotations.MultiF0Data): Aggregate of f0 annotations for tracks
-
     """
 
-    def __init__(
-        self, mtrack_id, data_home, dataset_name, index, track_class, metadata
-    ):
+    def __init__(self, mtrack_id, data_home, dataset_name, index, track_class, metadata):
         super().__init__(
             mtrack_id=mtrack_id,
             data_home=data_home,
@@ -333,7 +326,6 @@ class MultiTrack(core.MultiTrack):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_stm_path)
 
@@ -344,7 +336,6 @@ class MultiTrack(core.MultiTrack):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_str_path)
 
@@ -355,7 +346,6 @@ class MultiTrack(core.MultiTrack):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_stl_path)
 
@@ -366,7 +356,6 @@ class MultiTrack(core.MultiTrack):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_rev_path)
 
@@ -377,7 +366,6 @@ class MultiTrack(core.MultiTrack):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_spl_path)
 
@@ -388,7 +376,6 @@ class MultiTrack(core.MultiTrack):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_spr_path)
 
@@ -397,9 +384,7 @@ class MultiTrack(core.MultiTrack):
 
         beat_data = [(self.beat, "beat")] if self.beat else None
 
-        return jams_utils.jams_converter(
-            audio_path=self.audio_stm_path, beat_data=beat_data
-        )
+        return jams_utils.jams_converter(audio_path=self.audio_stm_path, beat_data=beat_data)
 
 
 @io.coerce_to_bytes_io
@@ -412,7 +397,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=22050, mono=True)
 
@@ -472,7 +456,6 @@ def load_score(fhandle: TextIO) -> annotations.NoteData:
 
     Returns:
         NoteData Object - the time-aligned score representation
-
     """
     intervals = []
     notes = []
@@ -481,9 +464,7 @@ def load_score(fhandle: TextIO) -> annotations.NoteData:
         intervals.append([float(line[0]), float(line[1])])
         notes.append(float(line[2]))
 
-    return annotations.NoteData(
-        np.array(intervals), "s", librosa.midi_to_hz(notes), "hz"
-    )
+    return annotations.NoteData(np.array(intervals), "s", librosa.midi_to_hz(notes), "hz")
 
 
 @io.coerce_to_string_io
@@ -514,9 +495,7 @@ def load_beat(fhandle: TextIO) -> annotations.BeatData:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Dagstuhl ChoirSet dataset
-    """
+    """The Dagstuhl ChoirSet dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -531,26 +510,18 @@ class Dataset(core.Dataset):
             license_info=LICENSE_INFO,
         )
 
-    @deprecated(
-        reason="Use mirdata.datasets.dagstuhl_choirset.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.dagstuhl_choirset.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.dagstuhl_choirset.load_f0", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.dagstuhl_choirset.load_f0", version="0.3.4")
     def load_f0(self, *args, **kwargs):
         return load_f0(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.dagstuhl_choirset.load_score", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.dagstuhl_choirset.load_score", version="0.3.4")
     def load_score(self, *args, **kwargs):
         return load_score(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.dagstuhl_choirset.load_beat", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.dagstuhl_choirset.load_beat", version="0.3.4")
     def load_beat(self, *args, **kwargs):
         return load_beat(*args, **kwargs)

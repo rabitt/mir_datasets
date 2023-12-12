@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
 import argparse
-from glob import glob
-from tqdm import tqdm
 import json
-import os
 from pathlib import Path
+
+from tqdm import tqdm
+
 from mirdata.validate import md5
 
 DATASET_INDEX_PATH = "../mirdata/datasets/indexes/openmic2018_index.json"
@@ -38,7 +38,6 @@ def make_dataset_index(dataset_data_path):
     # top-key level tracks
     index_tracks = {}
     for audio_file in tqdm(sorted(path.rglob("*.ogg"))):
-
         audio_checksum = md5(audio_file)
         arelpath = audio_file.relative_to(path)
         track_id = audio_file.stem
@@ -69,8 +68,6 @@ def main(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make dataset index file.")
-    PARSER.add_argument(
-        "dataset_data_path", type=str, help="Path to dataset data folder."
-    )
+    PARSER.add_argument("dataset_data_path", type=str, help="Path to dataset data folder.")
 
     main(PARSER.parse_args())

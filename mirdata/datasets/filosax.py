@@ -1,11 +1,11 @@
-"""Filosax Dataset Loader
+"""Filosax Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
 
     The Filosax dataset was conceived, curated and compiled by Dave Foster (a PhD student on the AIM programme at QMUL) and his supervisor Simon Dixon (C4DM @ QMUL).
     The dataset is a collection of 48 multitrack jazz recordings, where each piece has 8 corresponding audio files:
-    
+
     1) The original Aebersold backing track (stereo)
     2) Bass_Drums, a mono file of a mix of bass and drums
     3) Piano_Drums, a mono file of a mix of piano and drums
@@ -14,38 +14,35 @@
     6) Participant 3 Sax, a mono file of solo saxophone
     7) Participant 4 Sax, a mono file of solo saxophone
     8) Participant 5 Sax, a mono file of solo saxophone
-    
+
     Each piece is ~6mins long, so each of the 8 stems contains ~5hours of audio
-    
+
     For each piece, there is a corresponding .jams file containing piece-level annotations:
-    
+
     1) Beat annotation for the start of each bar and any mid-bar chord change
     2) Chord annotation for each bar, and mid-bar chord change
     3) Section annotation for when the solo changes between the 3 categories:
         a) head (melody)
         b) written solo (interpretation of transcribed solo)
         c) improvised solo
-        
+
     For each Sax recording (5 per piece), there is a corresponding .json file containing note annotations (see Note object).
-    
+
     The Participant folders also contain MIDI files of the transcriptions (frame level and score level) as well as a PDF and MusicXML of the typeset solo.
-    
+
     The dataset comes in 2 flavours: full (all 48 tracks and 5 sax players) and lite (5 tracks and 2 sax players).
     Both flavours can be used with or without the backing tracks (which need to be purchased online).
     Hence, when opening the dataset, use one of 4 versions: 'full', 'full_sax', 'lite', 'lite_sax'.
-
 """
-import csv
 import json
-import os
-import jams
-from typing import BinaryIO, Dict, Optional, TextIO, Tuple, List
+from typing import BinaryIO, List, Optional, TextIO, Tuple
 
+import jams
 import librosa
 import numpy as np
 from smart_open import open
 
-from mirdata import download_utils, jams_utils, core, annotations, io
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @inproceedings{
@@ -63,7 +60,6 @@ INDEXES = {
     "full_sax": "full_sax_1.0",
     "lite": "lite_1.0",
     "lite_sax": "lite_sax_1.0",
-    "test": "test",
     "full_1.0": core.Index(filename="filosax_index_full_1.0.json"),
     "full_sax_1.0": core.Index(filename="filosax_index_full_sax_1.0.json"),
     "lite_1.0": core.Index(filename="filosax_index_lite_1.0.json"),
@@ -166,90 +162,54 @@ class Note:
     """
 
     def __init__(self, input_dict):
-        self.a_start_time = (
-            input_dict["a_start_time"] if "a_start_time" in input_dict else 0.0
-        )
-        self.a_end_time = (
-            input_dict["a_end_time"] if "a_end_time" in input_dict else 0.0
-        )
-        self.a_duration = (
-            input_dict["a_duration"] if "a_duration" in input_dict else 0.0
-        )
-        self.a_onset_time = (
-            input_dict["a_onset_time"] if "a_onset_time" in input_dict else 0.0
-        )
+        self.a_start_time = input_dict["a_start_time"] if "a_start_time" in input_dict else 0.0
+        self.a_end_time = input_dict["a_end_time"] if "a_end_time" in input_dict else 0.0
+        self.a_duration = input_dict["a_duration"] if "a_duration" in input_dict else 0.0
+        self.a_onset_time = input_dict["a_onset_time"] if "a_onset_time" in input_dict else 0.0
         self.midi_pitch = input_dict["midi_pitch"] if "midi_pitch" in input_dict else 0
-        self.crochet_num = (
-            input_dict["crochet_num"] if "crochet_num" in input_dict else 24
-        )
+        self.crochet_num = input_dict["crochet_num"] if "crochet_num" in input_dict else 24
         self.musician = input_dict["musician"] if "musician" in input_dict else 1
         self.bar_num = input_dict["bar_num"] if "bar_num" in input_dict else 1
-        self.s_start_time = (
-            input_dict["s_start_time"] if "s_start_time" in input_dict else 0.0
-        )
-        self.s_duration = (
-            input_dict["s_duration"] if "s_duration" in input_dict else 0.0
-        )
+        self.s_start_time = input_dict["s_start_time"] if "s_start_time" in input_dict else 0.0
+        self.s_duration = input_dict["s_duration"] if "s_duration" in input_dict else 0.0
         self.s_end_time = (
-            (self.s_start_time + self.s_duration)
-            if "s_start_time" in input_dict
-            else 0.0
+            (self.s_start_time + self.s_duration) if "s_start_time" in input_dict else 0.0
         )
         self.s_rhythmic_duration = (
-            input_dict["s_rhythmic_duration"]
-            if "s_rhythmic_duration" in input_dict
-            else 0.0
+            input_dict["s_rhythmic_duration"] if "s_rhythmic_duration" in input_dict else 0.0
         )
         self.s_rhythmic_position = (
-            input_dict["s_rhythmic_position"]
-            if "s_rhythmic_position" in input_dict
-            else 0.0
+            input_dict["s_rhythmic_position"] if "s_rhythmic_position" in input_dict else 0.0
         )
         self.tempo = input_dict["tempo"] if "tempo" in input_dict else 0.0
         self.bar_type = input_dict["bar_type"] if "bar_type" in input_dict else 1
         self.is_grace = input_dict["is_grace"] if "is_grace" in input_dict else 0
-        self.chord_changes = (
-            input_dict["chord_changes"] if "chord_changes" in input_dict else [0]
-        )
+        self.chord_changes = input_dict["chord_changes"] if "chord_changes" in input_dict else [0]
         self.num_chord_changes = (
             input_dict["num_chord_changes"] if "num_chord_changes" in input_dict else 0
         )
-        self.main_chord_num = (
-            input_dict["main_chord_num"] if "main_chord_num" in input_dict else 0
-        )
-        self.scale_changes = (
-            input_dict["scale_changes"] if "scale_changes" in input_dict else [0]
-        )
+        self.main_chord_num = input_dict["main_chord_num"] if "main_chord_num" in input_dict else 0
+        self.scale_changes = input_dict["scale_changes"] if "scale_changes" in input_dict else [0]
         self.loudness_max_val = (
             input_dict["loudness_max_val"] if "loudness_max_val" in input_dict else 0.0
         )
         self.loudness_max_time = (
-            input_dict["loudness_max_time"]
-            if "loudness_max_time" in input_dict
-            else 0.0
+            input_dict["loudness_max_time"] if "loudness_max_time" in input_dict else 0.0
         )
         self.loudness_curve = (
             input_dict["loudness_curve"] if "loudness_curve" in input_dict else [0.0]
         )
         self.pitch_average_val = (
-            input_dict["pitch_average_val"]
-            if "pitch_average_val" in input_dict
-            else 0.0
+            input_dict["pitch_average_val"] if "pitch_average_val" in input_dict else 0.0
         )
         self.pitch_average_time = (
-            input_dict["pitch_average_time"]
-            if "pitch_average_time" in input_dict
-            else 0.0
+            input_dict["pitch_average_time"] if "pitch_average_time" in input_dict else 0.0
         )
-        self.pitch_curve = (
-            input_dict["pitch_curve"] if "pitch_curve" in input_dict else [0.0]
-        )
+        self.pitch_curve = input_dict["pitch_curve"] if "pitch_curve" in input_dict else [0.0]
         self.pitch_vib_freq = (
             input_dict["pitch_vib_freq"] if "pitch_vib_freq" in input_dict else 0.0
         )
-        self.pitch_vib_ext = (
-            input_dict["pitch_vib_ext"] if "pitch_vib_ext" in input_dict else 0.0
-        )
+        self.pitch_vib_ext = input_dict["pitch_vib_ext"] if "pitch_vib_ext" in input_dict else 0.0
         self.spec_cent = input_dict["spec_cent"] if "spec_cent" in input_dict else 0.0
         self.spec_flux = input_dict["spec_flux"] if "spec_flux" in input_dict else 0.0
         self.spec_cent_curve = (
@@ -263,7 +223,7 @@ class Note:
 
 
 class Track(core.Track):
-    """Filosax track class
+    """Filosax track class.
 
     Args:
         track_id (str): track id of the track
@@ -277,7 +237,6 @@ class Track(core.Track):
 
     Cached Properties:
         notes (list, Note): an ordered list of Note objects
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -310,12 +269,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -324,7 +282,7 @@ class Track(core.Track):
 
 
 class MultiTrack(core.MultiTrack):
-    """Filosax multitrack class
+    """Filosax multitrack class.
 
     Args:
         mtrack_id (str): multitrack id
@@ -347,12 +305,9 @@ class MultiTrack(core.MultiTrack):
 
     Cached Properties:
         annotation (jams.JAMS): a .jams file containing the annotations
-
     """
 
-    def __init__(
-        self, mtrack_id, data_home, dataset_name, index, track_class, metadata
-    ):
+    def __init__(self, mtrack_id, data_home, dataset_name, index, track_class, metadata):
         super().__init__(
             mtrack_id=mtrack_id,
             data_home=data_home,
@@ -374,71 +329,65 @@ class MultiTrack(core.MultiTrack):
 
     @property
     def name(self):
-        """The track's name
+        """The track's name.
 
         Returns:
             * str - track name
-
         """
         return self.annotation["file_metadata"]["title"]
 
     @property
     def duration(self):
-        """The track's duration
+        """The track's duration.
 
         Returns:
             * float - track duration (in seconds)
-
         """
         return self.annotation["file_metadata"]["duration"]
 
     @property
     def beats(self):
-        """The times of downbeats and chord changes
+        """The times of downbeats and chord changes.
 
         Returns:
             * (SortedKeyList, Observation) - timestamp, duration (seconds), beat
-
         """
         return self.annotation.search(namespace="beat")[0]["data"]
 
     @property
     def chords(self):
-        """The times and values of chord changes
+        """The times and values of chord changes.
 
         Returns:
             * (SortedKeyList, Observation) - timestamp, duration (seconds), chord symbol
-
         """
         return self.annotation.search(namespace="chord")[0]["data"]
 
     @property
     def segments(self):
-        """The times of segment changes (values are 'head', 'written solo', 'improvised solo')
+        """The times of segment changes (values are 'head', 'written solo',
+        'improvised solo')
 
         Returns:
             * (SortedKeyList, Observation) - timestamp, duration (seconds), beat
-
         """
         return self.annotation.search(namespace="segment_open")[0]["data"]
 
     @property
     def bass_drums(self):
-        """The associated bass/drums track
+        """The associated bass/drums track.
 
         Returns:
             * Track
-
         """
         return self.tracks[self.mtrack_id + "_bass_drums"]
 
     @property
     def piano_drums(self):
-        """The associated piano/drums track
+        """The associated piano/drums track.
 
         Returns:
             * Track
-
         """
         return self.tracks[self.mtrack_id + "_piano_drums"]
 
@@ -448,7 +397,6 @@ class MultiTrack(core.MultiTrack):
 
         Returns:
             * (list, Track)
-
         """
         return [self.tracks["%s_sax_%d" % (self.mtrack_id, n)] for n in [1, 2, 3, 4, 5]]
 
@@ -467,7 +415,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
@@ -481,7 +428,6 @@ def load_annotation(fhandle: TextIO) -> List[Note]:
 
     Returns:
         * (list, Note): an ordered list of Note objects
-
     """
     note_dict = json.load(fhandle)["notes"]
     return [Note(n) for n in note_dict]
@@ -489,9 +435,7 @@ def load_annotation(fhandle: TextIO) -> List[Note]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Filosax dataset
-    """
+    """The Filosax dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

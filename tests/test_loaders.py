@@ -3,6 +3,7 @@ import inspect
 import io
 import os
 import sys
+
 import pytest
 import requests
 
@@ -59,27 +60,23 @@ def test_dataset_attributes():
         assert (
             dataset.name == dataset_name
         ), "{}.dataset attribute does not match dataset name".format(dataset_name)
-        assert (
-            dataset.bibtex is not None
-        ), "No BIBTEX information provided for {}".format(dataset_name)
-        assert (
-            dataset._license_info is not None
-        ), "No LICENSE information provided for {}".format(dataset_name)
+        assert dataset.bibtex is not None, "No BIBTEX information provided for {}".format(
+            dataset_name
+        )
+        assert dataset._license_info is not None, "No LICENSE information provided for {}".format(
+            dataset_name
+        )
         assert (
             isinstance(dataset.remotes, dict) or dataset.remotes is None
         ), "{}.REMOTES must be a dictionary".format(dataset_name)
-        assert isinstance(dataset._index, dict), "{}.DATA is not properly set".format(
-            dataset_name
-        )
+        assert isinstance(dataset._index, dict), "{}.DATA is not properly set".format(dataset_name)
         assert (
             isinstance(dataset._download_info, str) or dataset._download_info is None
         ), "{}.DOWNLOAD_INFO must be a string".format(dataset_name)
         assert type(dataset._track_class) == type(
             core.Track
         ), "{}.Track must be an instance of core.Track".format(dataset_name)
-        assert callable(dataset.download), "{}.download is not a function".format(
-            dataset_name
-        )
+        assert callable(dataset.download), "{}.download is not a function".format(dataset_name)
 
 
 def test_smart_open():
@@ -140,9 +137,7 @@ def test_download(mocker):
         )
 
         # test parameters & defaults
-        assert callable(dataset.download), "{}.download is not callable".format(
-            dataset_name
-        )
+        assert callable(dataset.download), "{}.download is not callable".format(dataset_name)
         params = inspect.signature(dataset.download).parameters
 
         expected_params = [
@@ -162,7 +157,7 @@ def test_download(mocker):
 
         # check that the download method can be called without errors
         if dataset.remotes != {}:
-            mock_downloader = mocker.patch.object(dataset, "remotes")
+            mocker.patch.object(dataset, "remotes")
             if dataset_name not in DOWNLOAD_EXCEPTIONS:
                 try:
                     dataset.download()
@@ -180,13 +175,9 @@ def test_download(mocker):
                 url = dataset.remotes[key].url
                 try:
                     request = requests.head(url)
-                    assert request.ok, "Link {} for {} does not return OK".format(
-                        url, dataset_name
-                    )
+                    assert request.ok, "Link {} for {} does not return OK".format(url, dataset_name)
                 except requests.exceptions.ConnectionError:
-                    assert False, "Link {} for {} is unreachable".format(
-                        url, dataset_name
-                    )
+                    assert False, "Link {} for {} is unreachable".format(url, dataset_name)
                 except:
                     assert False, "{}: {}".format(dataset_name, sys.exc_info()[0])
         else:
@@ -225,9 +216,7 @@ def test_load_and_trackids():
             track_ids = dataset.track_ids
         except:
             assert False, "{}: {}".format(dataset_name, sys.exc_info()[0])
-        assert type(track_ids) is list, "{}.track_ids() should return a list".format(
-            dataset_name
-        )
+        assert type(track_ids) is list, "{}.track_ids() should return a list".format(dataset_name)
         trackid_len = len(track_ids)
         # if the dataset has tracks, test the loaders
         if dataset._track_class is not None:
@@ -237,18 +226,16 @@ def test_load_and_trackids():
                 assert False, "{}: {}".format(dataset_name, sys.exc_info()[0])
             assert isinstance(
                 choice_track, core.Track
-            ), "{}.choice_track must return an instance of type core.Track".format(
-                dataset_name
-            )
+            ), "{}.choice_track must return an instance of type core.Track".format(dataset_name)
 
             try:
                 dataset_data = dataset.load_tracks()
             except:
                 assert False, "{}: {}".format(dataset_name, sys.exc_info()[0])
 
-            assert isinstance(
-                dataset_data, dict
-            ), "{}.load should return a dictionary".format(dataset_name)
+            assert isinstance(dataset_data, dict), "{}.load should return a dictionary".format(
+                dataset_name
+            )
             assert len(dataset_data.keys()) == trackid_len, (
                 "the dictionary returned {}.load() does not have the same number of elements as"
                 " {}.track_ids()".format(dataset_name, dataset_name)
@@ -283,21 +270,21 @@ def test_track():
             track_test, core.Track
         ), "{}.track must be an instance of type core.Track".format(dataset_name)
 
-        assert hasattr(
-            track_test, "to_jams"
-        ), "{}.track must have a to_jams method".format(dataset_name)
+        assert hasattr(track_test, "to_jams"), "{}.track must have a to_jams method".format(
+            dataset_name
+        )
 
         # test calling all attributes, properties and cached properties
         track_data = get_attributes_and_properties(track_test)
 
         for attr in track_data["attributes"]:
-            ret = getattr(track_test, attr)
+            getattr(track_test, attr)
 
         for prop in track_data["properties"]:
-            ret = getattr(track_test, prop)
+            getattr(track_test, prop)
 
         for cprop in track_data["cached_properties"]:
-            ret = getattr(track_test, cprop)
+            getattr(track_test, cprop)
 
         # Validate JSON schema
         try:
@@ -350,15 +337,15 @@ def test_track_placeholder_case():
         track_data = get_attributes_and_properties(track_test)
 
         for attr in track_data["attributes"]:
-            ret = getattr(track_test, attr)
+            getattr(track_test, attr)
 
         for prop in track_data["properties"]:
             with pytest.raises(Exception):
-                ret = getattr(track_test, prop)
+                getattr(track_test, prop)
 
         for cprop in track_data["cached_properties"]:
             with pytest.raises(Exception):
-                ret = getattr(track_test, cprop)
+                getattr(track_test, cprop)
 
 
 # for load_* functions which require more than one argument
@@ -400,9 +387,7 @@ def test_load_methods():
         dataset_module = importlib.import_module(f"mirdata.datasets.{dataset_name}")
 
         all_methods = dir(dataset_module)
-        load_methods = [
-            getattr(dataset_module, m) for m in all_methods if m.startswith("load_")
-        ]
+        load_methods = [getattr(dataset_module, m) for m in all_methods if m.startswith("load_")]
         for load_method in load_methods:
             method_name = load_method.__name__
 
@@ -448,7 +433,7 @@ def test_multitracks():
             continue
 
         try:
-            mtrack_default = dataset.MultiTrack(mtrack_id)
+            dataset.MultiTrack(mtrack_id)
         except:
             assert False, "{}: {}".format(dataset_name, sys.exc_info()[0])
 
@@ -462,13 +447,11 @@ def test_multitracks():
 
         assert isinstance(
             mtrack_test, core.MultiTrack
-        ), "{}.MultiTrack must be an instance of type core.MultiTrack".format(
+        ), "{}.MultiTrack must be an instance of type core.MultiTrack".format(dataset_name)
+
+        assert hasattr(mtrack_test, "to_jams"), "{}.MultiTrack must have a to_jams method".format(
             dataset_name
         )
-
-        assert hasattr(
-            mtrack_test, "to_jams"
-        ), "{}.MultiTrack must have a to_jams method".format(dataset_name)
 
         # Validate JSON schema
         try:

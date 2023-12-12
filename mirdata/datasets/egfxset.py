@@ -1,4 +1,4 @@
-"""EGFxSet Dataset Loader
+"""EGFxSet Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -23,31 +23,31 @@
     Categories, Models and Effects:
 
         Distortion:
-            Boss BD-2: 
+            Boss BD-2:
                        Blues Driver
-            Ibanez Minitube Screamer: 
+            Ibanez Minitube Screamer:
                        Tube Screamer
-            ProCo RAT2: 
+            ProCo RAT2:
                        Distortion
 
         Modulation:
-            Boss CE-3: 
+            Boss CE-3:
                        Chorus
-            MXR Phase 45: 
+            MXR Phase 45:
                        Phaser
-            Mooer E-Lady: 
+            Mooer E-Lady:
                        Flanger
 
         Delays:
             Line6 DL-4:
-                        Digital Delay, 
-                        Tape Echo, 
+                        Digital Delay,
+                        Tape Echo,
                         Sweep Echo
 
         Reverb:
             Orange CR-60 Combo Amplifier:
-                                        Plate Reverb, 
-                                        Hall Reverb, 
+                                        Plate Reverb,
+                                        Hall Reverb,
                                         Spring Reverb
 
 
@@ -65,7 +65,7 @@
              - Effect type
 
              - Hardware modes
-    
+
              - Knob names
 
              - Knob types
@@ -85,15 +85,15 @@
 
 import csv
 import os
-from typing import BinaryIO, Optional, Tuple
-from ast import literal_eval
 import re
+from ast import literal_eval
+from typing import BinaryIO, Optional, Tuple
 
 import librosa
 import numpy as np
 from smart_open import open
 
-from mirdata import annotations, core, download_utils, jams_utils, io
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @techreport{pedroza2022egfxset,
@@ -188,7 +188,7 @@ LICENSE_INFO = "Creative Commons Attribution 4.0 International"
 
 
 class Track(core.Track):
-    """EGFxSet Track class
+    """EGFxSet Track class.
 
     Args:
         track_id (str): track id of the track
@@ -274,25 +274,21 @@ class Track(core.Track):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
-        return jams_utils.jams_converter(
-            audio_path=self.audio_path, metadata=self._track_metadata
-        )
+        return jams_utils.jams_converter(audio_path=self.audio_path, metadata=self._track_metadata)
 
 
 @io.coerce_to_bytes_io
 def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
-    """Load EGFxSet guitar audio
+    """Load EGFxSet guitar audio.
 
     Args:
         fhandle (str or file-like): File-like object or path to audio file
@@ -300,16 +296,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - audio signal
         * float - sample rate
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The EGFxSet dataset
-    """
+    """The EGFxSet dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -406,15 +399,9 @@ class Dataset(core.Dataset):
                     "Effect": reader[indexname.index(trackiden)]["Effect "],
                     "Model": reader[indexname.index(trackiden)]["Model"],
                     "Effect Type": reader[indexname.index(trackiden)]["Effect Type"],
-                    "Knob Names": literal_eval(
-                        reader[indexname.index(trackiden)]["Knob Names"]
-                    ),
-                    "Knob Type": literal_eval(
-                        reader[indexname.index(trackiden)]["Knob Type"]
-                    ),
-                    "Setting": literal_eval(
-                        reader[indexname.index(trackiden)]["Setting "]
-                    ),
+                    "Knob Names": literal_eval(reader[indexname.index(trackiden)]["Knob Names"]),
+                    "Knob Type": literal_eval(reader[indexname.index(trackiden)]["Knob Type"]),
+                    "Setting": literal_eval(reader[indexname.index(trackiden)]["Setting "]),
                 }
 
         return metadata_index

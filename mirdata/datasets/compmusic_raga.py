@@ -1,28 +1,28 @@
-"""CompMusic Raga Dataset Loader
+"""CompMusic Raga Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
 
-    Rāga datasets from CompMusicomprise two sizable datasets, one for each music tradition, 
-    Carnatic and Hindustani. These datasets comprise full length audio recordings and their 
-    associated rāga labels. These two datasets can be used to develop and evaluate approaches 
+    Rāga datasets from CompMusicomprise two sizable datasets, one for each music tradition,
+    Carnatic and Hindustani. These datasets comprise full length audio recordings and their
+    associated rāga labels. These two datasets can be used to develop and evaluate approaches
     for performing automatic rāga recognition in Indian art music.
 
     These datasets are derived from the CompMusic corpora of Indian Art Music. Therefore, the
     dataset has been compiled at the Music Technology Group, by a group of researchers working
     on the computational analysis of Carnatic and Hindustani music within the framework of the
-    ERC-funded CompMusic project. 
-    
-    Each recording is associated with a MBID. With the MBID other information can be obtained 
-    using the Dunya API or pycompmusic. 
+    ERC-funded CompMusic project.
 
-    The Carnatic subset comprises 124 hours of audio recordings and editorial metadata that 
-    includes carefully curated and verified rāga labels. It contains 480 recordings belonging 
+    Each recording is associated with a MBID. With the MBID other information can be obtained
+    using the Dunya API or pycompmusic.
+
+    The Carnatic subset comprises 124 hours of audio recordings and editorial metadata that
+    includes carefully curated and verified rāga labels. It contains 480 recordings belonging
     to 40 rāgas with 12 recordings per rāga.
 
-    The Hindustani subset comprises 116 hours of audio recordings and editorial metadata that 
-    includes carefully curated and verified rāga labels. It contains 300 recordings belonging 
-    to 30 rāgas with 10 recordings per rāga. 
+    The Hindustani subset comprises 116 hours of audio recordings and editorial metadata that
+    includes carefully curated and verified rāga labels. It contains 300 recordings belonging
+    to 30 rāgas with 10 recordings per rāga.
 
     The dataset also includes features per each file:
     * Tonic: float indicating the recording tonic
@@ -32,25 +32,23 @@
     * Nyas segments: KNN-extracted segments of Nyas (start and end times provided)
     * Tani segments: KNN-extracted segments of Tanis (start and end times provided)
 
-    The dataset includes both txt files and json files that contain information about each audio 
-    recording in terms of its mbid, the path of the audio/feature files and the associated rāga 
-    identifier. Each rāga is assigned a unique identifier by Dunya, which is similar to the mbid 
+    The dataset includes both txt files and json files that contain information about each audio
+    recording in terms of its mbid, the path of the audio/feature files and the associated rāga
+    identifier. Each rāga is assigned a unique identifier by Dunya, which is similar to the mbid
     in terms of purpose. A mapping of the rāga id to its transliterated name is also provided.
 
     For more information about the dataset please refer to: https://compmusic.upf.edu/node/328
-
 """
 
-import os
 import csv
 import json
+import os
 
 import librosa
 import numpy as np
-
-from mirdata import annotations, core, download_utils, io, jams_utils
 from smart_open import open
 
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @article{gulati_2016,
@@ -90,7 +88,7 @@ LICENSE_INFO = "Creative Commons Attribution 4.0 International"
 
 
 class Track(core.Track):
-    """CompMusic Raga Dataset class
+    """CompMusic Raga Dataset class.
 
     Args:
         track_id (str): track id of the track
@@ -203,21 +201,19 @@ class Track(core.Track):
 
     @property
     def audio(self):
-        """The track's audio
+        """The track's audio.
 
         Returns:
            * np.ndarray - audio signal
            * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -253,7 +249,6 @@ def load_audio(audio_path):
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     if audio_path is None:
         return None
@@ -262,14 +257,13 @@ def load_audio(audio_path):
 
 @io.coerce_to_string_io
 def load_tonic(fhandle):
-    """Load track absolute tonic
+    """Load track absolute tonic.
 
     Args:
         fhandle (str or file-like): Local path where the tonic path is stored.
 
     Returns:
         int: Tonic annotation in Hz
-
     """
     reader = csv.reader(fhandle, delimiter="\t")
     tonic = float(next(reader)[0])
@@ -278,14 +272,13 @@ def load_tonic(fhandle):
 
 @io.coerce_to_string_io
 def load_pitch(fhandle):
-    """Load pitch
+    """Load pitch.
 
     Args:
         fhandle (str or file-like): Local path where the pitch annotation is stored.
 
     Returns:
         F0Data: pitch annotation
-
     """
     times = []
     freqs = []
@@ -306,14 +299,13 @@ def load_pitch(fhandle):
 
 @io.coerce_to_string_io
 def load_nyas_segments(fhandle):
-    """Load nyas segments
+    """Load nyas segments.
 
     Args:
         fhandle (str or file-like): Local path where the nyas segments annotation is stored.
 
     Returns:
         EventData: segment annotation
-
     """
     intervals = []
     events = []
@@ -335,14 +327,13 @@ def load_nyas_segments(fhandle):
 
 @io.coerce_to_string_io
 def load_tani_segments(fhandle):
-    """Load tani segments
+    """Load tani segments.
 
     Args:
         fhandle (str or file-like): Local path where the tani segments annotation is stored.
 
     Returns:
         EventData: segment annotation
-
     """
     intervals = []
     events = []
@@ -364,9 +355,7 @@ def load_tani_segments(fhandle):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The compmusic_raga dataset
-    """
+    """The compmusic_raga dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

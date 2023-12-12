@@ -1,22 +1,22 @@
 # -*- coding: utf-8 -*-
-"""Da-TACOS Dataset Loader
+"""Da-TACOS Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
 
-    Da-TACOS: a dataset for cover song identification and understanding. It contains two subsets, 
-    namely the benchmark subset (for benchmarking cover song identification systems) and the cover 
-    analysis subset (for analyzing the links among cover songs), with pre-extracted features and 
-    metadata for 15,000 and 10,000 songs, respectively. The annotations included in the metadata 
-    are obtained with the API of SecondHandSongs.com. All audio files we use to extract features 
-    are encoded in MP3 format and their sample rate is 44.1 kHz. Da-TACOS does not contain any 
-    audio files. For the results of our analyses on modifiable musical characteristics using the 
-    cover analysis subset and our initial benchmarking of 7 state-of-the-art cover song identification 
+    Da-TACOS: a dataset for cover song identification and understanding. It contains two subsets,
+    namely the benchmark subset (for benchmarking cover song identification systems) and the cover
+    analysis subset (for analyzing the links among cover songs), with pre-extracted features and
+    metadata for 15,000 and 10,000 songs, respectively. The annotations included in the metadata
+    are obtained with the API of SecondHandSongs.com. All audio files we use to extract features
+    are encoded in MP3 format and their sample rate is 44.1 kHz. Da-TACOS does not contain any
+    audio files. For the results of our analyses on modifiable musical characteristics using the
+    cover analysis subset and our initial benchmarking of 7 state-of-the-art cover song identification
     algorithms on the benchmark subset, you can look at our publication.
 
-    For organizing the data, we use the structure of SecondHandSongs where each song is called a 
-    ‘performance’, and each clique (cover group) is called a ‘work’. Based on this, the file names 
-    of the songs are their unique performance IDs (PID, e.g. P_22), and their labels with respect 
+    For organizing the data, we use the structure of SecondHandSongs where each song is called a
+    ‘performance’, and each clique (cover group) is called a ‘work’. Based on this, the file names
+    of the songs are their unique performance IDs (PID, e.g. P_22), and their labels with respect
     to their cliques are their work IDs (WID, e.g. W_14).
 
     Metadata for each song includes:
@@ -93,19 +93,18 @@
             "label": numpy.str_,
             "track_id": numpy.str_
         }
-
 """
 import json
 import os
-from typing import Optional, BinaryIO
+from typing import BinaryIO, Optional
 
-from deprecated.sphinx import deprecated
 import h5py
-from jams import JAMS
 import numpy as np
+from deprecated.sphinx import deprecated
+from jams import JAMS
 from smart_open import open
 
-from mirdata import download_utils, jams_utils, core, io
+from mirdata import core, download_utils, io, jams_utils
 
 LICENSE_INFO = """
 Creative Commons Attribution Non Commercial Share Alike 4.0 International
@@ -204,7 +203,7 @@ INDEXES = {
 
 
 class Track(core.Track):
-    """da_tacos track class
+    """da_tacos track class.
 
     Args:
         track_id (str): track id of the track
@@ -239,7 +238,6 @@ class Track(core.Track):
         madmom (dict): dictionary of madmom analysis features
         mfcc (np.ndarray): mfcc features
         tags (list): list of tags
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -321,11 +319,10 @@ class Track(core.Track):
         return load_tags(self.tags_path)
 
     def to_jams(self) -> JAMS:
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             metadata={
@@ -347,14 +344,13 @@ class Track(core.Track):
 
 @io.coerce_to_bytes_io
 def load_cens(fhandle: BinaryIO):
-    """Load Da-TACOS cens features from a file
+    """Load Da-TACOS cens features from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to chroma-cens file
 
     Returns:
         np.ndarray: cens features
-
     """
     with h5py.File(fhandle, "r") as open_h5_handle:
         return open_h5_handle["chroma_cens"][()]
@@ -362,14 +358,13 @@ def load_cens(fhandle: BinaryIO):
 
 @io.coerce_to_bytes_io
 def load_crema(fhandle: BinaryIO):
-    """Load Da-TACOS crema features from a file
+    """Load Da-TACOS crema features from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to crema file
 
     Returns:
         np.ndarray: crema features
-
     """
     with h5py.File(fhandle, "r") as open_h5_fhandle:
         return open_h5_fhandle["crema"][()]
@@ -377,14 +372,13 @@ def load_crema(fhandle: BinaryIO):
 
 @io.coerce_to_bytes_io
 def load_hpcp(fhandle: BinaryIO):
-    """Load Da-TACOS hpcp features from a file
+    """Load Da-TACOS hpcp features from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to hpcp file
 
     Returns:
         np.ndarray: hpcp features
-
     """
     with h5py.File(fhandle, "r") as open_h5_fhandle:
         return open_h5_fhandle["hpcp"][()]
@@ -420,35 +414,32 @@ def load_key(fhandle: BinaryIO):
 
     Examples:
         {'key': 'C', 'scale': 'major', 'strength': 0.8449875116348267}
-
     """
     return _dict_from_h5py(fhandle, "key_extractor")
 
 
 @io.coerce_to_bytes_io
 def load_madmom(fhandle: BinaryIO):
-    """Load Da-TACOS madmom features from a file
+    """Load Da-TACOS madmom features from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to madmom file
 
     Returns:
         dict: madmom features, with keys 'novfn', 'onsets', 'snovfn', 'tempos
-
     """
     return _dict_from_h5py(fhandle, "madmom_features")
 
 
 @io.coerce_to_bytes_io
 def load_mfcc(fhandle: BinaryIO):
-    """Load Da-TACOS mfcc from a file
+    """Load Da-TACOS mfcc from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to mfcc file
 
     Returns:
         np.ndarray: array of mfccs over time
-
     """
     with h5py.File(fhandle, "r") as open_h5_fhandle:
         return open_h5_fhandle["mfcc_htk"][()]
@@ -456,7 +447,7 @@ def load_mfcc(fhandle: BinaryIO):
 
 @io.coerce_to_bytes_io
 def load_tags(fhandle: BinaryIO):
-    """Load Da-TACOS tags from a file
+    """Load Da-TACOS tags from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to tags file
@@ -466,7 +457,6 @@ def load_tags(fhandle: BinaryIO):
 
     Example:
         [('rock', '0.127'), ('pop', '0.014'), ...]
-
     """
     with h5py.File(fhandle, "r") as open_file:
         return [
@@ -477,9 +467,7 @@ def load_tags(fhandle: BinaryIO):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Da-TACOS dataset
-    """
+    """The Da-TACOS dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -507,9 +495,7 @@ class Dataset(core.Dataset):
                     meta = json.load(f)
             except FileNotFoundError:
                 raise FileNotFoundError(
-                    "Metadata file {} not found. Did you run .download()?".format(
-                        path_subset
-                    )
+                    "Metadata file {} not found. Did you run .download()?".format(path_subset)
                 )
             for work_id in meta.keys():
                 for performance_id in meta[work_id].keys():
@@ -547,14 +533,14 @@ class Dataset(core.Dataset):
         return load_tags(*args, **kwargs)
 
     def filter_index(self, search_key):
-        """Load from Da-TACOS genre dataset the indexes that match with search_key.
+        """Load from Da-TACOS genre dataset the indexes that match with
+        search_key.
 
         Args:
             search_key (str): regex to match with folds, mbid or genres
 
         Returns:
              dict: {`track_id`: track data}
-
         """
         data = {k: v for k, v in self._index["tracks"].items() if search_key in k}
         return data
@@ -564,7 +550,6 @@ class Dataset(core.Dataset):
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("benchmark#")
 
@@ -573,6 +558,5 @@ class Dataset(core.Dataset):
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("coveranalysis#")

@@ -1,4 +1,4 @@
-"""Example Dataset Loader
+"""Example Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -11,7 +11,6 @@
     4. Describe the type of music included in the dataset
     5. Indicate any relevant papers related to the dataset
     6. Include a description about how the data can be accessed and the license it uses (if applicable)
-
 """
 import csv
 import json
@@ -22,9 +21,11 @@ from typing import BinaryIO, Optional, TextIO, Tuple
 # -- example imports you won't use
 import librosa
 import numpy as np
-from smart_open import open  # if you use the open function, make sure you include this line!
+from smart_open import (
+    open,  # if you use the open function, make sure you include this line!
+)
 
-from mirdata import download_utils, jams_utils, core, annotations
+from mirdata import annotations, core, download_utils, jams_utils
 
 # -- Add any relevant citations here
 BIBTEX = """
@@ -54,7 +55,7 @@ INDEXES = {
     "default": "1.0",
     "test": "sample",
     "1.0": core.Index(filename="example_index_1.0.json"),
-    "sample": core.Index(filename="example_index_sample.json")
+    "sample": core.Index(filename="example_index_sample.json"),
 }
 
 # -- REMOTES is a dictionary containing all files that need to be downloaded.
@@ -62,11 +63,11 @@ INDEXES = {
 # -- When having data that can be partially downloaded, remember to set up
 # -- correctly destination_dir to download the files following the correct structure.
 REMOTES = {
-    'remote_data': download_utils.RemoteFileMetadata(
-        filename='a_zip_file.zip',
-        url='http://website/hosting/the/zipfile.zip',
-        checksum='00000000000000000000000000000000',  # -- the md5 checksum
-        destination_dir='path/to/unzip' # -- relative path for where to unzip the data, or None
+    "remote_data": download_utils.RemoteFileMetadata(
+        filename="a_zip_file.zip",
+        url="http://website/hosting/the/zipfile.zip",
+        checksum="00000000000000000000000000000000",  # -- the md5 checksum
+        destination_dir="path/to/unzip",  # -- relative path for where to unzip the data, or None
     ),
 }
 
@@ -102,8 +103,8 @@ class Track(core.Track):
         annotation (EventData): a description of this annotation
 
     """
+
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
-        
         # -- this sets the following attributes:
         # -- * track_id
         # -- * _dataset_name
@@ -117,7 +118,7 @@ class Track(core.Track):
             index=index,
             metadata=metadata,
         )
-        
+
         # -- add any dataset specific attributes here
         self.audio_path = self.get_path("audio")
         self.annotation_path = self.get_path("annotation")
@@ -146,12 +147,11 @@ class Track(core.Track):
     # -- any memory heavy information (like audio) properties
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -172,7 +172,7 @@ class Track(core.Track):
 # -- if the dataset contains multitracks, you can define a MultiTrack similar to a Track
 # -- you can delete the block of code below if the dataset has no multitracks
 class MultiTrack(core.MultiTrack):
-    """Example multitrack class
+    """Example multitrack class.
 
     Args:
         mtrack_id (str): multitrack id
@@ -188,11 +188,9 @@ class MultiTrack(core.MultiTrack):
 
     Cached Properties:
         annotation (EventData): a description of this annotation
-
     """
-    def __init__(
-        self, mtrack_id, data_home, dataset_name, index, track_class, metadata
-    ):
+
+    def __init__(self, mtrack_id, data_home, dataset_name, index, track_class, metadata):
         # -- this sets the following attributes:
         # -- * mtrack_id
         # -- * _dataset_name
@@ -232,12 +230,11 @@ class MultiTrack(core.MultiTrack):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -247,8 +244,7 @@ class MultiTrack(core.MultiTrack):
         """Jams: the track's data in jams format"""
         return jams_utils.jams_converter(
             audio_path=self.mix_path,
-            annotation_data=[(self.annotation, None)],
-            ...
+            chord_data=[(self.annotation, None)],
         )
         # -- see the documentation for `jams_utils.jams_converter for all fields
 
@@ -256,7 +252,7 @@ class MultiTrack(core.MultiTrack):
 # -- this decorator allows this function to take a string or an open bytes file as input
 # -- and in either case converts it to an open file handle.
 # -- It also checks if the file exists
-# -- and, if None is passed, None will be returned 
+# -- and, if None is passed, None will be returned
 @io.coerce_to_bytes_io
 def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     """Load a Example audio file.
@@ -267,7 +263,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the audio signal
         * float - The sample rate of the audio file
-
     """
     # -- for example, the code below. This should be dataset specific!
     # -- By default we load to mono
@@ -277,15 +272,15 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 
 # -- Write any necessary loader functions for loading the dataset's data
 
+
 # -- this decorator allows this function to take a string or an open file as input
 # -- and in either case converts it to an open file handle.
 # -- It also checks if the file exists
-# -- and, if None is passed, None will be returned 
+# -- and, if None is passed, None will be returned
 @io.coerce_to_string_io
 def load_annotation(fhandle: TextIO) -> Optional[annotations.EventData]:
-
     # -- because of the decorator, the file is already open
-    reader = csv.reader(fhandle, delimiter=' ')
+    reader = csv.reader(fhandle, delimiter=" ")
     intervals = []
     annotation = []
     for line in reader:
@@ -295,16 +290,14 @@ def load_annotation(fhandle: TextIO) -> Optional[annotations.EventData]:
     # there are several annotation types in annotations.py
     # They should be initialized with data, followed by their units
     # see annotations.py for a complete list of types and units.
-    annotation_data = annotations.EventData(
-        np.array(intervals), "s", np.array(annotation), "open"
-    )
+    annotation_data = annotations.EventData(np.array(intervals), "s", np.array(annotation), "open")
     return annotation_data
+
 
 # -- use this decorator so the docs are complete
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """The Example dataset
-    """
+    """The Example dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -320,40 +313,36 @@ class Dataset(core.Dataset):
         )
 
     # -- if your dataset has a top-level metadata file, write a loader for it here
-    # -- you do not have to include this function if there is no metadata 
+    # -- you do not have to include this function if there is no metadata
     @core.cached_property
     def _metadata(self):
-        metadata_path = os.path.join(self.data_home, 'example_metadata.csv')
+        metadata_path = os.path.join(self.data_home, "example_metadata.csv")
 
         # load metadata however makes sense for your dataset
-        metadata_path = os.path.join(data_home, 'example_metadata.json')
-        with open(metadata_path, 'r') as fhandle:
+        metadata_path = os.path.join(data_home, "example_metadata.json")
+        with open(metadata_path, "r") as fhandle:
             metadata = json.load(fhandle)
 
         return metadata
 
     # -- if your dataset needs to overwrite the default download logic, do it here.
     # -- this function is usually not necessary unless you need very custom download logic
-    def download(
-        self, partial_download=None, force_overwrite=False, cleanup=False
-    ):
-        """Download the dataset
+    def download(self, partial_download=None, force_overwrite=False, cleanup=False):
+        """Download the dataset.
 
         Args:
             partial_download (list or None):
                 A list of keys of remotes to partially download.
                 If None, all data is downloaded
             force_overwrite (bool):
-                If True, existing files are overwritten by the downloaded files. 
+                If True, existing files are overwritten by the downloaded files.
             cleanup (bool):
                 Whether to delete any zip/tar files after extracting.
 
         Raises:
             ValueError: if invalid keys are passed to partial_download
             IOError: if a downloaded file's checksum is different from expected
-
         """
         # see download_utils.downloader for basic usage - if you only need to call downloader
         # once, you do not need this function at all.
         # only write a custom function if you need it!
-

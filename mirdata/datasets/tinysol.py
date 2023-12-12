@@ -40,16 +40,15 @@
     have access to larger versions of SOL.
 
     For more details, please visit: https://www.orch-idea.org/
-
 """
 
 import csv
 import os
 from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import core, download_utils, io, jams_utils
@@ -90,7 +89,7 @@ LICENSE_INFO = "Creative Commons Attribution 4.0 International Public License."
 
 
 class Track(core.Track):
-    """tinysol Track class
+    """Tinysol Track class.
 
     Args:
         track_id (str): track id of the track
@@ -111,7 +110,6 @@ class Track(core.Track):
         technique_abbr (str): playing technique abbreviation
         technique_full (str): playing technique encoded by its English name
         track_id (str): track id
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -173,25 +171,21 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
-        return jams_utils.jams_converter(
-            audio_path=self.audio_path, metadata=self._track_metadata
-        )
+        return jams_utils.jams_converter(audio_path=self.audio_path, metadata=self._track_metadata)
 
 
 @io.coerce_to_bytes_io
@@ -204,16 +198,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The tinysol dataset
-    """
+    """The tinysol dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -229,9 +220,7 @@ class Dataset(core.Dataset):
 
     @core.cached_property
     def _metadata(self):
-        metadata_path = os.path.join(
-            self.data_home, "annotation", "TinySOL_metadata.csv"
-        )
+        metadata_path = os.path.join(self.data_home, "annotation", "TinySOL_metadata.csv")
 
         metadata_index = {}
         try:

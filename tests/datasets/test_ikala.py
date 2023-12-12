@@ -1,9 +1,10 @@
-import os
 import math
+import os
+
 import numpy as np
 
-from mirdata.datasets import ikala
 from mirdata import annotations
+from mirdata.datasets import ikala
 from tests.test_utils import run_track_tests
 
 
@@ -101,9 +102,7 @@ def test_to_jams():
         assert "frequency" in f0.value
         assert "index" in f0.value
         assert "voiced" in f0.value
-        assert math.isclose(
-            f0.value["frequency"], expected_f0s[i]["frequency"], rel_tol=1e-12
-        )
+        assert math.isclose(f0.value["frequency"], expected_f0s[i]["frequency"], rel_tol=1e-12)
         assert f0.value["index"] == expected_f0s[i]["index"]
         assert f0.value["voiced"] == expected_f0s[i]["voiced"]
     assert [f0.confidence for f0 in f0s] == [None, None]
@@ -129,7 +128,9 @@ def test_load_f0():
 
 
 def test_load_notes():
-    notes_path = "tests/resources/mir_datasets/ikala/ikala-pyin-notes/10161_chorus_vamp_pyin_pyin_notes.csv"
+    notes_path = (
+        "tests/resources/mir_datasets/ikala/ikala-pyin-notes/10161_chorus_vamp_pyin_pyin_notes.csv"
+    )
     note_data = ikala.load_notes(notes_path)
 
     # check types
@@ -159,12 +160,8 @@ def test_load_lyrics():
     assert np.array_equal(lyrics_data_simple.intervals[:, 0], np.array([0.027, 0.232]))
     assert np.array_equal(lyrics_data_simple.intervals[:, 1], np.array([0.232, 0.968]))
     assert np.array_equal(lyrics_data_simple.lyrics, ["JUST", "WANNA"])
-    assert np.array_equal(
-        pronunciation_data_simple.intervals[:, 0], np.array([0.027, 0.232])
-    )
-    assert np.array_equal(
-        pronunciation_data_simple.intervals[:, 1], np.array([0.232, 0.968])
-    )
+    assert np.array_equal(pronunciation_data_simple.intervals[:, 0], np.array([0.027, 0.232]))
+    assert np.array_equal(pronunciation_data_simple.intervals[:, 1], np.array([0.232, 0.968]))
     assert np.array_equal(pronunciation_data_simple.lyrics, ["", ""])
 
     # load a file with pronunciations

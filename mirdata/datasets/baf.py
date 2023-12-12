@@ -1,5 +1,4 @@
-"""
-BAF Loader
+"""BAF Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -112,16 +111,13 @@ BAF Loader
 """
 import os
 from string import Template
-from typing import Tuple, Optional
+from typing import Optional, Tuple
 
 import librosa
 import numpy as np
 import pandas as pd
 
-from mirdata import annotations
-from mirdata import core
-from mirdata import jams_utils
-
+from mirdata import annotations, core, jams_utils
 
 BIBTEX = """@inproceedings{cortes2022BAF,
   author       = {Guillem Cortès and
@@ -200,15 +196,14 @@ FILENOTFOUND_MSG = Template(
 @core.docstring_inherit(annotations.EventData)
 class EventDataExtended(annotations.EventData):
     """EventDataExtended class. Inherits from annotations.EventData class. An
-    event is defined here as a match query-reference, and the time interval
-    in the query. This class adds the possibility to attach tags to each
-    event, useful if there's a need to differenciate them. In BAF, tags are
-    [single, majority, unanimity].
+    event is defined here as a match query-reference, and the time interval in
+    the query. This class adds the possibility to attach tags to each event,
+    useful if there's a need to differenciate them. In BAF, tags are [single,
+    majority, unanimity].
 
     Attributes:
         tags (list): list of tag labels (as strings)
         tag_unit (str): tag units, one of TAG_UNITS
-
     """
 
     def __init__(self, intervals, interval_unit, events, event_unit, tags, tag_unit):
@@ -283,12 +278,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Tuple[np.ndarray, float]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -297,11 +291,10 @@ class Track(core.Track):
         return load_matches(self._track_metadata)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -319,7 +312,6 @@ def load_audio(fpath: str) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fpath, sr=8000, mono=True)
 
@@ -341,9 +333,7 @@ def load_matches(track_metadata: dict) -> Optional[EventDataExtended]:
         return None
     else:
         for ann in track_metadata["annotations"]:
-            intervals_list.append(
-                [round(ann["query_start"], 3), round(ann["query_end"], 3)]
-            )
+            intervals_list.append([round(ann["query_start"], 3), round(ann["query_end"], 3)])
             events.append(ann["reference"])
             tags.append(ann["tag"])
         intervals = np.array(
@@ -363,17 +353,13 @@ def csv_to_pandas(file_path: str) -> pd.DataFrame:
     try:
         df = pd.read_csv(file_path)
     except FileNotFoundError as not_found:
-        raise FileNotFoundError(
-            FILENOTFOUND_MSG.safe_substitute(fname=not_found.filename)
-        )
+        raise FileNotFoundError(FILENOTFOUND_MSG.safe_substitute(fname=not_found.filename))
     return df
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The BAF dataset
-    """
+    """The BAF dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -390,7 +376,7 @@ class Dataset(core.Dataset):
 
     @core.cached_property
     def _metadata(self):
-        """Ingest dataset metadata"""
+        """Ingest dataset metadata."""
         metadata_path = os.path.join(self.data_home, "queries_info.csv")
         xannotations_path = os.path.join(self.data_home, "cross_annotations.csv")
         metadata_df = csv_to_pandas(metadata_path)

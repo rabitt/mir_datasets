@@ -1,4 +1,5 @@
 import os
+
 import numpy as np
 
 from mirdata.datasets import beatport_key
@@ -40,9 +41,7 @@ def test_track():
 
     audio, sr = track.audio
     assert sr == 44100, "sample rate {} is not 44100".format(sr)
-    assert audio.shape == (88200,), "audio shape {} was not (88200,)".format(
-        audio.shape
-    )
+    assert audio.shape == (88200,), "audio shape {} was not (88200,)".format(audio.shape)
 
 
 def test_to_jams():
@@ -95,14 +94,10 @@ def test_load_meta():
 
 
 def test_find_replace():
-    with open(
-        "tests/resources/mir_datasets/beatport_key/find_replace.json", "w"
-    ) as the_file:
+    with open("tests/resources/mir_datasets/beatport_key/find_replace.json", "w") as the_file:
         the_file.write('{"probando": nan}')
     dataset = beatport_key.Dataset()
-    dataset._find_replace(
-        "tests/resources/mir_datasets/beatport_key", ": nan", ": null", "*.json"
-    )
+    dataset._find_replace("tests/resources/mir_datasets/beatport_key", ": nan", ": null", "*.json")
     f = open("tests/resources/mir_datasets/beatport_key/find_replace.json", "r")
     content = f.read()
     assert content == '{"probando": null}'

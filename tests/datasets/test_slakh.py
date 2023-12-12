@@ -1,9 +1,10 @@
 import os
+
 import pretty_midi
 
 from mirdata import annotations
 from mirdata.datasets import slakh
-from tests.test_utils import run_track_tests, run_multitrack_tests
+from tests.test_utils import run_multitrack_tests, run_track_tests
 
 
 def test_track():
@@ -150,10 +151,10 @@ def test_track_full():
 def test_load_tracks():
     # this test catches a bug we had when initializing tracks with no audio!
     dataset = slakh.Dataset(version="test")
-    track_splits = [track.data_split for track in dataset.load_tracks().values()]
+    [track.data_split for track in dataset.load_tracks().values()]
 
     dataset = slakh.Dataset(version="2100-redux")
-    track_splits = [track.data_split for track in dataset.load_tracks().values()]
+    [track.data_split for track in dataset.load_tracks().values()]
 
 
 def test_to_jams():

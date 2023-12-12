@@ -1,5 +1,4 @@
-"""Core mirdata classes
-"""
+"""Core mirdata classes."""
 import json
 import os
 import random
@@ -9,8 +8,7 @@ from typing import Any, List, Optional
 import numpy as np
 from smart_open import open
 
-from mirdata import download_utils
-from mirdata import validate
+from mirdata import download_utils, validate
 
 MAX_STR_LEN = 100
 DOCS_URL = "https://mirdata.readthedocs.io/en/stable/source/mirdata.html"
@@ -27,13 +25,12 @@ and respect the dataset's license.
 
 
 class cached_property(object):
-    """Cached propery decorator
+    """Cached propery decorator.
 
     A property that is only computed once per instance and then replaces
     itself with an ordinary attribute. Deleting the attribute resets the
     property.
     Source: https://github.com/bottlepy/bottle/commit/fa7733e075da0d790d809aa3d2f53071897e6f76
-
     """
 
     def __init__(self, func):
@@ -51,7 +48,6 @@ def docstring_inherit(parent):
     """Decorator function to inherit docstrings from the parent class.
 
     Adds documented Attributes from the parent to the child docs.
-
     """
 
     def inherit(obj):
@@ -71,7 +67,7 @@ def docstring_inherit(parent):
 
 
 class Dataset(object):
-    """mirdata Dataset class
+    """Mirdata Dataset class.
 
     Attributes:
         data_home (str): path where mirdata will look for the dataset
@@ -83,7 +79,6 @@ class Dataset(object):
         readme (str): information about the dataset
         track (function): a function mapping a track_id to a mirdata.core.Track
         multitrack (function): a function mapping a mtrack_id to a mirdata.core.Multitrack
-
     """
 
     def __init__(
@@ -99,7 +94,7 @@ class Dataset(object):
         download_info=None,
         license_info=None,
     ):
-        """Dataset init method
+        """Dataset init method.
 
         Args:
             data_home (str or None): path where mirdata will look for the dataset
@@ -110,7 +105,6 @@ class Dataset(object):
             remotes (dict or None): data to be downloaded
             download_info (str or None): download instructions or caveats
             license_info (str or None): license of the dataset
-
         """
         self.name = name
         self.data_home = self.default_path if data_home is None else data_home
@@ -183,11 +177,10 @@ class Dataset(object):
 
     @property
     def default_path(self):
-        """Get the default path for the dataset
+        """Get the default path for the dataset.
 
         Returns:
             str: Local path to the dataset
-
         """
         mir_datasets_dir = os.path.join(os.getenv("HOME", "/tmp"), "mir_datasets")
         return os.path.join(mir_datasets_dir, self.name)
@@ -202,7 +195,6 @@ class Dataset(object):
 
         Returns:
            Track: a Track object
-
         """
         if self._track_class is None:
             raise AttributeError("This dataset does not have tracks")
@@ -221,7 +213,6 @@ class Dataset(object):
 
         Returns:
             MultiTrack: an instance of this dataset's MultiTrack object
-
         """
         if self._multitrack_class is None:
             raise AttributeError("This dataset does not have multitracks")
@@ -236,7 +227,7 @@ class Dataset(object):
             )
 
     def load_tracks(self):
-        """Load all tracks in the dataset
+        """Load all tracks in the dataset.
 
         Returns:
             dict:
@@ -244,12 +235,11 @@ class Dataset(object):
 
         Raises:
             NotImplementedError: If the dataset does not support Tracks
-
         """
         return {track_id: self.track(track_id) for track_id in self.track_ids}
 
     def load_multitracks(self):
-        """Load all multitracks in the dataset
+        """Load all multitracks in the dataset.
 
         Returns:
             dict:
@@ -257,25 +247,22 @@ class Dataset(object):
 
         Raises:
             NotImplementedError: If the dataset does not support Multitracks
-
         """
         return {mtrack_id: self.multitrack(mtrack_id) for mtrack_id in self.mtrack_ids}
 
     def choice_track(self):
-        """Choose a random track
+        """Choose a random track.
 
         Returns:
             Track: a Track object instantiated by a random track_id
-
         """
         return self.track(random.choice(self.track_ids))
 
     def choice_multitrack(self):
-        """Choose a random multitrack
+        """Choose a random multitrack.
 
         Returns:
             Multitrack: a Multitrack object instantiated by a random mtrack_id
-
         """
         return self.multitrack(random.choice(self.mtrack_ids))
 
@@ -291,9 +278,7 @@ class Dataset(object):
         """
         if not np.isclose(np.sum(splits), 1):
             raise ValueError(
-                "Splits values should sum up to 1. Given {} sums {}".format(
-                    splits, np.sum(splits)
-                )
+                "Splits values should sum up to 1. Given {} sums {}".format(splits, np.sum(splits))
             )
 
         if partition_names and len(partition_names) != len(splits):
@@ -316,8 +301,8 @@ class Dataset(object):
         }
 
     def get_track_splits(self):
-        """Get predetermined track splits (e.g. train/ test)
-        released alongside this dataset
+        """Get predetermined track splits (e.g. train/ test) released alongside
+        this dataset.
 
         Raises:
             AttributeError: If this dataset does not have tracks
@@ -345,7 +330,7 @@ class Dataset(object):
         return splits
 
     def get_random_track_splits(self, splits, seed=42, split_names=None):
-        """Split the tracks into partitions e.g. training, validation, test
+        """Split the tracks into partitions e.g. training, validation, test.
 
         Args:
             splits (list of float): a list of floats that should sum up 1. It will return as many splits as elements in the list
@@ -361,8 +346,8 @@ class Dataset(object):
         return self._get_partitions(self.track_ids, splits, seed, split_names)
 
     def get_mtrack_splits(self):
-        """Get predetermined multitrack splits (e.g. train/ test)
-        released alongside this dataset.
+        """Get predetermined multitrack splits (e.g. train/ test) released
+        alongside this dataset.
 
         Raises:
             AttributeError: If this dataset does not have multitracks
@@ -391,7 +376,8 @@ class Dataset(object):
         return splits
 
     def get_random_mtrack_splits(self, splits, seed=42, split_names=None):
-        """Split the multitracks into partitions, e.g. training, validation, test
+        """Split the multitracks into partitions, e.g. training, validation,
+        test.
 
         Args:
             splits (list of float): a list of floats that should sum up 1. It will return as many splits as elements in the list
@@ -408,16 +394,12 @@ class Dataset(object):
         return self._get_partitions(self.mtrack_ids, splits, seed)
 
     def cite(self):
-        """
-        Print the reference
-        """
+        """Print the reference."""
         print("========== BibTeX ==========")
         print(self.bibtex)
 
     def license(self):
-        """
-        Print the license
-        """
+        """Print the license."""
         print("========== License ==========")
         print(self._license_info)
         print(DISCLAIMER)
@@ -447,7 +429,6 @@ class Dataset(object):
         Raises:
             ValueError: if invalid keys are passed to partial_download
             IOError: if a downloaded file's checksum is different from expected
-
         """
         download_utils.downloader(
             self.data_home,
@@ -462,11 +443,10 @@ class Dataset(object):
 
     @cached_property
     def track_ids(self):
-        """Return track ids
+        """Return track ids.
 
         Returns:
             list: A list of track ids
-
         """
         if "tracks" not in self._index:
             raise AttributeError("This dataset does not have tracks")
@@ -474,18 +454,17 @@ class Dataset(object):
 
     @cached_property
     def mtrack_ids(self):
-        """Return track ids
+        """Return track ids.
 
         Returns:
             list: A list of track ids
-
         """
         if "multitracks" not in self._index:
             raise AttributeError("This dataset does not have multitracks")
         return list(self._index["multitracks"].keys())
 
     def validate(self, verbose=True):
-        """Validate if the stored dataset is a valid version
+        """Validate if the stored dataset is a valid version.
 
         Args:
             verbose (bool): If False, don't print output
@@ -493,7 +472,6 @@ class Dataset(object):
         Returns:
             * list - files in the index but are missing locally
             * list - files which have an invalid checksum
-
         """
         missing_files, invalid_checksums = validate.validator(
             self._index, self.data_home, verbose=verbose
@@ -502,10 +480,9 @@ class Dataset(object):
 
 
 class Track(object):
-    """Track base class
+    """Track base class.
 
     See the docs for each dataset loader's Track class for details
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -523,12 +500,9 @@ class Track(object):
             dataset_name (str): the identifier of the dataset
             index (dict): the dataset's file index
             metadata (function or None): a function returning a dictionary of metadata or None
-
         """
         if track_id not in index["tracks"]:
-            raise ValueError(
-                "{} is not a valid track_id in {}".format(track_id, dataset_name)
-            )
+            raise ValueError("{} is not a valid track_id in {}".format(track_id, dataset_name))
         self._metadata = metadata
         self.track_id = track_id
         self._dataset_name = dataset_name
@@ -547,9 +521,7 @@ class Track(object):
 
     def __repr__(self):
         properties = [v for v in dir(self.__class__) if not v.startswith("_")]
-        attributes = [
-            v for v in dir(self) if not v.startswith("_") and v not in properties
-        ]
+        attributes = [v for v in dir(self) if not v.startswith("_") and v not in properties]
 
         repr_str = "Track(\n"
 
@@ -582,14 +554,13 @@ class Track(object):
 
     def get_path(self, key):
         """Get absolute path to track audio and annotations. Returns None if
-        the path in the index is None
+        the path in the index is None.
 
         Args:
             key (string): Index key of the audio or annotation type
 
         Returns:
             str or None: joined path string or None
-
         """
         if self._track_paths[key][0] is None:
             return None
@@ -600,16 +571,13 @@ class Track(object):
 class MultiTrack(Track):
     """MultiTrack class.
 
-    A multitrack class is a collection of track objects and their associated audio
-    that can be mixed together.
-    A multitrack is itself a Track, and can have its own associated audio (such as
-    a mastered mix), its own metadata and its own annotations.
-
+    A multitrack class is a collection of track objects and their
+    associated audio that can be mixed together. A multitrack is itself
+    a Track, and can have its own associated audio (such as a mastered
+    mix), its own metadata and its own annotations.
     """
 
-    def __init__(
-        self, mtrack_id, data_home, dataset_name, index, track_class, metadata
-    ):
+    def __init__(self, mtrack_id, data_home, dataset_name, index, track_class, metadata):
         """Multitrack init method. Sets boilerplate attributes, including:
 
         - ``mtrack_id``
@@ -624,12 +592,9 @@ class MultiTrack(Track):
             dataset_name (str): the identifier of the dataset
             index (dict): the dataset's file index
             metadata (function or None): a function returning a dictionary of metadata or None
-
         """
         if mtrack_id not in index["multitracks"]:
-            raise ValueError(
-                "{} is not a valid mtrack_id in {}".format(mtrack_id, dataset_name)
-            )
+            raise ValueError("{} is not a valid mtrack_id in {}".format(mtrack_id, dataset_name))
 
         self.mtrack_id = mtrack_id
         self._dataset_name = dataset_name
@@ -665,15 +630,14 @@ class MultiTrack(Track):
         raise AttributeError("This MultiTrack does not have metadata")
 
     def get_path(self, key):
-        """Get absolute path to multitrack audio and annotations. Returns None if
-        the path in the index is None
+        """Get absolute path to multitrack audio and annotations. Returns None
+        if the path in the index is None.
 
         Args:
             key (string): Index key of the audio or annotation type
 
         Returns:
             str or None: joined path string or None
-
         """
         if self._multitrack_paths[key][0] is None:
             return None
@@ -681,7 +645,7 @@ class MultiTrack(Track):
             return os.path.join(self._data_home, self._multitrack_paths[key][0])
 
     def get_target(self, track_keys, weights=None, average=True, enforce_length=True):
-        """Get target which is a linear mixture of tracks
+        """Get target which is a linear mixture of tracks.
 
         Args:
             track_keys (list): list of track keys to mix together
@@ -699,7 +663,6 @@ class MultiTrack(Track):
             ValueError:
                 if sample rates of the tracks are not equal
                 if enforce_length=True and lengths are not equal
-
         """
         signals = []
         lengths = []
@@ -715,9 +678,7 @@ class MultiTrack(Track):
 
         if len(set(sample_rates)) > 1:
             raise ValueError(
-                "Sample rates for tracks {} are not equal: {}".format(
-                    track_keys, sample_rates
-                )
+                "Sample rates for tracks {} are not equal: {}".format(track_keys, sample_rates)
             )
 
         max_length = np.max(lengths)
@@ -744,7 +705,8 @@ class MultiTrack(Track):
         return target
 
     def get_random_target(self, n_tracks=None, min_weight=0.3, max_weight=1.0):
-        """Get a random target by combining a random selection of tracks with random weights
+        """Get a random target by combining a random selection of tracks with
+        random weights.
 
         Args:
             n_tracks (int or None): number of tracks to randomly mix. If None, uses all tracks
@@ -755,7 +717,6 @@ class MultiTrack(Track):
             * np.ndarray - mixture audio with shape (n_samples, n_channels)
             * list - list of keys of included tracks
             * list - list of weights used to mix tracks
-
         """
         tracks = list(self.tracks.keys())
         assert len(tracks) > 0
@@ -774,7 +735,6 @@ class MultiTrack(Track):
 
         Returns:
             np.ndarray: mixture audio with shape (n_samples, n_channels)
-
         """
         tracks = list(self.tracks.keys())
         assert len(tracks) > 0
@@ -796,7 +756,6 @@ class Index(object):
         remote (download_utils.RemoteFileMetadata or None): None if index is not remote, or
             a RemoteFileMetadata object
         partial_download (list or None): a list of keys to partially download, or None
-
     """
 
     def __init__(
@@ -816,16 +775,14 @@ class Index(object):
                 destination_dir="mirdata_indexes",
             )
         elif url or checksum:
-            raise ValueError(
-                "Remote indexes must have both a url and a checksum specified."
-            )
+            raise ValueError("Remote indexes must have both a url and a checksum specified.")
         else:
             self.remote = None
 
         self.partial_download = partial_download
 
     def get_path(self, data_home: str) -> str:
-        """Get the absolute path to the index file
+        """Get the absolute path to the index file.
 
         Args:
             data_home (str): Path where the dataset's data lives

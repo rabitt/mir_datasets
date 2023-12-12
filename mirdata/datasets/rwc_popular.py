@@ -1,4 +1,4 @@
-"""RWC Popular Dataset Loader
+"""RWC Popular Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -10,25 +10,24 @@
     the 1990s.
 
     For more details, please visit: https://staff.aist.go.jp/m.goto/RWC-MDB/rwc-mdb-p.html
-
 """
 import csv
 import os
 from typing import Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
 
 # these functions are identical for all rwc datasets
 from mirdata.datasets.rwc_classical import (
+    LICENSE_INFO,
+    _duration_to_sec,
+    load_audio,
     load_beats,
     load_sections,
-    load_audio,
-    _duration_to_sec,
-    LICENSE_INFO,
 )
 
 BIBTEX = """@inproceedings{goto2002rwc,
@@ -108,7 +107,7 @@ DOWNLOAD_INFO = """
 
 
 class Track(core.Track):
-    """rwc_popular Track class
+    """rwc_popular Track class.
 
     Args:
         track_id (str): track id of the track
@@ -137,7 +136,6 @@ class Track(core.Track):
         beats (BeatData): human-labeled beat annotation
         chords (ChordData): human-labeled chord annotation
         vocal_instrument_activity (EventData): human-labeled vocal/instrument activity
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -208,21 +206,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -235,14 +231,13 @@ class Track(core.Track):
 
 @io.coerce_to_string_io
 def load_chords(fhandle: TextIO) -> annotations.ChordData:
-    """Load rwc chord data from a file
+    """Load rwc chord data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to chord annotation file
 
     Returns:
         ChordData: chord data
-
     """
     begs = []  # timestamps of chord beginnings
     ends = []  # timestamps of chord endings
@@ -259,14 +254,13 @@ def load_chords(fhandle: TextIO) -> annotations.ChordData:
 
 @io.coerce_to_string_io
 def load_vocal_activity(fhandle: TextIO) -> annotations.EventData:
-    """Load rwc vocal activity data from a file
+    """Load rwc vocal activity data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to vocal activity annotation file
 
     Returns:
         EventData: vocal activity data
-
     """
     begs = []  # timestamps of vocal-instrument activity beginnings
     ends = []  # timestamps of vocal-instrument activity endings
@@ -290,9 +284,7 @@ def load_vocal_activity(fhandle: TextIO) -> annotations.EventData:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The rwc_popular dataset
-    """
+    """The rwc_popular dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -349,9 +341,7 @@ class Dataset(core.Dataset):
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.rwc_popular.load_sections", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.rwc_popular.load_sections", version="0.3.4")
     def load_sections(self, *args, **kwargs):
         return load_sections(*args, **kwargs)
 
@@ -363,8 +353,6 @@ class Dataset(core.Dataset):
     def load_chords(self, *args, **kwargs):
         return load_chords(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.rwc_popular.load_vocal_activity", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.rwc_popular.load_vocal_activity", version="0.3.4")
     def load_vocal_activity(self, *args, **kwargs):
         return load_vocal_activity(*args, **kwargs)

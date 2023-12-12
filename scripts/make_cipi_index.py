@@ -1,16 +1,12 @@
 import argparse
 import json
-import os
-import sys
+
 from mirdata.validate import md5
 
 
 def make_cipi_indexes(args):
     version = args.full_version
-    cipi_index = {
-        "version": version,
-        "tracks": {}
-    }
+    cipi_index = {"version": version, "tracks": {}}
     # load json /home/mir_datasets/cipi/index.json
     data = json.load(open(args.path + "/index.json", "r"))
     for k, track in data.items():
@@ -35,7 +31,6 @@ def make_cipi_indexes(args):
             f"k/{k}.pt",
             md5(args.path + f"/k/{k}.pt"),
         ]
-
 
     # save json ../mirdata/datasets/indexes/cipi_index.json
     with open(f"../mirdata/datasets/indexes/cipi_index_{version}.json", "w") as fhandle:

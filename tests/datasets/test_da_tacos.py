@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import pytest
+
 import numpy as np
+import pytest
 
 from mirdata.datasets import da_tacos
 from tests.test_utils import run_track_tests
@@ -148,7 +149,7 @@ def test_load_metadata_not_there():
     data_home = "asdf/asdf/mir_datasets/da_tacos"
     dataset = da_tacos.Dataset(data_home)
     with pytest.raises(FileNotFoundError):
-        metadata = dataset._metadata
+        dataset._metadata
 
 
 def test_filters():

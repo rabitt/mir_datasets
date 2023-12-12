@@ -1,5 +1,7 @@
 import os
+
 import numpy as np
+
 from mirdata import annotations
 from mirdata.datasets import egfxset
 from tests.test_utils import run_track_tests

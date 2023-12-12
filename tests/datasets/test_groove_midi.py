@@ -1,9 +1,10 @@
 import os
-import pretty_midi
 import shutil
 
-from mirdata.datasets import groove_midi
+import pretty_midi
+
 from mirdata import annotations, download_utils
+from mirdata.datasets import groove_midi
 from tests.test_utils import run_track_tests
 
 
@@ -97,9 +98,7 @@ def test_download(httpserver):
     if os.path.exists(data_home):
         shutil.rmtree(data_home)
 
-    httpserver.serve_content(
-        open("tests/resources/download/groove-v1-0.0.zip", "rb").read()
-    )
+    httpserver.serve_content(open("tests/resources/download/groove-v1-0.0.zip", "rb").read())
 
     remotes = {
         "all": download_utils.RemoteFileMetadata(

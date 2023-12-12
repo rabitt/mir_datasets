@@ -1,10 +1,11 @@
 import os
+
 import numpy as np
 import pytest
 
-from mirdata.datasets import dagstuhl_choirset
 from mirdata import annotations
-from tests.test_utils import run_track_tests, run_multitrack_tests
+from mirdata.datasets import dagstuhl_choirset
+from tests.test_utils import run_multitrack_tests, run_track_tests
 
 
 def test_track():
@@ -150,9 +151,7 @@ def test_load_f0():
         f0.times,
         np.array([0.400544218, 0.406349206, 0.412154195, 0.417959184, 0.423764172]),
     )
-    assert np.array_equal(
-        f0.frequencies, np.array([129.387, 126.634, 125.182, 124.943, 124.491])
-    )
+    assert np.array_equal(f0.frequencies, np.array([129.387, 126.634, 125.182, 124.943, 124.491]))
     assert np.array_equal(f0.voicing, np.array([1, 1, 1, 1, 1]))
 
 
@@ -176,9 +175,7 @@ def test_load_score():
 
     assert np.allclose(
         score.pitches,
-        np.array(
-            [130.81278265, 130.81278265, 130.81278265, 130.81278265, 130.81278265]
-        ),
+        np.array([130.81278265, 130.81278265, 130.81278265, 130.81278265, 130.81278265]),
     )
     assert score.confidence is None
 

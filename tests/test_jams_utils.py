@@ -1,8 +1,8 @@
+import jams
 import numpy as np
 import pytest
-import jams
 
-from mirdata import jams_utils, annotations
+from mirdata import annotations, jams_utils
 
 
 def get_jam_data(jam, namespace, annot_numb):
@@ -21,31 +21,23 @@ def get_jam_data(jam, namespace, annot_numb):
 def test_beats():
     beat_data_1 = [
         (
-            annotations.BeatData(
-                np.array([0.2, 0.3]), "s", np.array([1, 2]), "bar_index"
-            ),
+            annotations.BeatData(np.array([0.2, 0.3]), "s", np.array([1, 2]), "bar_index"),
             None,
         )
     ]
     beat_data_2 = [
         (
-            annotations.BeatData(
-                np.array([0.5, 0.7]), "s", np.array([2, 3]), "bar_index"
-            ),
+            annotations.BeatData(np.array([0.5, 0.7]), "s", np.array([2, 3]), "bar_index"),
             "beats_2",
         )
     ]
     beat_data_3 = [
         (
-            annotations.BeatData(
-                np.array([0.0, 0.3]), "s", np.array([1, 2]), "bar_index"
-            ),
+            annotations.BeatData(np.array([0.0, 0.3]), "s", np.array([1, 2]), "bar_index"),
             "beats_1",
         ),
         (
-            annotations.BeatData(
-                np.array([0.5, 0.8]), "s", np.array([4, 3]), "bar_index"
-            ),
+            annotations.BeatData(np.array([0.5, 0.8]), "s", np.array([4, 3]), "bar_index"),
             "beats_2",
         ),
     ]
@@ -55,15 +47,11 @@ def test_beats():
     )
     beat_data_5 = [
         (
-            annotations.BeatData(
-                np.array([0.0, 0.3]), "s", np.array([1, 2]), "bar_index"
-            ),
+            annotations.BeatData(np.array([0.0, 0.3]), "s", np.array([1, 2]), "bar_index"),
             "beats_1",
         ),
         [
-            annotations.BeatData(
-                np.array([0.5, 0.8]), "s", np.array([4, 3]), "bar_index"
-            ),
+            annotations.BeatData(np.array([0.5, 0.8]), "s", np.array([4, 3]), "bar_index"),
             "beats_2",
         ],
     ]
@@ -79,9 +67,7 @@ def test_beats():
             None,
         )
     ]
-    beat_data_8 = [
-        (annotations.BeatData(np.array([0.2, 0.3]), "s", None, "bar_index"), None)
-    ]
+    beat_data_8 = [(annotations.BeatData(np.array([0.2, 0.3]), "s", None, "bar_index"), None)]
 
     jam_1 = jams_utils.jams_converter(beat_data=beat_data_1)
     jam_2 = jams_utils.jams_converter(beat_data=beat_data_2)
@@ -741,10 +727,7 @@ def test_multi_sections():
     ]
     assert confidence == [None, None, None, None, None, None]
 
-    assert (
-        jam_2.annotations[0]["annotation_metadata"]["annotator"]["name"]
-        == "annotator_1"
-    )
+    assert jam_2.annotations[0]["annotation_metadata"]["annotator"]["name"] == "annotator_1"
 
     time, duration, value, confidence = get_jam_data(jam_3, "multi_segment", 0)
     assert time == [0.0, 0.0, 10.0, 15.0, 20.0, 20.0]
@@ -1154,17 +1137,11 @@ def test_tags():
     tag_data4 = ("jazz", "wrong format")
     tag_data5 = ["wrong format too"]
     tag_data6 = [(123, "asdf")]
-    jam1 = jams_utils.jams_converter(
-        tags_gtzan_data=tag_data1, metadata={"duration": 10.0}
-    )
+    jam1 = jams_utils.jams_converter(tags_gtzan_data=tag_data1, metadata={"duration": 10.0})
     assert jam1.validate()
-    jam2 = jams_utils.jams_converter(
-        tags_gtzan_data=tag_data2, metadata={"duration": 10.0}
-    )
+    jam2 = jams_utils.jams_converter(tags_gtzan_data=tag_data2, metadata={"duration": 10.0})
     assert jam2.validate()
-    jam3 = jams_utils.jams_converter(
-        tags_gtzan_data=tag_data3, metadata={"duration": 10.0}
-    )
+    jam3 = jams_utils.jams_converter(tags_gtzan_data=tag_data3, metadata={"duration": 10.0})
     with pytest.raises(jams.SchemaError):
         assert jam3.validate()
     with pytest.raises(TypeError):
@@ -1182,17 +1159,11 @@ def test_tempos():
     tempo_data4 = (120.5, "wrong format")
     tempo_data5 = ["wrong format too"]
     tempo_data6 = [("string!", "string!")]
-    jam1 = jams_utils.jams_converter(
-        tempo_data=tempo_data1, metadata={"duration": 10.0}
-    )
+    jam1 = jams_utils.jams_converter(tempo_data=tempo_data1, metadata={"duration": 10.0})
     assert jam1.validate()
-    jam2 = jams_utils.jams_converter(
-        tempo_data=tempo_data2, metadata={"duration": 10.0}
-    )
+    jam2 = jams_utils.jams_converter(tempo_data=tempo_data2, metadata={"duration": 10.0})
     assert jam2.validate()
-    jam3 = jams_utils.jams_converter(
-        tempo_data=tempo_data3, metadata={"duration": 10.0}
-    )
+    jam3 = jams_utils.jams_converter(tempo_data=tempo_data3, metadata={"duration": 10.0})
     with pytest.raises(jams.SchemaError):
         assert jam3.validate()
     with pytest.raises(TypeError):
@@ -1240,17 +1211,11 @@ def test_events():
     event_data4 = ("jazz", "wrong format")
     event_data5 = ["wrong format too"]
     event_data6 = [("wrong", "description")]
-    jam1 = jams_utils.jams_converter(
-        event_data=event_data1, metadata={"duration": 10.0}
-    )
+    jam1 = jams_utils.jams_converter(event_data=event_data1, metadata={"duration": 10.0})
     assert jam1.validate()
-    jam2 = jams_utils.jams_converter(
-        event_data=event_data2, metadata={"duration": 10.0}
-    )
+    jam2 = jams_utils.jams_converter(event_data=event_data2, metadata={"duration": 10.0})
 
-    jam3 = jams_utils.jams_converter(
-        event_data=event_data3, metadata={"duration": 10.0}
-    )
+    jam3 = jams_utils.jams_converter(event_data=event_data3, metadata={"duration": 10.0})
 
     with pytest.raises(TypeError):
         jams_utils.jams_converter(event_data=event_data4)

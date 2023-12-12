@@ -1,21 +1,20 @@
-"""Candombe Dataset Loader
+"""Candombe Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
 
-    This is a dataset of Candombe recordings with annotated beats and downbeats, totaling over 2 hours of audio. 
-    It comprises 35 complete performances by renowned players, in groups of three to five drums. 
+    This is a dataset of Candombe recordings with annotated beats and downbeats, totaling over 2 hours of audio.
+    It comprises 35 complete performances by renowned players, in groups of three to five drums.
     Recording sessions were conducted in studio, in the context of musicological research over the past two decades.
     A total of 26 tambor players took part, belonging to different generations and representing all the important traditional Candombe styles.
-    The audio files are stereo with a sampling rate of 44.1 kHz and 16-bit precision. 
+    The audio files are stereo with a sampling rate of 44.1 kHz and 16-bit precision.
     The location of beats and downbeats was annotated by an expert, adding to more than 4700 downbeats.
 
-    The audio is provided as .flac files and the annotations as .csv files. 
+    The audio is provided as .flac files and the annotations as .csv files.
     The values in the first column of the csv file are the time instants of the beats.
     The numbers on the second column indicate both the bar number and the beat number within the bar.
     For instance, 1.1, 1.2, 1.3 and 1.4 are the four beats of the first bar. Hence, each label ending with .1 indicates a downbeat.
     Another set of annotations are provided as .beats files in which the bar numbers are removed.
-
 """
 import csv
 from typing import BinaryIO, Optional, TextIO, Tuple
@@ -23,7 +22,7 @@ from typing import BinaryIO, Optional, TextIO, Tuple
 import librosa
 import numpy as np
 
-from mirdata import download_utils, jams_utils, core, annotations, io
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @inproceedings{Nunes2015,
@@ -63,7 +62,7 @@ LICENSE_INFO = "Creative Commons Attribution 4.0 International"
 
 
 class Track(core.Track):
-    """Candombe Track class
+    """Candombe Track class.
 
     Args:
         track_id (str): track id of the track
@@ -74,7 +73,6 @@ class Track(core.Track):
 
     Cached Properties:
         beats (BeatData): beat annotations
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -85,31 +83,28 @@ class Track(core.Track):
 
     @core.cached_property
     def beats(self) -> Optional[annotations.BeatData]:
-        """The track's beats
+        """The track's beats.
 
         Returns:
             BeatData: loaded beat data
-
         """
         return load_beats(self.beats_path)
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path, beat_data=[(self.beats, None)], metadata=None
@@ -126,7 +121,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
@@ -159,9 +153,7 @@ def load_beats(fhandle: TextIO) -> annotations.BeatData:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The candombe dataset
-    """
+    """The candombe dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

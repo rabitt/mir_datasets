@@ -1,5 +1,7 @@
 import os
+
 import numpy as np
+
 from mirdata import annotations
 from mirdata.datasets import compmusic_carnatic_rhythm
 from tests.test_utils import run_track_tests
@@ -7,9 +9,7 @@ from tests.test_utils import run_track_tests
 
 def test_track():
     default_trackid = "10003"
-    data_home = os.path.normpath(
-        "tests/resources/mir_datasets/compmusic_carnatic_rhythm"
-    )
+    data_home = os.path.normpath("tests/resources/mir_datasets/compmusic_carnatic_rhythm")
     dataset = compmusic_carnatic_rhythm.Dataset(data_home, version="test")
     track = dataset.track(default_trackid)
 

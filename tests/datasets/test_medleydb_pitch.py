@@ -1,8 +1,9 @@
 import os
+
 import numpy as np
 
-from mirdata.datasets import medleydb_pitch
 from mirdata import annotations
+from mirdata.datasets import medleydb_pitch
 from tests.test_utils import run_track_tests
 
 
@@ -79,9 +80,7 @@ def test_load_pitch():
     assert isinstance(pitch_data.voicing, np.ndarray)
 
     # check values
-    assert np.array_equal(
-        pitch_data.times, np.array([0.06965986394557823, 0.07546485260770976])
-    )
+    assert np.array_equal(pitch_data.times, np.array([0.06965986394557823, 0.07546485260770976]))
     assert np.array_equal(pitch_data.frequencies, np.array([0.0, 191.877]))
     assert np.array_equal(pitch_data.voicing, np.array([0.0, 1.0]))
 

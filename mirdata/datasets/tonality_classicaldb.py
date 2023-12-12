@@ -1,4 +1,4 @@
-"""Tonality classicalDB Dataset Loader
+"""Tonality classicalDB Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -30,19 +30,17 @@
 
     Musicbrainz metadata has been computed as is shown here:
     https://github.com/mir-dataset-loaders/mirdata-notebooks/blob/master/Tonality_classicalDB/ClassicalDB_musicbrainz_metadata.ipynb
-
 """
 
 import csv
 import json
 from typing import Any, BinaryIO, Dict, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
 from mirdata import core, download_utils, io, jams_utils
-
 
 BIBTEX = """@article{gomez2006tonal,
   title={Tonal description of music audio signals},
@@ -94,13 +92,11 @@ DOWNLOAD_INFO = """
     and copy the folder to {} directory
 """
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
-)
+LICENSE_INFO = "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
 
 
 class Track(core.Track):
-    """tonality_classicaldb track class
+    """tonality_classicaldb track class.
 
     Args:
         track_id (str): track id of the track
@@ -116,7 +112,6 @@ class Track(core.Track):
         spectrum (np.array): computed audio spectrum
         hpcp (np.array): computed hpcp
         musicbrainz_metadata (dict): MusicBrainz metadata
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -149,21 +144,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -187,14 +180,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_key(fhandle: TextIO) -> str:
-    """Load Tonality classicalDB format key data from a file
+    """Load Tonality classicalDB format key data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to key annotation file
@@ -210,14 +202,13 @@ def load_key(fhandle: TextIO) -> str:
 
 @io.coerce_to_string_io
 def load_spectrum(fhandle: TextIO) -> np.ndarray:
-    """Load Tonality classicalDB spectrum data from a file
+    """Load Tonality classicalDB spectrum data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to spectrum file
 
     Returns:
         np.ndarray: spectrum data
-
     """
     data = json.load(fhandle)
     spectrum = [list(map(complex, x)) for x in data["spectrum"]]
@@ -226,14 +217,13 @@ def load_spectrum(fhandle: TextIO) -> np.ndarray:
 
 @io.coerce_to_string_io
 def load_hpcp(fhandle: TextIO) -> np.ndarray:
-    """Load Tonality classicalDB HPCP feature from a file
+    """Load Tonality classicalDB HPCP feature from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to HPCP file
 
     Returns:
         np.ndarray: loaded HPCP data
-
     """
     data = json.load(fhandle)
     return np.array(data["hpcp"])
@@ -241,23 +231,20 @@ def load_hpcp(fhandle: TextIO) -> np.ndarray:
 
 @io.coerce_to_string_io
 def load_musicbrainz(fhandle: TextIO) -> Dict[Any, Any]:
-    """Load Tonality classicalDB musicbraiz metadata from a file
+    """Load Tonality classicalDB musicbraiz metadata from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path to musicbrainz metadata file
 
     Returns:
         dict: musicbrainz metadata
-
     """
     return json.load(fhandle)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The tonality_classicaldb dataset
-    """
+    """The tonality_classicaldb dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -272,15 +259,11 @@ class Dataset(core.Dataset):
             license_info=LICENSE_INFO,
         )
 
-    @deprecated(
-        reason="Use mirdata.datasets.tonality_classicaldb.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.tonality_classicaldb.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.tonality_classicaldb.load_key", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.tonality_classicaldb.load_key", version="0.3.4")
     def load_key(self, *args, **kwargs):
         return load_key(*args, **kwargs)
 
@@ -291,9 +274,7 @@ class Dataset(core.Dataset):
     def load_spectrum(self, *args, **kwargs):
         return load_spectrum(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.tonality_classicaldb.load_hpcp", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.tonality_classicaldb.load_hpcp", version="0.3.4")
     def load_hpcp(self, *args, **kwargs):
         return load_hpcp(*args, **kwargs)
 

@@ -1,13 +1,12 @@
 import os
-import pandas as pd
-import numpy as np
-import pytest
 from collections import deque
 
-from tests.test_utils import run_track_tests
+import numpy as np
+import pandas as pd
+import pytest
 
 from mirdata.datasets import baf
-
+from tests.test_utils import run_track_tests
 
 TEST_DATA_HOME = os.path.normpath("tests/resources/mir_datasets/baf")
 TRACK_ID = "query_0001"

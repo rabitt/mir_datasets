@@ -1,4 +1,4 @@
-"""Queen Dataset Loader
+"""Queen Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -31,13 +31,13 @@
 
 import csv
 import os
-from typing import Tuple, TextIO, Optional, BinaryIO
+from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
-from mirdata import download_utils, annotations, io, core, jams_utils
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """@inproceedings{mauch2009beatles,
     title={OMRAS2 metadata project 2009},
@@ -47,9 +47,7 @@ BIBTEX = """@inproceedings{mauch2009beatles,
     year={2009},
     series = {ISMIR}
 }"""
-LICENSE_INFO = (
-    "Unfortunately we couldn't find the license information for Queen dataset."
-)
+LICENSE_INFO = "Unfortunately we couldn't find the license information for Queen dataset."
 
 INDEXES = {
     "default": "1.0",
@@ -79,7 +77,7 @@ DOWNLOAD_INFO = """
 
 
 class Track(core.Track):
-    """Queen track class
+    """Queen track class.
 
     Args:
         track_id (str): track id of the track
@@ -122,21 +120,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """the track's data in jams format
+        """The track's data in jams format.
 
         Returns:
             jams.JAMS: return track data in jam format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -157,21 +153,19 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=44100, mono=True)
 
 
 @io.coerce_to_string_io
 def load_chords(fhandle: TextIO) -> annotations.ChordData:
-    """Load Queen format chord data from a file
+    """Load Queen format chord data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a chord file
 
     Returns:
         (ChordData): loaded chord data
-
     """
     start_times, end_times, chords = [], [], []
     reader = csv.reader(fhandle, delimiter="\t")
@@ -180,21 +174,18 @@ def load_chords(fhandle: TextIO) -> annotations.ChordData:
         end_times.append(float(line[1]))
         chords.append(line[2])
 
-    return annotations.ChordData(
-        np.array([start_times, end_times]).T, "s", chords, "harte"
-    )
+    return annotations.ChordData(np.array([start_times, end_times]).T, "s", chords, "harte")
 
 
 @io.coerce_to_string_io
 def load_key(fhandle: TextIO) -> annotations.KeyData:
-    """Load Queen format key data from a file
+    """Load Queen format key data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a key file
 
     Returns:
         (KeyData): loaded key data
-
     """
     start_times, end_times, keys = [], [], []
     reader = csv.reader(fhandle, delimiter="\t")
@@ -204,21 +195,18 @@ def load_key(fhandle: TextIO) -> annotations.KeyData:
             end_times.append(float(line[1]))
             keys.append(line[3])
 
-    return annotations.KeyData(
-        np.array([start_times, end_times]).T, "s", keys, "key_mode"
-    )
+    return annotations.KeyData(np.array([start_times, end_times]).T, "s", keys, "key_mode")
 
 
 @io.coerce_to_string_io
 def load_sections(fhandle: TextIO) -> annotations.SectionData:
-    """Load Queen format section data from a file
+    """Load Queen format section data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a section file
 
     Returns:
         (SectionData): loaded section data
-
     """
     start_times, end_times, sections = [], [], []
     reader = csv.reader(fhandle, delimiter="\t")
@@ -227,16 +215,12 @@ def load_sections(fhandle: TextIO) -> annotations.SectionData:
         end_times.append(float(line[1]))
         sections.append(line[3])
 
-    return annotations.SectionData(
-        np.array([start_times, end_times]).T, "s", sections, "open"
-    )
+    return annotations.SectionData(np.array([start_times, end_times]).T, "s", sections, "open")
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    Queen dataset
-    """
+    """Queen dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

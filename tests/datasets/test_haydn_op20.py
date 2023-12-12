@@ -10,11 +10,11 @@ except ImportError:
     )
     raise ImportError
 
-from mirdata.annotations import KeyData, ChordData
+import numpy as np
+
+from mirdata.annotations import ChordData, KeyData
 from mirdata.datasets import haydn_op20
 from tests.test_utils import run_track_tests
-
-import numpy as np
 
 
 def test_track():
@@ -72,12 +72,8 @@ def test_to_jam():
     assert type(chord_data) == ChordData
     assert type(chord_data.intervals) == np.ndarray
     assert type(chord_data.labels) == list
-    assert np.array_equal(
-        chord_data.intervals[:, 0], np.array([0.0, 364.0, 392.0, 644.0])
-    )
-    assert np.array_equal(
-        chord_data.intervals[:, 1], np.array([363.0, 391.0, 643.0, 644.0])
-    )
+    assert np.array_equal(chord_data.intervals[:, 0], np.array([0.0, 364.0, 392.0, 644.0]))
+    assert np.array_equal(chord_data.intervals[:, 1], np.array([363.0, 391.0, 643.0, 644.0]))
     assert np.array_equal(
         chord_data.labels,
         np.array(
@@ -138,12 +134,8 @@ def test_load_chords():
     assert type(chord_data) == ChordData
     assert type(chord_data.intervals) == np.ndarray
     assert type(chord_data.labels) == list
-    assert np.array_equal(
-        chord_data.intervals[:, 0], np.array([0.0, 364.0, 392.0, 644.0])
-    )
-    assert np.array_equal(
-        chord_data.intervals[:, 1], np.array([363.0, 391.0, 643.0, 644.0])
-    )
+    assert np.array_equal(chord_data.intervals[:, 0], np.array([0.0, 364.0, 392.0, 644.0]))
+    assert np.array_equal(chord_data.intervals[:, 1], np.array([363.0, 391.0, 643.0, 644.0]))
     assert np.array_equal(
         chord_data.labels,
         np.array(

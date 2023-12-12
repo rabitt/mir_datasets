@@ -1,4 +1,4 @@
-"""GuitarSet Loader
+"""GuitarSet Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -49,20 +49,17 @@
       segmentation and root from the digital lead sheet annotation.
 
     For more details, please visit: http://github.com/marl/guitarset/
-
 """
 import logging
-import os
-from typing import BinaryIO, Optional, TextIO, Tuple, Dict, List
+from typing import BinaryIO, Dict, List, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import jams
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io
-
 
 BIBTEX = """@inproceedings{xi2018guitarset,
 title={GuitarSet: A Dataset for Guitar Transcription},
@@ -123,7 +120,7 @@ LICENSE_INFO = "MIT License."
 
 
 class Track(core.Track):
-    """guitarset Track class
+    """Guitarset Track class.
 
     Args:
         track_id (str): track id of the track
@@ -166,7 +163,6 @@ class Track(core.Track):
             - 'B': NoteData(...)
             - 'e': NoteData(...)
         notes_all (NoteData): all note data as one note annotation
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -192,17 +188,13 @@ class Track(core.Track):
     @core.cached_property
     def leadsheet_chords(self):
         if self.mode == "solo":
-            logging.info(
-                "Chord annotations for solo excerpts are the same with the comp excerpt."
-            )
+            logging.info("Chord annotations for solo excerpts are the same with the comp excerpt.")
         return load_chords(self.jams_path, True)
 
     @core.cached_property
     def inferred_chords(self):
         if self.mode == "solo":
-            logging.info(
-                "Chord annotations for solo excerpts are the same as the comp excerpt."
-            )
+            logging.info("Chord annotations for solo excerpts are the same as the comp excerpt.")
         return load_chords(self.jams_path, False)
 
     @core.cached_property
@@ -221,10 +213,7 @@ class Track(core.Track):
     def multif0(self) -> annotations.MultiF0Data:
         contours: List[annotations.F0Data] = list(self.pitch_contours.values())
         max_times = np.argmax(
-            [
-                0 if contour_data is None else len(contour_data.times)
-                for contour_data in contours
-            ]
+            [0 if contour_data is None else len(contour_data.times) for contour_data in contours]
         )  # type: ignore
         times = contours[max_times].times  # type: ignore
         frequency_list: List[list] = [[] for _ in times]
@@ -257,12 +246,11 @@ class Track(core.Track):
 
     @property
     def audio_mic(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_mic_path)
 
@@ -273,39 +261,35 @@ class Track(core.Track):
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_mix_path)
 
     @property
     def audio_hex(self) -> Optional[Tuple[np.ndarray, float]]:
-        """Hexaphonic audio (6-channels) with one channel per string
+        """Hexaphonic audio (6-channels) with one channel per string.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_multitrack_audio(self.audio_hex_path)
 
     @property
     def audio_hex_cln(self) -> Optional[Tuple[np.ndarray, float]]:
-        """Hexaphonic audio (6-channels) with one channel per string
-           after bleed removal
+        """Hexaphonic audio (6-channels) with one channel per string after
+        bleed removal.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_multitrack_audio(self.audio_hex_cln_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams.load(self.jams_path)
 
@@ -320,7 +304,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
@@ -335,7 +318,6 @@ def load_multitrack_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=False)
 
@@ -370,7 +352,6 @@ def load_chords(jams_path, leadsheet_version):
 
     Returns:
         ChordData: Chord data
-
     """
     try:
         with open(jams_path, "r") as fhandle:
@@ -395,7 +376,6 @@ def load_key_mode(fhandle: TextIO) -> annotations.KeyData:
 
     Returns:
         KeyData: Key data
-
     """
     jam = jams.load(fhandle)
     anno = jam.search(namespace="key_mode")[0]
@@ -436,7 +416,7 @@ def _fill_pitch_contour(times, freqs, voicing, max_time, contour_hop, duration=N
 
 # no decorator because of https://github.com/mir-dataset-loaders/mirdata/issues/503
 def load_pitch_contour(jams_path, string_num):
-    """Load a guitarset pitch contour annotation for a given string
+    """Load a guitarset pitch contour annotation for a given string.
 
     Args:
         jams_path (str): path to the jams annotation file
@@ -445,7 +425,6 @@ def load_pitch_contour(jams_path, string_num):
 
     Returns:
         F0Data: Pitch contour data for the given string
-
     """
     try:
         with open(jams_path, "r") as fhandle:
@@ -466,14 +445,12 @@ def load_pitch_contour(jams_path, string_num):
         times, frequencies, voicing, np.max(times), CONTOUR_HOP
     )
 
-    return annotations.F0Data(
-        filled_times, "s", filled_freqs, "hz", filled_voicing, "binary"
-    )
+    return annotations.F0Data(filled_times, "s", filled_freqs, "hz", filled_voicing, "binary")
 
 
 # no decorator because of https://github.com/mir-dataset-loaders/mirdata/issues/503
 def load_notes(jams_path, string_num):
-    """Load a guitarset note annotation for a given string
+    """Load a guitarset note annotation for a given string.
 
     Args:
         jams_path (str): path to the jams annotation file
@@ -482,7 +459,6 @@ def load_notes(jams_path, string_num):
 
     Returns:
         NoteData: Note data for the given string
-
     """
     try:
         with open(jams_path) as fhandle:
@@ -500,9 +476,7 @@ def load_notes(jams_path, string_num):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The guitarset dataset
-    """
+    """The guitarset dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -520,9 +494,7 @@ class Dataset(core.Dataset):
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.guitarset.load_multitrack_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.guitarset.load_multitrack_audio", version="0.3.4")
     def load_multitrack_audio(self, *args, **kwargs):
         return load_multitrack_audio(*args, **kwargs)
 
@@ -538,9 +510,7 @@ class Dataset(core.Dataset):
     def load_key_mode(self, *args, **kwargs):
         return load_key_mode(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.guitarset.load_pitch_contour", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.guitarset.load_pitch_contour", version="0.3.4")
     def load_pitch_contour(self, *args, **kwargs):
         return load_pitch_contour(*args, **kwargs)
 

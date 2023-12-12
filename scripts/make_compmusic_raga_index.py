@@ -1,16 +1,14 @@
 import argparse
-import hashlib
+import glob
 import json
 import os
-import glob
-from mirdata.validate import md5
 
+from mirdata.validate import md5
 
 RAGA_DATASET_INDEX_PATH = "../mirdata/datasets/indexes/compmusic_raga_index_1.0.json"
 
 
 def make_compmusic_raga_index(dataset_data_path):
-
     raga_index = {"version": "1.0", "tracks": {}}
     dataset_folder = "RagaDataset"
 
@@ -42,101 +40,107 @@ def make_compmusic_raga_index(dataset_data_path):
                                         "nyas_segments": (None, None),
                                         "tani_segments": (None, None),
                                     }
-                                    #audio
+                                    # audio
                                     raga_index["tracks"][id]["audio"] = (
                                         os.path.join(
-                                            dataset_folder, 
+                                            dataset_folder,
                                             tradition_name,
                                             "audio",
                                             raga_id,
                                             artist_name,
                                             concert_name,
                                             song_name,
-                                            song_name + ".mp3"
+                                            song_name + ".mp3",
                                         ),
                                         md5(audio_file),
                                     )
-                                    #tonic
+                                    # tonic
                                     raga_index["tracks"][id]["tonic"] = (
                                         os.path.join(
-                                            dataset_folder, 
+                                            dataset_folder,
                                             tradition_name,
                                             "features",
                                             raga_id,
                                             artist_name,
                                             concert_name,
                                             song_name,
-                                            song_name + ".tonic"
+                                            song_name + ".tonic",
                                         ),
                                         md5(os.path.join(feat_basefile, song_name + ".tonic")),
                                     )
-                                    #tonic fine
+                                    # tonic fine
                                     raga_index["tracks"][id]["tonic_fine_tuned"] = (
                                         os.path.join(
-                                            dataset_folder, 
+                                            dataset_folder,
                                             tradition_name,
                                             "features",
                                             raga_id,
                                             artist_name,
                                             concert_name,
                                             song_name,
-                                            song_name + ".tonicFine"
+                                            song_name + ".tonicFine",
                                         ),
                                         md5(os.path.join(feat_basefile, song_name + ".tonicFine")),
                                     )
-                                    #pitch
+                                    # pitch
                                     raga_index["tracks"][id]["pitch"] = (
                                         os.path.join(
-                                            dataset_folder, 
+                                            dataset_folder,
                                             tradition_name,
                                             "features",
                                             raga_id,
                                             artist_name,
                                             concert_name,
                                             song_name,
-                                            song_name + ".pitch"
+                                            song_name + ".pitch",
                                         ),
                                         md5(os.path.join(feat_basefile, song_name + ".pitch")),
                                     )
-                                    #pitch postprocessed
+                                    # pitch postprocessed
                                     raga_index["tracks"][id]["pitch_post_processed"] = (
                                         os.path.join(
-                                            dataset_folder, 
+                                            dataset_folder,
                                             tradition_name,
                                             "features",
                                             raga_id,
                                             artist_name,
                                             concert_name,
                                             song_name,
-                                            song_name + ".pitchSilIntrpPP"
+                                            song_name + ".pitchSilIntrpPP",
                                         ),
-                                        md5(os.path.join(feat_basefile, song_name + ".pitchSilIntrpPP")),
+                                        md5(
+                                            os.path.join(
+                                                feat_basefile, song_name + ".pitchSilIntrpPP"
+                                            )
+                                        ),
                                     )
-                                    #nyas segments
+                                    # nyas segments
                                     raga_index["tracks"][id]["nyas_segments"] = (
                                         os.path.join(
-                                            dataset_folder, 
+                                            dataset_folder,
                                             tradition_name,
                                             "features",
                                             raga_id,
                                             artist_name,
                                             concert_name,
                                             song_name,
-                                            song_name + ".flatSegNyas"
+                                            song_name + ".flatSegNyas",
                                         ),
-                                        md5(os.path.join(feat_basefile, song_name + ".flatSegNyas")),
+                                        md5(
+                                            os.path.join(feat_basefile, song_name + ".flatSegNyas")
+                                        ),
                                     )
-                                    #tani segments
+                                    # tani segments
                                     raga_index["tracks"][id]["tani_segments"] = (
                                         os.path.join(
-                                            dataset_folder, 
+                                            dataset_folder,
                                             tradition_name,
                                             "features",
                                             raga_id,
                                             artist_name,
                                             concert_name,
                                             song_name,
-                                            song_name + ".taniSegKNN"
+                                            song_name + ".taniSegKNN",
                                         ),
                                         md5(os.path.join(feat_basefile, song_name + ".taniSegKNN")),
                                     )
@@ -152,9 +156,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    PARSER = argparse.ArgumentParser(
-        description="Make CompMusic RagaDataset index file."
-    )
+    PARSER = argparse.ArgumentParser(description="Make CompMusic RagaDataset index file.")
     PARSER.add_argument(
         "dataset_data_path",
         type=str,

@@ -11,7 +11,7 @@ except ImportError:
     raise ImportError
 
     raise ImportError
-from mirdata.annotations import KeyData, ChordData
+from mirdata.annotations import ChordData, KeyData
 from mirdata.datasets import cipi
 from tests.test_utils import run_track_tests
 
@@ -64,12 +64,8 @@ def test_to_jam():
     assert (
         jam["file_metadata"]["artist"] == "LUDWIG VAN BEETHOVEN"
     ), "artist does not match expected"
-    assert (
-        jam["sandbox"]["composer"] == "LUDWIG VAN BEETHOVEN"
-    ), "composer does not match expected"
-    assert (
-        jam["sandbox"]["book"] == "Piano Sonatas, Volume I"
-    ), "book does not match expected"
+    assert jam["sandbox"]["composer"] == "LUDWIG VAN BEETHOVEN", "composer does not match expected"
+    assert jam["sandbox"]["book"] == "Piano Sonatas, Volume I", "book does not match expected"
     assert (
         jam["sandbox"]["URI"]
         == "https://www.henle.de/en/detail/?Title=Piano+Sonatas%2C+Volume+I_32"
@@ -87,9 +83,7 @@ def test_to_jam():
 
 
 def test_load_score():
-    path = os.path.normpath(
-        "craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml"
-    )
+    path = os.path.normpath("craig_files/beethoven-piano-sonatas-master/kern/sonata01-1.musicxml")
     data_home = os.path.normpath("tests/resources/mir_datasets/cipi")
     score = cipi.load_score(path, data_home)
     assert isinstance(score, music21.stream.Score)

@@ -1,4 +1,4 @@
-"""DALI Dataset Loader
+"""DALI Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -11,33 +11,28 @@
     album covers, or links to video clips.
 
     For more details, please visit: https://github.com/gabolsgabs/DALI
-
 """
 
-import json
 import gzip
+import json
 import logging
 import os
 import pickle
 from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import download_utils
-from mirdata import jams_utils
-from mirdata import core
-from mirdata import annotations
-from mirdata import io
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 # this is the package, needed to load the annotations.
 # DALI-dataset is only installed if the user explicitly declares
 # they want dali when pip installing.
 try:
     import DALI
-except ImportError as E:
+except ImportError:
     logging.error(
         "In order to use dali you must have dali-dataset installed. "
         "Please reinstall mirdata using `pip install 'mirdata[dali]'"
@@ -82,13 +77,11 @@ DOWNLOAD_INFO = """
         ...
 """
 
-LICENSE_INFO = (
-    "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License."
-)
+LICENSE_INFO = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License."
 
 
 class Track(core.Track):
-    """DALI melody Track class
+    """DALI melody Track class.
 
     Args:
         track_id (str): track id of the track
@@ -115,7 +108,6 @@ class Track(core.Track):
         lines (LyricData): line-level lyrics
         paragraphs (LyricData): paragraph-level lyrics
         annotation-object (DALI.Annotations): DALI annotation object
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -195,21 +187,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -233,13 +223,12 @@ def load_audio(fhandle: BinaryIO) -> Optional[Tuple[np.ndarray, float]]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 def load_annotations_granularity(annotations_path, granularity):
-    """Load annotations at the specified level of granularity
+    """Load annotations at the specified level of granularity.
 
     Args:
         annotations_path (str): path to a DALI annotation file
@@ -247,12 +236,11 @@ def load_annotations_granularity(annotations_path, granularity):
 
     Returns:
         NoteData for granularity='notes' or LyricData otherwise
-
     """
     try:
         with gzip.open(annotations_path, "rb") as f:
             output = pickle.load(f)
-    except Exception as e:
+    except Exception:
         with gzip.open(annotations_path, "r") as f:
             output = pickle.load(f)
     text = []
@@ -265,32 +253,27 @@ def load_annotations_granularity(annotations_path, granularity):
         ends.append(round(annot["time"][1], 3))
         text.append(annot["text"])
     if granularity == "notes":
-        annotation = annotations.NoteData(
-            np.array([begs, ends]).T, "s", np.array(notes), "hz"
-        )
+        annotation = annotations.NoteData(np.array([begs, ends]).T, "s", np.array(notes), "hz")
     else:
         annotation = annotations.LyricData(np.array([begs, ends]).T, "s", text, "words")
     return annotation
 
 
 def load_annotations_class(annotations_path):
-    """Load full annotations into the DALI class object
+    """Load full annotations into the DALI class object.
 
     Args:
         annotations_path (str): path to a DALI annotation file
 
     Returns:
         DALI.annotations: DALI annotations object
-
     """
     try:
         with gzip.open(annotations_path, "rb") as f:
             output = pickle.load(f)
     except FileNotFoundError:
-        raise FileNotFoundError(
-            "annotations_path {} does not exist".format(annotations_path)
-        )
-    except Exception as e:
+        raise FileNotFoundError("annotations_path {} does not exist".format(annotations_path))
+    except Exception:
         with gzip.open(annotations_path, "r") as f:
             output = pickle.load(f)
     return output
@@ -298,9 +281,7 @@ def load_annotations_class(annotations_path):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The dali dataset
-    """
+    """The dali dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -331,14 +312,10 @@ class Dataset(core.Dataset):
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.dali.load_annotations_granularity", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.dali.load_annotations_granularity", version="0.3.4")
     def load_annotations_granularity(self, *args, **kwargs):
         return load_annotations_granularity(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.dali.load_annotations_class", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.dali.load_annotations_class", version="0.3.4")
     def load_annotations_class(self, *args, **kwargs):
         return load_annotations_class(*args, **kwargs)

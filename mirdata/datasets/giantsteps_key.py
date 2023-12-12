@@ -1,4 +1,4 @@
-"""giantsteps_key Dataset Loader
+"""giantsteps_key Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -29,18 +29,16 @@
     music subgenres.
 
     All the data of this dataset is licensed with Creative Commons Attribution Share Alike 4.0 International.
-
 """
 
 import json
 from typing import Dict, List, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
-from mirdata import core, download_utils, jams_utils, io
-
+from mirdata import core, download_utils, io, jams_utils
 
 BIBTEX = """@inproceedings{knees2015two,
   title={Two data sets for tempo estimation and key detection in electronic dance music annotated from user corrections},
@@ -81,7 +79,7 @@ LICENSE_INFO = "Creative Commons Attribution Share Alike 4.0 International."
 
 
 class Track(core.Track):
-    """giantsteps_key track class
+    """giantsteps_key track class.
 
     Args:
         track_id (str): track id of the track
@@ -98,7 +96,6 @@ class Track(core.Track):
         artists (list): list of artists involved
         genres (dict): genres and subgenres
         tempo (int): crowdsourced tempo annotations in beats per minute
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -129,21 +126,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Tuple[np.ndarray, float]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -167,35 +162,32 @@ def load_audio(fpath: str) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fpath, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_key(fhandle: TextIO) -> str:
-    """Load giantsteps_key format key data from a file
+    """Load giantsteps_key format key data from a file.
 
     Args:
         fhandle (str or file-like): File like object or string pointing to key annotation file
 
     Returns:
         str: loaded key data
-
     """
     return fhandle.readline()
 
 
 @io.coerce_to_string_io
 def load_tempo(fhandle: TextIO) -> str:
-    """Load giantsteps_key tempo data from a file
+    """Load giantsteps_key tempo data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or string pointing to metadata annotation file
 
     Returns:
         str: loaded tempo data
-
     """
     meta = json.load(fhandle)
     return meta["bpm"]
@@ -203,14 +195,13 @@ def load_tempo(fhandle: TextIO) -> str:
 
 @io.coerce_to_string_io
 def load_genre(fhandle: TextIO) -> Dict[str, List[str]]:
-    """Load giantsteps_key genre data from a file
+    """Load giantsteps_key genre data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path pointing to metadata annotation file
 
     Returns:
         dict: `{'genres': [...], 'subgenres': [...]}`
-
     """
     meta = json.load(fhandle)
     return {
@@ -221,14 +212,13 @@ def load_genre(fhandle: TextIO) -> Dict[str, List[str]]:
 
 @io.coerce_to_string_io
 def load_artist(fhandle: TextIO) -> List[str]:
-    """Load giantsteps_key tempo data from a file
+    """Load giantsteps_key tempo data from a file.
 
     Args:
         fhandle (str or file-like): File-like object or path pointing to metadata annotation file
 
     Returns:
         list: list of artists involved in the track.
-
     """
     meta = json.load(fhandle)
 
@@ -237,9 +227,7 @@ def load_artist(fhandle: TextIO) -> List[str]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The giantsteps_key dataset
-    """
+    """The giantsteps_key dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -253,9 +241,7 @@ class Dataset(core.Dataset):
             license_info=LICENSE_INFO,
         )
 
-    @deprecated(
-        reason="Use mirdata.datasets.giantsteps_key.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.giantsteps_key.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
@@ -263,20 +249,14 @@ class Dataset(core.Dataset):
     def load_key(self, *args, **kwargs):
         return load_key(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.giantsteps_key.load_tempo", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.giantsteps_key.load_tempo", version="0.3.4")
     def load_tempo(self, *args, **kwargs):
         return load_tempo(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.giantsteps_key.load_genre", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.giantsteps_key.load_genre", version="0.3.4")
     def load_genre(self, *args, **kwargs):
         return load_genre(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.giantsteps_key.load_artist", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.giantsteps_key.load_artist", version="0.3.4")
     def load_artist(self, *args, **kwargs):
         return load_artist(*args, **kwargs)

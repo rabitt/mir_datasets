@@ -1,4 +1,4 @@
-"""Saraga-Carnatic-Melody-Synth loader
+"""Saraga-Carnatic-Melody-Synth loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -17,7 +17,6 @@
     Dataset compiled by: Genís Plaja-Roglans, Thomas Nuttall, Lara Pearson, Xavier Serra, and Marius Miron.
 
     For more information about Saraga Carnatic please refer to https://mtg.github.io/saraga/.
-
 """
 
 import csv
@@ -60,13 +59,11 @@ REMOTES = {
 
 DOWNLOAD_INFO = None
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
-)
+LICENSE_INFO = "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
 
 
 class Track(core.Track):
-    """Saraga-Carnatic-Melody-Synth Track class
+    """Saraga-Carnatic-Melody-Synth Track class.
 
     Args:
         track_id (str): track id of the track
@@ -86,7 +83,6 @@ class Track(core.Track):
     Cached Properties:
         pitch (F0Data): vocal pitch time-series
         activations (EventData): time regions where the singing voice is present and active
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -126,21 +122,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track"s audio
+        """The track"s audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track"s data in jams format
+        """Get the track"s data in jams format.
 
         Returns:
             jams.JAMS: the track"s data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -160,14 +154,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_pitch(fhandle: TextIO) -> annotations.F0Data:
-    """load a Saraga-Carnatic-Melody-Synth pitch annotation file
+    """Load a Saraga-Carnatic-Melody-Synth pitch annotation file.
 
     Args:
         fhandle (str or file-like): str or file-like to pitch annotation file
@@ -177,7 +170,6 @@ def load_pitch(fhandle: TextIO) -> annotations.F0Data:
 
     Returns:
         F0Data: pitch annotation
-
     """
     times = []
     freqs = []
@@ -196,7 +188,7 @@ def load_pitch(fhandle: TextIO) -> annotations.F0Data:
 
 @io.coerce_to_string_io
 def load_activations(fhandle: TextIO) -> Optional[annotations.EventData]:
-    """load a Saraga-Carnatic-Melody-Synth activation annotation file
+    """Load a Saraga-Carnatic-Melody-Synth activation annotation file.
 
     Args:
         fhandle (str or file-like): str or file-like to note annotation file
@@ -223,9 +215,7 @@ def load_activations(fhandle: TextIO) -> Optional[annotations.EventData]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Saraga-Carnatic-Melody-Synth dataset
-    """
+    """The Saraga-Carnatic-Melody-Synth dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -242,17 +232,13 @@ class Dataset(core.Dataset):
 
     @core.cached_property
     def _artists_to_track_mapping(self):
-        mapping_path = os.path.join(
-            self.data_home, "SCMS/artists_to_track_mapping.json"
-        )
+        mapping_path = os.path.join(self.data_home, "SCMS/artists_to_track_mapping.json")
 
         try:
             with open(mapping_path, "r") as fhandle:
                 mapping = json.load(fhandle)
         except FileNotFoundError:
-            raise FileNotFoundError(
-                "Artists to track mapping not found. Did you run .download()?"
-            )
+            raise FileNotFoundError("Artists to track mapping not found. Did you run .download()?")
 
         return mapping
 

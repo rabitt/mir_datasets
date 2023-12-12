@@ -2,6 +2,7 @@ import argparse
 import glob
 import json
 import os
+
 from mirdata.validate import md5
 
 DATASET_INDEX_PATH = "../mirdata/datasets/indexes/dataset_index.json"
@@ -19,9 +20,7 @@ def make_dataset_index(dataset_data_path):
     # top-key level tracks
     index_tracks = {}
     for track_id in track_ids:
-        audio_checksum = md5(
-            os.path.join(dataset_data_path, "Wavfile/{}.wav".format(track_id))
-        )
+        audio_checksum = md5(os.path.join(dataset_data_path, "Wavfile/{}.wav".format(track_id)))
         annotation_checksum = md5(
             os.path.join(dataset_data_path, "annotation/{}.lab".format(track_id))
         )
@@ -48,8 +47,6 @@ def main(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make dataset index file.")
-    PARSER.add_argument(
-        "dataset_data_path", type=str, help="Path to dataset data folder."
-    )
+    PARSER.add_argument("dataset_data_path", type=str, help="Path to dataset data folder.")
 
     main(PARSER.parse_args())

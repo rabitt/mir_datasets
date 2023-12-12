@@ -64,7 +64,6 @@ def load_midi(fhandle: BinaryIO) -> pretty_midi.PrettyMIDI:
 
     Returns:
         pretty_midi.PrettyMIDI: pretty_midi object
-
     """
     return pretty_midi.PrettyMIDI(fhandle)
 
@@ -74,7 +73,7 @@ def load_notes_from_midi(
     midi: Optional[pretty_midi.PrettyMIDI] = None,
     skip_drums: bool = True,
 ) -> Optional[annotations.NoteData]:
-    """Load note data from a midi file
+    """Load note data from a midi file.
 
     Args:
         midi_path (str or None): path to midi file or None
@@ -84,7 +83,6 @@ def load_notes_from_midi(
 
     Returns:
         NoteData: note annotations
-
     """
     if not midi and not midi_path:
         raise ValueError("At least one of midi_path or midi must be provided")
@@ -125,7 +123,8 @@ def load_multif0_from_midi(
     skip_drums: bool = True,
     pitch_bend: bool = False,
 ) -> Optional[annotations.MultiF0Data]:
-    """Load multif0 data from a midi file, optionally considering pitch bend information
+    """Load multif0 data from a midi file, optionally considering pitch bend
+    information.
 
     Args:
         midi_path (str or None): path to midi file or None
@@ -136,7 +135,6 @@ def load_multif0_from_midi(
 
     Returns:
         MultiF0Data: multif0 annotation
-
     """
 
     def _to_idx(time_in_sec, hop):
@@ -166,23 +164,16 @@ def load_multif0_from_midi(
         for note in instrument.notes:
             has_data = True
             # index into times
-            this_idx = range(
-                _to_idx(note.start, time_hop), _to_idx(note.end, time_hop) + 1
-            )
+            this_idx = range(_to_idx(note.start, time_hop), _to_idx(note.end, time_hop) + 1)
             time_idx.extend(this_idx)
             pitch_val.extend([float(note.pitch) for _ in this_idx])
             conf_val.extend([float(note.velocity) for _ in this_idx])
 
         # look up any pitch bend information
         do_pb = pitch_bend and len(instrument.pitch_bends) > 0
-        pb_idx = (
-            [_to_idx(p.time, time_hop) for p in instrument.pitch_bends] if do_pb else []
-        )
+        pb_idx = [_to_idx(p.time, time_hop) for p in instrument.pitch_bends] if do_pb else []
         pb_shifts = (
-            [
-                pretty_midi.utilities.pitch_bend_to_semitones(p.pitch)
-                for p in instrument.pitch_bends
-            ]
+            [pretty_midi.utilities.pitch_bend_to_semitones(p.pitch) for p in instrument.pitch_bends]
             if do_pb
             else []
         )
@@ -197,6 +188,4 @@ def load_multif0_from_midi(
     if not has_data:
         return None
 
-    return annotations.MultiF0Data(
-        times, "s", freqs_list, "midi", confidence, "velocity"
-    )
+    return annotations.MultiF0Data(times, "s", freqs_list, "midi", confidence, "velocity")

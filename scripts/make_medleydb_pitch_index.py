@@ -1,5 +1,4 @@
 import argparse
-import hashlib
 import json
 import os
 
@@ -35,9 +34,7 @@ def make_medleydb_pitch_index(data_path, version):
             "pitch": (pitch_rel, pitch_checksum),
         }
         if version == "3.0":
-            note_rel = "medleydb-pitch-pyin-notes/{}_vamp_pyin_pyin_notes.csv".format(
-                fullid
-            )
+            note_rel = "medleydb-pitch-pyin-notes/{}_vamp_pyin_pyin_notes.csv".format(fullid)
             note_full = os.path.join(data_path, note_rel)
 
             if os.path.exists(note_full):
@@ -64,9 +61,7 @@ def main(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make MedleyDB-Pitch index file.")
-    PARSER.add_argument(
-        "mdb_pitch_data_path", type=str, help="Path to MedleyDB-Pitch data folder."
-    )
+    PARSER.add_argument("mdb_pitch_data_path", type=str, help="Path to MedleyDB-Pitch data folder.")
     PARSER.add_argument("version", type=str, help="index version.")
 
     main(PARSER.parse_args())

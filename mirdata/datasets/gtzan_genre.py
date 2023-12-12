@@ -1,4 +1,4 @@
-"""GTZAN-Genre Dataset Loader
+"""GTZAN-Genre Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -13,17 +13,15 @@
     The dataset consists of 1000 audio tracks each 30 seconds long. It
     contains 10 genres, each represented by 100 tracks. The tracks are all
     22050 Hz mono 16-bit audio files in .wav format.
-
 """
 
 from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
-from mirdata import download_utils, jams_utils, core, io, annotations
-
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """@article{tzanetakis2002gtzan,
   title={GTZAN genre collection},
@@ -68,7 +66,7 @@ LICENSE_INFO = "Unfortunately we couldn't find the license information for the G
 
 
 class Track(core.Track):
-    """gtzan_genre Track class
+    """gtzan_genre Track class.
 
     Args:
         track_id (str): track id of the track
@@ -81,7 +79,6 @@ class Track(core.Track):
     Cached Properties:
         beats (BeatData): human-labeled beat annotations
         tempo (float): global tempo annotations
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -105,21 +102,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             tags_gtzan_data=[(self.genre, "gtzan-genre")],
@@ -137,14 +132,13 @@ class Track(core.Track):
 
 @io.coerce_to_string_io
 def load_beats(fhandle: TextIO) -> annotations.BeatData:
-    """Load GTZAN format beat data from a file
+    """Load GTZAN format beat data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a beat annotation file
 
     Returns:
         BeatData: loaded beat data
-
     """
     beats = np.loadtxt(fhandle, ndmin=2)
     times = beats[:, 0]
@@ -161,14 +155,13 @@ def load_beats(fhandle: TextIO) -> annotations.BeatData:
 
 @io.coerce_to_string_io
 def load_tempo(fhandle: TextIO) -> float:
-    """Load GTZAN format tempo data from a file
+    """Load GTZAN format tempo data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a beat annotation file
 
     Returns:
         tempo (float): loaded tempo data
-
     """
 
     tempo = np.loadtxt(fhandle, ndmin=2)
@@ -186,7 +179,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     audio, sr = librosa.load(fhandle, sr=22050, mono=True)
     return audio, sr
@@ -194,9 +186,7 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The gtzan_genre dataset
-    """
+    """The gtzan_genre dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

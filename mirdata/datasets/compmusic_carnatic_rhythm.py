@@ -1,4 +1,4 @@
-"""CompMusic Carnatic Rhythm Dataset Loader
+"""CompMusic Carnatic Rhythm Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -11,7 +11,7 @@
 
     The dataset contains the following data:
 
-    **AUDIO:** The pieces are chosen from the CompMusic Carnatic music collection. The pieces were chosen in four popular taalas of 
+    **AUDIO:** The pieces are chosen from the CompMusic Carnatic music collection. The pieces were chosen in four popular taalas of
     Carnatic music, which encompasses a majority of Carnatic music. The pieces were chosen include a mix of vocal and instrumental recordings,
     new and old recordings, and to span a wide variety of forms. All pieces have a percussion accompaniment, predominantly Mridangam. The
     excerpts are full length pieces or a part of the full length pieces. There are also several different pieces by the same artist (or release
@@ -27,9 +27,9 @@
     **METADATA:** For each excerpt, the taala of the piece, edupu (offset of the start of the piece, relative to the sama, measured in aksharas)
     of the composition, and the kalai (the cycle length scaling factor) are recorded. Each excerpt can be uniquely identified and located with the
     MBID of the recording, and the relative start and end times of the excerpt within the whole recording. A separate 5 digit taala based unique ID
-    is also provided for each excerpt as a double check. The artist, release, the lead instrument, and the raaga of the piece are additional 
+    is also provided for each excerpt as a double check. The artist, release, the lead instrument, and the raaga of the piece are additional
     editorial metadata obtained from the release. A flag indicates if the excerpt is a full piece or only a part of a full piece. There are optional
-    comments on audio quality and annotation specifics. 
+    comments on audio quality and annotation specifics.
 
     Possible uses of the dataset: Possible tasks where the dataset can be used include taala, sama and beat tracking, tempo estimation and tracking,
     taala recognition, rhythm based segmentation of musical audio, structural segmentation, audio to score/lyrics alignment, and rhythmic pattern
@@ -43,18 +43,17 @@
 
     The annotations files of this dataset are shared with the following license:
     Creative Commons Attribution Non Commercial Share Alike 4.0 International
-
 """
 
-import os
 import csv
 import logging
+import os
+
 import librosa
 import numpy as np
-
-from mirdata import annotations, core, io, jams_utils
 from smart_open import open
 
+from mirdata import annotations, core, io, jams_utils
 
 try:
     from openpyxl import load_workbook as get_xlxs
@@ -79,19 +78,14 @@ INDEXES = {
     "default": "full_dataset_1.0",
     "full_dataset": "full_dataset_1.0",
     "subset": "subset_1.0",
-    "test": "test",
-    "full_dataset_1.0": core.Index(
-        filename="compmusic_carnatic_rhythm_full_index.json"
-    ),
+    "full_dataset_1.0": core.Index(filename="compmusic_carnatic_rhythm_full_index.json"),
     "subset_1.0": core.Index(filename="compmusic_carnatic_rhythm_subset_index.json"),
     "test": core.Index(filename="compmusic_carnatic_rhythm_subset_index.json"),
 }
 
 REMOTES = None
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
-)
+LICENSE_INFO = "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
 
 DOWNLOAD_INFO = """The files of this dataset are shared under request. Please go to: https://zenodo.org/record/1264394 and request access, stating
     the research-related use you will give to the dataset. Once the access is granted (it may take, at most, one day or two), please download 
@@ -104,7 +98,7 @@ DOWNLOAD_INFO = """The files of this dataset are shared under request. Please go
 
 
 class Track(core.Track):
-    """CompMusic Carnatic Music Rhythm class
+    """CompMusic Carnatic Music Rhythm class.
 
     Args:
         track_id (str): track id of the track
@@ -128,7 +122,6 @@ class Track(core.Track):
         raaga (string): raaga annotation
         num_of_beats (int): number of beats in annotation
         num_of_samas (int): number of samas in annotation
-
     """
 
     def __init__(
@@ -200,21 +193,19 @@ class Track(core.Track):
 
     @property
     def audio(self):
-        """The track's audio
+        """The track's audio.
 
         Returns:
            * np.ndarray - audio signal
            * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -244,7 +235,6 @@ def load_audio(audio_path):
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     if audio_path is None:
         return None
@@ -253,14 +243,13 @@ def load_audio(audio_path):
 
 @io.coerce_to_string_io
 def load_beats(fhandle):
-    """Load beats
+    """Load beats.
 
     Args:
         fhandle (str or file-like): Local path where the beats annotation is stored.
 
     Returns:
         BeatData: beat annotations
-
     """
     beat_times = []
     beat_positions = []
@@ -273,21 +262,18 @@ def load_beats(fhandle):
     if not beat_times or beat_times[0] == -1.0:
         return None
 
-    return annotations.BeatData(
-        np.array(beat_times), "s", np.array(beat_positions), "bar_index"
-    )
+    return annotations.BeatData(np.array(beat_times), "s", np.array(beat_positions), "bar_index")
 
 
 @io.coerce_to_string_io
 def load_meter(fhandle):
-    """Load meter
+    """Load meter.
 
     Args:
         fhandle (str or file-like): Local path where the meter annotation is stored.
 
     Returns:
         float: meter annotation
-
     """
     reader = csv.reader(fhandle, delimiter=",")
     return next(reader)[0]
@@ -295,10 +281,7 @@ def load_meter(fhandle):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The compmusic_carnatic_rhythm dataset
-
-    """
+    """The compmusic_carnatic_rhythm dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -321,9 +304,7 @@ class Dataset(core.Dataset):
             )
 
         else:
-            metadata_path = os.path.join(
-                self.data_home, "CMR_subset_1.0", "CMRdataset.xlsx"
-            )
+            metadata_path = os.path.join(self.data_home, "CMR_subset_1.0", "CMRdataset.xlsx")
 
         metadata = {}
         try:

@@ -1,4 +1,4 @@
-"""vocadito Dataset Loader
+"""Vocadito Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -13,7 +13,6 @@
     language
 
     For more details, please visit: https://zenodo.org/record/5578807
-
 """
 import csv
 import os
@@ -23,8 +22,7 @@ import librosa
 import numpy as np
 from smart_open import open
 
-from mirdata import annotations, core, download_utils, jams_utils, io
-
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @techreport{bittner2021vocadito,
@@ -55,7 +53,7 @@ LICENSE_INFO = "Creative Commons Attribution 4.0 International"
 
 
 class Track(core.Track):
-    """vocadito Track class
+    """Vocadito Track class.
 
     Args:
         track_id (str): track id of the track
@@ -118,21 +116,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """solo vocal audio (mono)
+        """Solo vocal audio (mono)
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -153,7 +149,7 @@ class Track(core.Track):
 
 @io.coerce_to_bytes_io
 def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
-    """Load vocadito vocal audio
+    """Load vocadito vocal audio.
 
     Args:
         fhandle (str or file-like): File-like object or path to audio file
@@ -161,14 +157,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - audio signal
         * float - sample rate
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_f0(fhandle: TextIO) -> annotations.F0Data:
-    """Load a vocadito f0 annotation
+    """Load a vocadito f0 annotation.
 
     Args:
         fhandle (str or file-like): File-like object or path to f0 annotation file
@@ -178,7 +173,6 @@ def load_f0(fhandle: TextIO) -> annotations.F0Data:
 
     Returns:
         F0Data: the f0 annotation data
-
     """
     times_frequencies = np.genfromtxt(fhandle, delimiter=",")
     return annotations.F0Data(
@@ -193,7 +187,7 @@ def load_f0(fhandle: TextIO) -> annotations.F0Data:
 
 @io.coerce_to_string_io
 def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
-    """load a note annotation file
+    """Load a note annotation file.
 
     Args:
         fhandle (str or file-like): str or file-like to note annotation file
@@ -203,7 +197,6 @@ def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
 
     Returns:
         NoteData: note annotation
-
     """
     notes = np.genfromtxt(fhandle, delimiter=",")
     return annotations.NoteData(
@@ -216,7 +209,7 @@ def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
 
 @io.coerce_to_string_io
 def load_lyrics(fhandle: TextIO) -> List[List[str]]:
-    """Load a lyrics annotation
+    """Load a lyrics annotation.
 
     Args:
         fhandle (str or file-like): File-like object or path to lyric annotation file
@@ -226,16 +219,13 @@ def load_lyrics(fhandle: TextIO) -> List[List[str]]:
 
     Returns:
         LyricData: lyric annotation data
-
     """
     return list(csv.reader(fhandle, delimiter=" "))
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The vocadito dataset
-    """
+    """The vocadito dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

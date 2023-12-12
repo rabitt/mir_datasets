@@ -1,7 +1,7 @@
 import os
 
-from tests.test_utils import run_track_tests
 from mirdata.datasets import irmas
+from tests.test_utils import run_track_tests
 
 
 def test_track():
@@ -47,9 +47,7 @@ def test_track():
     expected_property_test_types = {"instrument": list, "audio": tuple}
 
     run_track_tests(track, expected_attributes, expected_property_test_types)
-    run_track_tests(
-        track_train, expected_attributes_train, expected_property_test_types
-    )
+    run_track_tests(track_train, expected_attributes_train, expected_property_test_types)
 
     audio, sr = track.audio
     assert sr == 44100
@@ -91,8 +89,7 @@ def test_to_jams():
 def test_load_pred_inst():
     # Training samples
     pred_inst_audio_train = (
-        "tests/resources/mir_datasets/irmas/IRMAS-TrainingData/cla/"
-        + "[cla][cla]0189__2.wav"
+        "tests/resources/mir_datasets/irmas/IRMAS-TrainingData/cla/" + "[cla][cla]0189__2.wav"
     )
 
     pred_inst_train = os.path.basename(os.path.dirname(pred_inst_audio_train))

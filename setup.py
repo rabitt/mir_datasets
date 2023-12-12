@@ -1,6 +1,7 @@
-""" Setup script for mir_datasets. """
+"""Setup script for mir_datasets."""
 from importlib.machinery import SourceFileLoader
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 version_sfl = SourceFileLoader("mirdata.version", "mirdata/version.py")
 version_module = version_sfl.load_module()
@@ -69,7 +70,7 @@ if __name__ == "__main__":
                 "sphinx>=3.4.0",
                 "sphinxcontrib-napoleon",
                 "sphinx_rtd_theme",
-                "sphinx-togglebutton"
+                "sphinx-togglebutton",
             ],
             "compmusic_hindustani_rhythm": ["openpyxl==3.0.10"],
             "dali": ["dali-dataset==1.1"],

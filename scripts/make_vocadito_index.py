@@ -2,6 +2,7 @@ import argparse
 import csv
 import json
 import os
+
 from mirdata.validate import md5
 
 VOCADITO_INDEX_PATH = "mirdata/datasets/indexes/vocadito_index_{}.json"
@@ -51,9 +52,7 @@ def make_vocadito_index(vocadito_data_path: str, version: str) -> None:
     vocadito_index = {
         "version": version,
         "tracks": index_tracks,
-        "metadata": {
-            "vocadito_metadata": ("vocadito_metadata.csv", md5(metadata_path))
-        },
+        "metadata": {"vocadito_metadata": ("vocadito_metadata.csv", md5(metadata_path))},
     }
 
     with open(VOCADITO_INDEX_PATH.format(version), "w") as fhandle:
@@ -66,9 +65,7 @@ def main(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make Vocadito index file.")
-    PARSER.add_argument(
-        "vocadito_data_path", type=str, help="Path to Vocadito data folder."
-    )
+    PARSER.add_argument("vocadito_data_path", type=str, help="Path to Vocadito data folder.")
     PARSER.add_argument("version", type=str, help="index version")
 
     main(PARSER.parse_args())

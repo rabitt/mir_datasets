@@ -2,6 +2,7 @@ import argparse
 import glob
 import json
 import os
+
 from mirdata.validate import md5
 
 DATASET_INDEX_PATH = "../mirdata/datasets/indexes/candombe_index_1.0.json"
@@ -9,9 +10,9 @@ DATASET_INDEX_PATH = "../mirdata/datasets/indexes/candombe_index_1.0.json"
 
 def make_dataset_index(dataset_data_path):
     annotation_files = glob.glob(
-        os.path.join(dataset_data_path + 'candombe_annotations/with_bar_number', "*.csv")
+        os.path.join(dataset_data_path + "candombe_annotations/with_bar_number", "*.csv")
     )
-   
+
     track_ids = sorted([".".join(os.path.basename(f).split(".")[:-1]) for f in annotation_files])
 
     # top-key level tracks
@@ -22,8 +23,7 @@ def make_dataset_index(dataset_data_path):
         )
         annotation_checksum = md5(
             os.path.join(
-                dataset_data_path,
-                "candombe_annotations/with_bar_number/{}.csv".format(track_id)
+                dataset_data_path, "candombe_annotations/with_bar_number/{}.csv".format(track_id)
             )
         )
 
@@ -31,7 +31,7 @@ def make_dataset_index(dataset_data_path):
             "audio": ("candombe_audio/{}.flac".format(track_id), audio_checksum),
             "beats": (
                 "candombe_annotations/with_bar_number/{}.csv".format(track_id),
-                annotation_checksum
+                annotation_checksum,
             ),
         }
 
@@ -51,8 +51,6 @@ def main(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make dataset index file.")
-    PARSER.add_argument(
-        "dataset_data_path", type=str, help="Path to dataset data folder."
-    )
+    PARSER.add_argument("dataset_data_path", type=str, help="Path to dataset data folder.")
 
     main(PARSER.parse_args())

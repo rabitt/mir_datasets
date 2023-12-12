@@ -1,8 +1,9 @@
 import os
+
 import numpy as np
 
-from mirdata.datasets import medleydb_melody
 from mirdata import annotations
+from mirdata.datasets import medleydb_melody
 from tests.test_utils import run_track_tests
 
 
@@ -74,8 +75,7 @@ def test_to_jams():
 def test_load_melody():
     # load a file which exists
     melody_path = (
-        "tests/resources/mir_datasets/medleydb_melody/"
-        + "melody1/MusicDelta_Beethoven_MELODY1.csv"
+        "tests/resources/mir_datasets/medleydb_melody/" + "melody1/MusicDelta_Beethoven_MELODY1.csv"
     )
     melody_data = medleydb_melody.load_melody(melody_path)
 
@@ -96,8 +96,7 @@ def test_load_melody():
 def test_load_melody3():
     # load a file which exists
     melody_path = (
-        "tests/resources/mir_datasets/medleydb_melody/"
-        + "melody3/MusicDelta_Beethoven_MELODY3.csv"
+        "tests/resources/mir_datasets/medleydb_melody/" + "melody3/MusicDelta_Beethoven_MELODY3.csv"
     )
     melody_data = medleydb_melody.load_melody3(melody_path)
 

@@ -1,5 +1,7 @@
 import os
+
 import numpy as np
+
 from mirdata import annotations
 from mirdata.datasets import saraga_hindustani
 from tests.test_utils import run_track_tests
@@ -170,9 +172,7 @@ def test_load_pitch():
             ]
         ),
     )
-    assert np.array_equal(
-        parsed_pitch.voicing, np.array([0.0, 1.0, 1.0, 1.0, 1.0, 0.0])
-    )
+    assert np.array_equal(parsed_pitch.voicing, np.array([0.0, 1.0, 1.0, 1.0, 1.0, 0.0]))
 
     assert saraga_hindustani.load_pitch(None) is None
 
@@ -190,9 +190,7 @@ def test_load_sama():
     assert type(parsed_sama.positions) is np.ndarray
 
     # Check values
-    assert np.array_equal(
-        parsed_sama.times, np.array([68.385, 123.804, 179.069, 234.339])
-    )
+    assert np.array_equal(parsed_sama.times, np.array([68.385, 123.804, 179.069, 234.339]))
     assert np.array_equal(parsed_sama.positions, np.array([1, 2, 3, 4]))
     assert saraga_hindustani.load_sama(None) is None
 
@@ -216,9 +214,7 @@ def test_load_sections():
     assert type(parsed_sections.labels) is list
 
     # Check values
-    assert np.array_equal(
-        parsed_sections.intervals[:, 0], np.array([3.298, 59.49, 679.834])
-    )
+    assert np.array_equal(parsed_sections.intervals[:, 0], np.array([3.298, 59.49, 679.834]))
     assert np.array_equal(
         parsed_sections.intervals[:, 1],
         np.array([59.49, 679.8340000000001, 898.664489796]),

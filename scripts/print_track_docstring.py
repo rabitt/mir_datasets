@@ -1,9 +1,8 @@
 import argparse
-import importlib
 import itertools
 import types
-import mirdata
 
+import mirdata
 
 TEST_TRACKIDS = {
     "beatles": "0111",
@@ -46,9 +45,7 @@ def get_attributes_and_properties(class_instance):
         else:
             raise ValueError("Unknown type {}".format(attr))
 
-    non_attributes = list(
-        itertools.chain.from_iterable([properties, cached_properties, functions])
-    )
+    non_attributes = list(itertools.chain.from_iterable([properties, cached_properties, functions]))
     for val in dir(class_instance):
         if val.startswith("_"):
             continue
@@ -88,17 +85,9 @@ def main(args):
         print("Attributes:")
         for attr in data["attributes"] + data["properties"]:
             if attr == "track_id":
-                print(
-                    "    {} ({}): track id".format(
-                        attr, type(getattr(track, attr)).__name__
-                    )
-                )
+                print("    {} ({}): track id".format(attr, type(getattr(track, attr)).__name__))
             else:
-                print(
-                    "    {} ({}): TODO".format(
-                        attr, type(getattr(track, attr)).__name__
-                    )
-                )
+                print("    {} ({}): TODO".format(attr, type(getattr(track, attr)).__name__))
         print("")
 
     if len(data["cached_properties"]) > 0:

@@ -3,15 +3,13 @@ import json
 import os
 import types
 
-import mirdata
-from mirdata import validate
+import pytest
 from smart_open import open
 
-import pytest
+import mirdata
+from mirdata import validate
 
-DEFAULT_DATA_HOME = os.path.normpath(
-    os.path.join(os.getenv("HOME", "/tmp"), "mir_datasets")
-)
+DEFAULT_DATA_HOME = os.path.normpath(os.path.join(os.getenv("HOME", "/tmp"), "mir_datasets"))
 
 
 def run_track_tests(track, expected_attributes, expected_property_types):
@@ -30,9 +28,7 @@ def run_track_tests(track, expected_attributes, expected_property_types):
         elif prop in expected_attributes:
             assert expected_attributes[prop] == getattr(track, prop)
         else:
-            assert (
-                False
-            ), "{} not in expected_property_types or expected_attributes".format(prop)
+            assert False, "{} not in expected_property_types or expected_attributes".format(prop)
 
 
 def run_multitrack_tests(mtrack):
@@ -62,9 +58,7 @@ def get_attributes_and_properties(class_instance):
         else:
             raise ValueError("Unknown type {}".format(attr))
 
-    non_attributes = list(
-        itertools.chain.from_iterable([properties, cached_properties, functions])
-    )
+    non_attributes = list(itertools.chain.from_iterable([properties, cached_properties, functions]))
     for val in dir(class_instance):
         if val.startswith("_"):
             continue
@@ -107,25 +101,13 @@ def test_md5(mocker):
         ("test_index_valid.json", {"tracks": {}}, {"tracks": {}}),
         (
             "test_index_missing_file.json",
-            {
-                "tracks": {
-                    "10161_chorus": [
-                        os.path.normpath("tests/resources/10162_chorus.wav")
-                    ]
-                }
-            },
+            {"tracks": {"10161_chorus": [os.path.normpath("tests/resources/10162_chorus.wav")]}},
             {"tracks": {}},
         ),
         (
             "test_index_invalid_checksum.json",
             {"tracks": {}},
-            {
-                "tracks": {
-                    "10161_chorus": [
-                        os.path.normpath("tests/resources/10161_chorus.wav")
-                    ]
-                }
-            },
+            {"tracks": {"10161_chorus": [os.path.normpath("tests/resources/10161_chorus.wav")]}},
         ),
     ],
 )
@@ -146,24 +128,12 @@ def test_validate_index(test_index, expected_missing, expected_inv_checksum):
     "missing_files,invalid_checksums",
     [
         (
-            {
-                "tracks": {
-                    "10161_chorus": [
-                        os.path.normpath("tests/resources/10162_chorus.wav")
-                    ]
-                }
-            },
+            {"tracks": {"10161_chorus": [os.path.normpath("tests/resources/10162_chorus.wav")]}},
             {"tracks": {}},
         ),
         (
             {"tracks": {}},
-            {
-                "tracks": {
-                    "10161_chorus": [
-                        os.path.normpath("tests/resources/10161_chorus.wav")
-                    ]
-                }
-            },
+            {"tracks": {"10161_chorus": [os.path.normpath("tests/resources/10161_chorus.wav")]}},
         ),
         ({"tracks": {}}, {"tracks": {}}),
     ],

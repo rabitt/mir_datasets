@@ -1,7 +1,6 @@
-import sys
-import pytest
 import mir_eval
 import numpy as np
+import pytest
 
 import mirdata
 from mirdata import annotations
@@ -17,13 +16,10 @@ def test_repr():
     test_track = TestAnnotation()
     assert test_track.__repr__() == """TestAnnotation(a, b)"""
 
-    beat_data = annotations.BeatData(
-        np.array([1.0, 2.0]), "s", np.array([1, 2]), "bar_index"
-    )
+    beat_data = annotations.BeatData(np.array([1.0, 2.0]), "s", np.array([1, 2]), "bar_index")
     assert (
         beat_data.__repr__()
-        == "BeatData(confidence, confidence_unit, "
-        + "position_unit, positions, time_unit, times)"
+        == "BeatData(confidence, confidence_unit, " + "position_unit, positions, time_unit, times)"
     )
 
 
@@ -90,9 +86,7 @@ def test_note_data():
     assert np.allclose(note_data.intervals, intervals)
     assert np.allclose(note_data.pitches, notes)
     assert note_data.confidence is None
-    note_data2 = annotations.NoteData(
-        intervals, "s", notes, "hz", confidence, "likelihood"
-    )
+    note_data2 = annotations.NoteData(intervals, "s", notes, "hz", confidence, "likelihood")
     assert np.allclose(note_data2.intervals, intervals)
     assert np.allclose(note_data2.pitches, notes)
     assert np.allclose(note_data2.confidence, confidence)
@@ -178,9 +172,7 @@ def test_note_data():
     # test to_sparse index
     time_scale = np.array([0, 0.5, 1.0, 1.5, 2.0, 2.5])
     frequency_scale = np.array([50.0, 90.0, 130.0])
-    sparse_index, conf = note_data.to_sparse_index(
-        time_scale, "s", frequency_scale, "hz"
-    )
+    sparse_index, conf = note_data.to_sparse_index(time_scale, "s", frequency_scale, "hz")
     expected_index = [[2, 1], [3, 1], [4, 1], [4, 2], [5, 2]]
     expected_conf = np.array([1, 1, 1, 1, 1])
     assert np.allclose(sparse_index, expected_index)
@@ -220,9 +212,7 @@ def test_note_data():
 
     # test to matrix
     matrix = note_data.to_matrix(time_scale, "s", frequency_scale, "hz")
-    expected = np.array(
-        [[0, 0, 0], [0, 0, 0], [0, 1, 0], [0, 1, 0], [0, 1, 1], [0, 0, 1]]
-    )
+    expected = np.array([[0, 0, 0], [0, 0, 0], [0, 1, 0], [0, 1, 0], [0, 1, 1], [0, 0, 1]])
     assert np.allclose(matrix, expected)
 
     matrix = note_data2.to_matrix(time_scale, "s", frequency_scale, "hz", "likelihood")
@@ -232,17 +222,11 @@ def test_note_data():
     assert np.allclose(matrix, expected)
 
     matrix = note_data.to_matrix(time_scale, "s", frequency_scale, "hz", "binary", True)
-    expected = np.array(
-        [[0, 0, 0], [0, 0, 0], [0, 1, 0], [0, 0, 0], [0, 0, 1], [0, 0, 0]]
-    )
+    expected = np.array([[0, 0, 0], [0, 0, 0], [0, 1, 0], [0, 0, 0], [0, 0, 1], [0, 0, 0]])
     assert np.allclose(matrix, expected)
 
-    matrix = note_data2.to_matrix(
-        time_scale, "s", frequency_scale, "hz", "likelihood", True
-    )
-    expected = np.array(
-        [[0, 0, 0], [0, 0, 0], [0, 0.1, 0], [0, 0, 0], [0, 0, 0.2], [0, 0, 0]]
-    )
+    matrix = note_data2.to_matrix(time_scale, "s", frequency_scale, "hz", "likelihood", True)
+    expected = np.array([[0, 0, 0], [0, 0, 0], [0, 0.1, 0], [0, 0, 0], [0, 0, 0.2], [0, 0, 0]])
     assert np.allclose(matrix, expected)
 
     # test to_multif0
@@ -301,34 +285,24 @@ def test_note_data():
     assert np.allclose(intervals_me, intervals)
     assert np.allclose(pitches_me, notes)
     assert np.allclose(velocity_me, np.array([0, 127.0, 127.0]))
-    scores = mir_eval.transcription.evaluate(
-        intervals_me, pitches_me, intervals_me, pitches_me
-    )
+    scores = mir_eval.transcription.evaluate(intervals_me, pitches_me, intervals_me, pitches_me)
     scores = mir_eval.transcription_velocity.evaluate(
         intervals_me, pitches_me, velocity_me, intervals_me, pitches_me, velocity_me
     )
 
-    note_data = annotations.NoteData(
-        intervals, "ms", np.array([60.0, 70.0, 100.0]), "midi"
-    )
+    note_data = annotations.NoteData(intervals, "ms", np.array([60.0, 70.0, 100.0]), "midi")
     intervals_me, pitches_me, velocity_me = note_data.to_mir_eval()
-    assert np.allclose(
-        intervals_me, np.array([[0.001, 0.002], [0.0015, 0.003], [0.002, 0.003]])
-    )
+    assert np.allclose(intervals_me, np.array([[0.001, 0.002], [0.0015, 0.003], [0.002, 0.003]]))
     assert np.allclose(pitches_me, np.array([261.6255653, 466.16376152, 2637.0204553]))
     assert velocity_me is None
-    scores = mir_eval.transcription.evaluate(
-        intervals_me, pitches_me, intervals_me, pitches_me
-    )
+    mir_eval.transcription.evaluate(intervals_me, pitches_me, intervals_me, pitches_me)
 
 
 def test_chord_data():
     intervals = np.array([[1.0, 2.0], [1.5, 3.0], [2.0, 3.0]])
     labels = ["E:min", "A", "G:7"]
     confidence = np.array([0.1, 0.4, 0.2])
-    chord_data = annotations.ChordData(
-        intervals, "s", labels, "harte", confidence, "likelihood"
-    )
+    chord_data = annotations.ChordData(intervals, "s", labels, "harte", confidence, "likelihood")
     assert np.allclose(chord_data.intervals, intervals)
     assert chord_data.labels == labels
     assert np.allclose(chord_data.confidence, confidence)
@@ -378,9 +352,7 @@ def test_f0_data():
         resampled_f0.frequencies,
         np.array([0.0, 0.0, 100.0, 125.0, 150.0, 150.0, 0.0, 0.0]),
     )
-    assert np.allclose(
-        resampled_f0.voicing, np.array([0, 0, 0.1, 0.25, 0.4, 0.2, 0.0, 0.0])
-    )
+    assert np.allclose(resampled_f0.voicing, np.array([0, 0, 0.1, 0.25, 0.4, 0.2, 0.0, 0.0]))
     assert resampled_f0._confidence is None
 
     resampled_f0 = f0_data2.resample(new_times, "s")
@@ -393,12 +365,8 @@ def test_f0_data():
         resampled_f0.frequencies,
         np.array([0.0, 0.0, 100.0, 125.0, 150.0, 150.0, 0.0, 0.0]),
     )
-    assert np.allclose(
-        resampled_f0.voicing, np.array([0, 0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0])
-    )
-    assert np.allclose(
-        resampled_f0._confidence, np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0])
-    )
+    assert np.allclose(resampled_f0.voicing, np.array([0, 0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]))
+    assert np.allclose(resampled_f0._confidence, np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0]))
 
     resampled_f0 = f0_data3.resample(new_times, "s")
     assert resampled_f0.time_unit == "s"
@@ -410,12 +378,8 @@ def test_f0_data():
         resampled_f0.frequencies,
         np.array([0.0, 0.0, 100.0, 125.0, 150.0, 150.0, 0.0, 0.0]),
     )
-    assert np.allclose(
-        resampled_f0.voicing, np.array([0, 0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0])
-    )
-    assert np.allclose(
-        resampled_f0._confidence, np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 0.5])
-    )
+    assert np.allclose(resampled_f0.voicing, np.array([0, 0, 1.0, 1.0, 1.0, 1.0, 0.0, 0.0]))
+    assert np.allclose(resampled_f0._confidence, np.array([0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 0.5]))
 
     f0_note_class = annotations.F0Data(
         times, "s", np.array(["A", "B", "B", "F#"]), "note_name", voicing, "likelihood"
@@ -481,9 +445,7 @@ def test_multif0_data():
     times = np.array([1.0, 2.0, 3.0])
     frequencies = [[100.0], [150.0, 120.0], []]
     confidence = [[0.1], [0.4, 0.2], []]
-    f0_data = annotations.MultiF0Data(
-        times, "s", frequencies, "hz", confidence, "likelihood"
-    )
+    f0_data = annotations.MultiF0Data(times, "s", frequencies, "hz", confidence, "likelihood")
     assert np.allclose(f0_data.times, times)
     assert f0_data.time_unit == "s"
     assert f0_data.frequency_list == frequencies
@@ -616,17 +578,13 @@ def test_multif0_data():
 
     # test sparse index
     frequency_scale = np.array([50.0, 90.0, 130.0])
-    sparse_idx, voc = f0_data.to_sparse_index(
-        time_scale, "s", frequency_scale, "hz", "likelihood"
-    )
+    sparse_idx, voc = f0_data.to_sparse_index(time_scale, "s", frequency_scale, "hz", "likelihood")
     sparse_idx_expected = np.array([[1, 1], [2, 1]])
     assert np.allclose(sparse_idx, sparse_idx_expected)
     voc_expected = np.array([0.1, 0.1])
     assert np.allclose(voc, voc_expected)
 
-    sparse_idx, voc = f0_data2.to_sparse_index(
-        time_scale, "s", frequency_scale, "hz", "binary"
-    )
+    sparse_idx, voc = f0_data2.to_sparse_index(time_scale, "s", frequency_scale, "hz", "binary")
     sparse_idx_expected = np.array([[1, 1], [2, 1]])
     assert np.allclose(sparse_idx, sparse_idx_expected)
     voc_expected = np.array([1.0, 1.0])
@@ -653,9 +611,7 @@ def test_multif0_data():
     assert np.allclose(times_me, times)
     for flist, farr in zip(frequencies, frequencies_me):
         assert np.allclose(flist, farr)
-    scores = mir_eval.multipitch.evaluate(
-        times_me, frequencies_me, times_me, frequencies_me
-    )
+    mir_eval.multipitch.evaluate(times_me, frequencies_me, times_me, frequencies_me)
 
 
 def test_key_data():
@@ -680,18 +636,14 @@ def test_tempo_data():
     intervals = np.array([[1.0, 2.0], [1.5, 3.0], [2.0, 3.0]])
     value = np.array([140.0, 110.0, 111.0])
     confidence = np.array([0.1, 0.4, 0.2])
-    tempo_data = annotations.TempoData(
-        intervals, "s", value, "bpm", confidence, "likelihood"
-    )
+    tempo_data = annotations.TempoData(intervals, "s", value, "bpm", confidence, "likelihood")
     assert np.allclose(tempo_data.intervals, intervals)
     assert np.allclose(tempo_data.tempos, value)
     assert np.allclose(tempo_data.confidence, confidence)
 
     with pytest.raises(ValueError):
         value = np.array([140.0, -150.0, 20.0])
-        tempo_data = annotations.TempoData(
-            intervals, "s", value, "bpm", confidence, "likelihood"
-        )
+        tempo_data = annotations.TempoData(intervals, "s", value, "bpm", confidence, "likelihood")
 
 
 def test_event_data():
@@ -831,9 +783,7 @@ def test_convert_amplitude_units():
     expected = np.array([1, 1, 0])
     assert np.allclose(actual, expected)
 
-    actual = annotations.convert_amplitude_units(
-        conf_velocity, "velocity", "likelihood"
-    )
+    actual = annotations.convert_amplitude_units(conf_velocity, "velocity", "likelihood")
     expected = np.array([0.39370079, 1, 0])
     assert np.allclose(actual, expected)
 
@@ -880,9 +830,7 @@ def test_validate_lengths_equal():
         annotations.validate_lengths_equal([np.array([0, 1]), np.array([0])])
 
     with pytest.raises(ValueError):
-        annotations.validate_lengths_equal(
-            [np.array([0]), np.array([1]), np.array([2, 3])]
-        )
+        annotations.validate_lengths_equal([np.array([0]), np.array([1]), np.array([2, 3])])
 
 
 def test_validate_tempos():
@@ -898,12 +846,8 @@ def test_validate_tempos():
 def test_validate_beat_positions():
     annotations.validate_beat_positions(np.array([0, 1, 2, 3, 1, 2]), "bar_index")
     annotations.validate_beat_positions(np.array([0, 1, 2, 3, 4, 5]), "global_index")
-    annotations.validate_beat_positions(
-        np.array([0.0, 0.25, 0.5, 0.75, 0.0]), "bar_fraction"
-    )
-    annotations.validate_beat_positions(
-        np.array([1.0, 1.25, 1.5, 1.75, 2.0]), "global_fraction"
-    )
+    annotations.validate_beat_positions(np.array([0.0, 0.25, 0.5, 0.75, 0.0]), "bar_fraction")
+    annotations.validate_beat_positions(np.array([1.0, 1.25, 1.5, 1.75, 2.0]), "global_fraction")
 
     with pytest.raises(ValueError):
         annotations.validate_beat_positions(np.array([0, 1, 2]), "asdf")
@@ -924,9 +868,7 @@ def test_validate_beat_positions():
         annotations.validate_beat_positions(np.array([15, 16, 40]), "bar_index")
 
     with pytest.raises(ValueError):
-        annotations.validate_beat_positions(
-            np.array([0.5, 1.25, 1.5, 1.75, 2.0]), "bar_fraction"
-        )
+        annotations.validate_beat_positions(np.array([0.5, 1.25, 1.5, 1.75, 2.0]), "bar_fraction")
     # check it doesn't break with empty positions
     assert annotations.validate_beat_positions(None, "bar_fraction") == None
 

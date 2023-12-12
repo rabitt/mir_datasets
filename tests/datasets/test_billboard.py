@@ -1,7 +1,8 @@
-import pytest
 import numpy as np
-from mirdata.datasets import billboard
+import pytest
+
 from mirdata import annotations
+from mirdata.datasets import billboard
 
 
 def test_track():

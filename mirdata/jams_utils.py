@@ -1,5 +1,4 @@
-"""Utilities for converting mirdata Annotation classes to jams format.
-"""
+"""Utilities for converting mirdata Annotation classes to jams format."""
 import logging
 import os
 
@@ -73,7 +72,6 @@ def jams_converter(
 
     Returns:
         jams.JAMS: A JAMS object containing the annotations.
-
     """
 
     jam = jams.JAMS()
@@ -159,9 +157,7 @@ def jams_converter(
                     "multi_section_data should be a list of tuples, "
                     + "but contains a {} element".format(type(sections))
                 )
-            if not (
-                isinstance(sections[0], list) and isinstance(sections[0][0], tuple)
-            ):
+            if not (isinstance(sections[0], list) and isinstance(sections[0][0], tuple)):
                 raise TypeError(
                     "tuples in multi_section_data should contain a "
                     + "list of tuples, indicating annotations in the different "
@@ -290,7 +286,6 @@ def beats_to_jams(beat_data, description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_beat = jams.Annotation(namespace="beat")
     jannot_beat.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -318,7 +313,6 @@ def sections_to_jams(section_data, description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_seg = jams.Annotation(namespace="segment_open")
     jannot_seg.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -342,7 +336,6 @@ def chords_to_jams(chord_data, description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_chord = jams.Annotation(namespace="chord")
     jannot_chord.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -368,7 +361,6 @@ def notes_to_jams(note_data, description):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_note = jams.Annotation(namespace="note_hz")
     jannot_note.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -394,7 +386,6 @@ def keys_to_jams(key_data, description):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_key = jams.Annotation(namespace="key_mode")
     jannot_key.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -402,9 +393,7 @@ def keys_to_jams(key_data, description):
     if key_data is not None:
         if not isinstance(key_data, annotations.KeyData):
             raise TypeError("Type should be KeyData.")
-        for beg, end, key in zip(
-            key_data.intervals[:, 0], key_data.intervals[:, 1], key_data.keys
-        ):
+        for beg, end, key in zip(key_data.intervals[:, 0], key_data.intervals[:, 1], key_data.keys):
             jannot_key.append(time=beg, duration=end - beg, value=key)
     if description is not None:
         jannot_key.sandbox = jams.Sandbox(name=description)
@@ -420,14 +409,11 @@ def multi_sections_to_jams(multisection_data, description):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     # sections with multiple annotators and multiple level annotations
     jannot_multi = jams.Annotation(namespace="multi_segment")
     jannot_multi.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
-    jannot_multi.annotation_metadata = jams.AnnotationMetadata(
-        annotator={"name": description}
-    )
+    jannot_multi.annotation_metadata = jams.AnnotationMetadata(annotator={"name": description})
     for sections in multisection_data:
         if sections[0] is not None:
             if not isinstance(sections[0], annotations.SectionData):
@@ -450,7 +436,6 @@ def tempos_to_jams(tempo_data, description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_tempo = jams.Annotation(namespace="tempo")
     jannot_tempo.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -472,7 +457,6 @@ def events_to_jams(event_data, description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_events = jams.Annotation(namespace="tag_open")
     jannot_events.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -498,7 +482,6 @@ def f0s_to_jams(f0_data, description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_f0 = jams.Annotation(namespace="pitch_contour")
     jannot_f0.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -510,9 +493,7 @@ def f0s_to_jams(f0_data, description=None):
             conf = [None for t in f0_data.times]
         else:
             conf = f0_data._confidence
-        for t, f, v, c in zip(
-            f0_data.times, f0_data.frequencies, f0_data.voicing, conf
-        ):
+        for t, f, v, c in zip(f0_data.times, f0_data.frequencies, f0_data.voicing, conf):
             jannot_f0.append(
                 time=t,
                 duration=0.0,
@@ -533,7 +514,6 @@ def lyrics_to_jams(lyric_data, description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_lyric = jams.Annotation(namespace="lyrics")
     jannot_lyric.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
@@ -560,7 +540,6 @@ def tag_to_jams(tag_data, namespace="tag_open", description=None):
 
     Returns:
         jams.Annotation: jams annotation object.
-
     """
     jannot_tag = jams.Annotation(namespace=namespace)
     jannot_tag.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")

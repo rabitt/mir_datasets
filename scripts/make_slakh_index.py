@@ -54,9 +54,7 @@ def make_dataset_index(dataset_data_path, version):
 
             track_ids = []
             for track_id in metadata["stems"].keys():
-                audio_path = os.path.join(
-                    mtrack_path, "stems", "{}.{}".format(track_id, fmt)
-                )
+                audio_path = os.path.join(mtrack_path, "stems", "{}.{}".format(track_id, fmt))
                 midi_path = os.path.join(mtrack_path, "MIDI", "{}.mid".format(track_id))
                 midi_file_info = get_file_info(midi_path)
                 # skip tracks where there is no midi information (and thus no audio)
@@ -95,8 +93,6 @@ def main(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make dataset index file.")
-    PARSER.add_argument(
-        "dataset_data_path", type=str, help="Path to dataset data folder."
-    )
+    PARSER.add_argument("dataset_data_path", type=str, help="Path to dataset data folder.")
     PARSER.add_argument("version", type=str, help="Dataset version.")
     main(PARSER.parse_args())

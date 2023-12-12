@@ -38,25 +38,24 @@
         eighth-note feel, music with a sixteenth-note feel, and Latin jazz music.
 
     For more details, please visit: https://staff.aist.go.jp/m.goto/RWC-MDB/rwc-mdb-j.html
-
 """
 import csv
 import os
 from typing import Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, jams_utils
 
 # these functions are identical for all rwc datasets
 from mirdata.datasets.rwc_classical import (
+    LICENSE_INFO,
+    _duration_to_sec,
+    load_audio,
     load_beats,
     load_sections,
-    load_audio,
-    _duration_to_sec,
-    LICENSE_INFO,
 )
 
 BIBTEX = """@inproceedings{goto2002rwc,
@@ -107,7 +106,7 @@ DOWNLOAD_INFO = """
 
 
 class Track(core.Track):
-    """rwc_jazz Track class
+    """rwc_jazz Track class.
 
     Args:
         track_id (str): track id of the track
@@ -129,7 +128,6 @@ class Track(core.Track):
     Cached Properties:
         sections (SectionData): human-labeled section data
         beats (BeatData): human-labeled beat data
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -182,21 +180,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -208,9 +204,7 @@ class Track(core.Track):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The rwc_jazz dataset
-    """
+    """The rwc_jazz dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

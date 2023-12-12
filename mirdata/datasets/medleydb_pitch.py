@@ -1,4 +1,4 @@
-"""MedleyDB pitch Dataset Loader
+"""MedleyDB pitch Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -13,7 +13,6 @@
     evaluating automatic instrument recognition.
 
     For more details, please visit: https://medleydb.weebly.com
-
 """
 
 import csv
@@ -21,13 +20,12 @@ import json
 import os
 from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
-
 
 BIBTEX = """@inproceedings{bittner2014medleydb,
     Author = {Bittner, Rachel M and Salamon, Justin and Tierney, Mike and Mauch, Matthias and Cannam, Chris and Bello, Juan P},
@@ -59,13 +57,11 @@ DOWNLOAD_INFO = """
     {}
 """
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
-)
+LICENSE_INFO = "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
 
 
 class Track(core.Track):
-    """medleydb_pitch Track class
+    """medleydb_pitch Track class.
 
     Args:
         track_id (str): track id of the track
@@ -84,7 +80,6 @@ class Track(core.Track):
         pitch (F0Data): human annotated pitch
         notes_pyin (NoteData): notes estimated by the pyin algorithm.
             Not available in version 2.0
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -120,21 +115,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -154,14 +147,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_pitch(fhandle: TextIO) -> annotations.F0Data:
-    """load a MedleyDB pitch annotation file
+    """Load a MedleyDB pitch annotation file.
 
     Args:
         fhandle (str or file-like): str or file-like to pitch annotation file
@@ -171,7 +163,6 @@ def load_pitch(fhandle: TextIO) -> annotations.F0Data:
 
     Returns:
         F0Data: pitch annotation
-
     """
     times = []
     freqs = []
@@ -190,7 +181,7 @@ def load_pitch(fhandle: TextIO) -> annotations.F0Data:
 
 @io.coerce_to_string_io
 def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
-    """load a note annotation file
+    """Load a note annotation file.
 
     Args:
         fhandle (str or file-like): str or file-like to note annotation file
@@ -200,7 +191,6 @@ def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
 
     Returns:
         NoteData: note annotation
-
     """
     intervals = []
     freqs = []
@@ -219,9 +209,7 @@ def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The medleydb_pitch dataset
-    """
+    """The medleydb_pitch dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -248,20 +236,14 @@ class Dataset(core.Dataset):
 
         return metadata
 
-    @deprecated(
-        reason="Use mirdata.datasets.medleydb_pitch.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.medleydb_pitch.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.medleydb_pitch.load_pitch", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.medleydb_pitch.load_pitch", version="0.3.4")
     def load_pitch(self, *args, **kwargs):
         return load_pitch(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.medleydb_pitch.load_notes", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.medleydb_pitch.load_notes", version="0.3.4")
     def load_notes(self, *args, **kwargs):
         return load_notes(*args, **kwargs)

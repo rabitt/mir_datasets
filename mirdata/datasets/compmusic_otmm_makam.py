@@ -1,4 +1,4 @@
-"""OTMM Makam Recognition Dataset Loader
+"""OTMM Makam Recognition Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -40,12 +40,11 @@ import json
 import os
 from typing import TextIO
 
-from deprecated.sphinx import deprecated
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
-
 
 BIBTEX = """
 @software{sertan_senturk_2016_58413,
@@ -65,9 +64,7 @@ BIBTEX = """
 INDEXES = {
     "default": "dlfm2016-fix1",
     "test": "dlfm2016-fix1",
-    "dlfm2016-fix1": core.Index(
-        filename="compmusic_otmm_makam_index_dlfm2016-fix1.json"
-    ),
+    "dlfm2016-fix1": core.Index(filename="compmusic_otmm_makam_index_dlfm2016-fix1.json"),
 }
 
 REMOTES = {
@@ -78,13 +75,11 @@ REMOTES = {
     )
 }
 
-LICENSE_INFO = (
-    "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
-)
+LICENSE_INFO = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License"
 
 
 class Track(core.Track):
-    """OTMM Makam Track class
+    """OTMM Makam Track class.
 
     Args:
         track_id (str): track id of the track
@@ -101,7 +96,6 @@ class Track(core.Track):
     Cached Properties:
         pitch (F0Data): pitch annotation
         mb_tags (dict): dictionary containing the raw editorial track metadata from MusicBrainz
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -132,11 +126,10 @@ class Track(core.Track):
         return load_mb_tags(self.mb_tags_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             f0_data=[(self.pitch, "pitch")],
@@ -152,14 +145,13 @@ class Track(core.Track):
 
 @io.coerce_to_string_io
 def load_pitch(fhandle: TextIO) -> annotations.F0Data:
-    """Load pitch
+    """Load pitch.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a pitch annotation file
 
     Returns:
         F0Data: pitch annotation
-
     """
     time_step = 128 / 44100  # hop-size / fs
 
@@ -174,14 +166,13 @@ def load_pitch(fhandle: TextIO) -> annotations.F0Data:
 
 @io.coerce_to_string_io
 def load_mb_tags(fhandle: TextIO) -> dict:
-    """Load track metadata
+    """Load track metadata.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to musicbrainz metadata file
 
     Returns:
         Dict: metadata of the track
-
     """
     mb_tags = json.load(fhandle)
     if "duration" not in mb_tags.keys():
@@ -191,9 +182,7 @@ def load_mb_tags(fhandle: TextIO) -> dict:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The compmusic_otmm_makam dataset
-    """
+    """The compmusic_otmm_makam dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -235,14 +224,10 @@ class Dataset(core.Dataset):
 
         return metadata
 
-    @deprecated(
-        reason="Use mirdata.datasets.compmusic_otmm_makam.load_pitch", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.compmusic_otmm_makam.load_pitch", version="0.3.4")
     def load_pitch(self, *args, **kwargs):
         return load_pitch(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.compmusic_otmm_makam.load_mb_tags", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.compmusic_otmm_makam.load_mb_tags", version="0.3.4")
     def load_mb_tags(self, *args, **kwargs):
         return load_mb_tags(*args, **kwargs)

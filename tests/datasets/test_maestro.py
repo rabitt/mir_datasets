@@ -1,10 +1,11 @@
 import os
 import shutil
-import pretty_midi
-import numpy as np
 
-from mirdata.datasets import maestro
+import numpy as np
+import pretty_midi
+
 from mirdata import annotations, download_utils
+from mirdata.datasets import maestro
 from tests.test_utils import run_track_tests
 
 
@@ -77,9 +78,7 @@ def test_download_partial(httpserver):
     if os.path.exists(data_home):
         shutil.rmtree(data_home)
 
-    httpserver.serve_content(
-        open("tests/resources/download/maestro-v2.0.0.json", "r").read()
-    )
+    httpserver.serve_content(open("tests/resources/download/maestro-v2.0.0.json", "r").read())
     remotes = {
         "all": download_utils.RemoteFileMetadata(
             filename="1-maestro-v2.0.0.json",
@@ -134,9 +133,7 @@ def test_download(httpserver):
         shutil.rmtree(data_home)
 
     # download the full dataset
-    httpserver.serve_content(
-        open("tests/resources/download/maestro-v2.0.0.zip", "rb").read()
-    )
+    httpserver.serve_content(open("tests/resources/download/maestro-v2.0.0.zip", "rb").read())
 
     remotes = {
         "all": download_utils.RemoteFileMetadata(
@@ -195,9 +192,7 @@ def test_download(httpserver):
         shutil.rmtree(data_home)
 
     # download the midi-only zip
-    httpserver.serve_content(
-        open("tests/resources/download/maestro-v2.0.0-midi.zip", "rb").read()
-    )
+    httpserver.serve_content(open("tests/resources/download/maestro-v2.0.0-midi.zip", "rb").read())
 
     remotes = {
         "midi": download_utils.RemoteFileMetadata(
@@ -234,9 +229,7 @@ def test_download(httpserver):
         shutil.rmtree(data_home)
 
     # download only the metadata
-    httpserver.serve_content(
-        open("tests/resources/download/maestro-v2.0.0.json", "rb").read()
-    )
+    httpserver.serve_content(open("tests/resources/download/maestro-v2.0.0.json", "rb").read())
 
     remotes = {
         "metadata": download_utils.RemoteFileMetadata(

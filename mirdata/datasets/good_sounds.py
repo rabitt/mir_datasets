@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Good-Sounds Dataset Loader
+"""Good-Sounds Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -22,21 +22,17 @@
     Each note is recorded into a separate mono .flac audio file of 48kHz and 32 bits. The tonal characteristics are
     explained both in the the following section and the related publication. The database is meant for organizing the
     sounds in a handy way. It is organised in four different entities: sounds, takes, packs and ratings.
-
-
-
-
 """
 import json
 import os
-from typing import Optional, Tuple, BinaryIO
+from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import download_utils, jams_utils, core, io
+from mirdata import core, download_utils, io, jams_utils
 
 BIBTEX = """@inproceedings{romani2015real,
   title={A Real-Time System for Measuring Sound Goodness in Instrumental Sounds},
@@ -85,7 +81,7 @@ REMOTES = {
 
 
 class Track(core.Track):
-    """GOOD-SOUNDS Track class
+    """GOOD-SOUNDS Track class.
 
     Args:
         track_id (str): track id of the track
@@ -164,7 +160,6 @@ class Track(core.Track):
             * "scale-bad": bad example scale of one of the sounds defined in the project. (15 notes up and down).
         semitone (int): midi note
         pitch_reference (int): the reference pitch
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -175,20 +170,17 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     @core.cached_property
     def sound_info(self) -> dict:
-        return self._metadata()["sounds"][
-            str(self._metadata()["takes"][self.track_id]["sound_id"])
-        ]
+        return self._metadata()["sounds"][str(self._metadata()["takes"][self.track_id]["sound_id"])]
 
     @core.cached_property
     def take_info(self) -> dict:
@@ -264,16 +256,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The GOOD-SOUNDS dataset
-    """
+    """The GOOD-SOUNDS dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -298,33 +287,25 @@ class Dataset(core.Dataset):
             with open(packs, "r") as fhandle:
                 packs = json.load(fhandle)
         except FileNotFoundError:
-            raise FileNotFoundError(
-                "Packs metadata not found. Did you run .download()?"
-            )
+            raise FileNotFoundError("Packs metadata not found. Did you run .download()?")
 
         try:
             with open(ratings, "r") as fhandle:
                 ratings = json.load(fhandle)
         except FileNotFoundError:
-            raise FileNotFoundError(
-                "Ratings metadata not found. Did you run .download()?"
-            )
+            raise FileNotFoundError("Ratings metadata not found. Did you run .download()?")
 
         try:
             with open(sounds, "r") as fhandle:
                 sounds = json.load(fhandle)
         except FileNotFoundError:
-            raise FileNotFoundError(
-                "Sounds metadata not found. Did you run .download()?"
-            )
+            raise FileNotFoundError("Sounds metadata not found. Did you run .download()?")
 
         try:
             with open(takes, "r") as fhandle:
                 takes = json.load(fhandle)
         except FileNotFoundError:
-            raise FileNotFoundError(
-                "Takes metadata not found. Did you run .download()?"
-            )
+            raise FileNotFoundError("Takes metadata not found. Did you run .download()?")
 
         return {"packs": packs, "ratings": ratings, "sounds": sounds, "takes": takes}
 

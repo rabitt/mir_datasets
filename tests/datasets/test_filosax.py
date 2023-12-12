@@ -1,14 +1,13 @@
-"""
-Tests for Filosax_Lite
-"""
+"""Tests for Filosax_Lite."""
 import os
+
+import jams
 import numpy as np
 import pytest
-import jams
 
 from mirdata import annotations
 from mirdata.datasets import filosax
-from tests.test_utils import run_track_tests, run_multitrack_tests
+from tests.test_utils import run_multitrack_tests, run_track_tests
 
 
 def test_track():
@@ -122,9 +121,7 @@ def test_to_jams():
 
 
 def test_load_annotation():
-    annotation_path = (
-        "tests/resources/mir_datasets/filosax/Participant 1/01/annotations.json"
-    )
+    annotation_path = "tests/resources/mir_datasets/filosax/Participant 1/01/annotations.json"
     annotation_data = filosax.load_annotation(annotation_path)
 
     # check types

@@ -1,10 +1,9 @@
 import argparse
-import hashlib
+import csv
 import json
 import os
-import csv
-from mirdata.validate import md5
 
+from mirdata.validate import md5
 
 INDEX_PATH = "../mirdata/datasets/indexes/billboard_index.json"
 
@@ -43,9 +42,7 @@ def make_index(data_path):
                     track_name = _index[track_id][3]
                     artist = _index[track_id][4]
 
-                    _release_date = "{}s".format(
-                        round(int(release_date.split("-")[0]), -1)
-                    )
+                    _release_date = "{}s".format(round(int(release_date.split("-")[0]), -1))
 
                     audio_path = os.path.join(
                         audio_dir, _release_date, artist, track_name, "audio.flac"

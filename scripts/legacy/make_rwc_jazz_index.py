@@ -1,8 +1,8 @@
 import argparse
+import csv
 import hashlib
 import json
 import os
-import csv
 
 RWC_JAZZ_INDEX_PATH = "../mirdata/indexes/rwc_jazz_index.json"
 
@@ -28,14 +28,12 @@ def md5(file_path):
 
 
 def make_rwc_jazz_index(data_path):
-    annotations_dir = os.path.join(data_path, 'RWC-Jazz', 'annotations')
-    metadata_dir = os.path.join(data_path, 'RWC-Jazz', 'metadata-master')
-    audio_dir = os.path.join(data_path, 'RWC-Jazz', 'audio')
-    annotations_files = os.listdir(
-        os.path.join(annotations_dir, 'AIST.RWC-MDB-J-2001.CHORUS')
-    )
-    metadata_file = os.path.join(metadata_dir, 'rwc-j.csv')
-    with open(metadata_file, 'r', encoding='utf-8') as fhandle:
+    annotations_dir = os.path.join(data_path, "RWC-Jazz", "annotations")
+    metadata_dir = os.path.join(data_path, "RWC-Jazz", "metadata-master")
+    audio_dir = os.path.join(data_path, "RWC-Jazz", "audio")
+    annotations_files = os.listdir(os.path.join(annotations_dir, "AIST.RWC-MDB-J-2001.CHORUS"))
+    metadata_file = os.path.join(metadata_dir, "rwc-j.csv")
+    with open(metadata_file, "r", encoding="utf-8") as fhandle:
         dialect = csv.Sniffer().sniff(fhandle.read(1024))
         fhandle.seek(0)
         reader = csv.reader(fhandle, dialect)
@@ -44,7 +42,7 @@ def make_rwc_jazz_index(data_path):
         track = []
         for line in reader:
             if not line[0] == "Piece No.":
-                p = '00' + line[0].split('.')[1][1:]
+                p = "00" + line[0].split(".")[1][1:]
                 piece.append(p[len(p) - 3 :])
                 suffix.append(line[1][1:])
                 track.append(line[2][-2:])
@@ -53,45 +51,41 @@ def make_rwc_jazz_index(data_path):
     mapping_folder = {p: s for p, s in zip(piece, suffix)}
 
     track_ids = sorted(
-        [
-            os.path.basename(f).split('.')[0]
-            for f in annotations_files
-            if not f == 'README.TXT'
-        ]
+        [os.path.basename(f).split(".")[0] for f in annotations_files if not f == "README.TXT"]
     )
 
     rwc_jazz_index = {}
     for track_id in track_ids:
         # audio
-        audio_folder = 'rwc-j-m{}'.format(mapping_folder[track_id[4:]])
+        audio_folder = "rwc-j-m{}".format(mapping_folder[track_id[4:]])
         audio_path = os.path.join(audio_dir, audio_folder)
         audio_track = str(int(mapping_track[track_id[4:]]))
         audio_checksum = md5(os.path.join(audio_path, "{}.wav".format(audio_track)))
         annot_checksum = []
         annot_rels = []
 
-        for f in ['CHORUS', 'BEAT']:
+        for f in ["CHORUS", "BEAT"]:
             if os.path.exists(
                 os.path.join(
                     annotations_dir,
-                    'AIST.RWC-MDB-J-2001.{}'.format(f),
-                    '{}.{}.TXT'.format(track_id, f),
+                    "AIST.RWC-MDB-J-2001.{}".format(f),
+                    "{}.{}.TXT".format(track_id, f),
                 )
             ):
                 annot_checksum.append(
                     md5(
                         os.path.join(
                             annotations_dir,
-                            'AIST.RWC-MDB-J-2001.{}'.format(f),
-                            '{}.{}.TXT'.format(track_id, f),
+                            "AIST.RWC-MDB-J-2001.{}".format(f),
+                            "{}.{}.TXT".format(track_id, f),
                         )
                     )
                 )
                 annot_rels.append(
                     os.path.join(
-                        'annotations',
-                        'AIST.RWC-MDB-J-2001.{}'.format(f),
-                        '{}.{}.TXT'.format(track_id, f),
+                        "annotations",
+                        "AIST.RWC-MDB-J-2001.{}".format(f),
+                        "{}.{}.TXT".format(track_id, f),
                     )
                 )
             else:
@@ -99,15 +93,15 @@ def make_rwc_jazz_index(data_path):
                 annot_rels.append(None)
 
         rwc_jazz_index[track_id] = {
-            'audio': (
-                os.path.join('audio', audio_folder, "{}.wav".format(audio_track)),
+            "audio": (
+                os.path.join("audio", audio_folder, "{}.wav".format(audio_track)),
                 audio_checksum,
             ),
-            'sections': (annot_rels[0], annot_checksum[0]),
-            'beats': (annot_rels[1], annot_checksum[1]),
+            "sections": (annot_rels[0], annot_checksum[0]),
+            "beats": (annot_rels[1], annot_checksum[1]),
         }
 
-    with open(RWC_JAZZ_INDEX_PATH, 'w') as fhandle:
+    with open(RWC_JAZZ_INDEX_PATH, "w") as fhandle:
         json.dump(rwc_jazz_index, fhandle, indent=2)
 
 
@@ -117,8 +111,6 @@ def main(args):
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="Make RWC-Jazz index file.")
-    PARSER.add_argument(
-        "rwc_jazz_data_path", type=str, help="Path to RWC-Jazz data folder."
-    )
+    PARSER.add_argument("rwc_jazz_data_path", type=str, help="Path to RWC-Jazz data folder.")
 
     main(PARSER.parse_args())

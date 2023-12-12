@@ -1,4 +1,4 @@
-"""iKala Dataset Loader
+"""IKala Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -11,19 +11,17 @@
     found under PitchLabel and Lyrics respectively.
 
     For more details, please visit: http://mac.citi.sinica.edu.tw/ikala/
-
 """
 import csv
 import os
 from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import annotations, core, download_utils, jams_utils, io
-
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """@inproceedings{chan2015vocal,
     title={Vocal activity informed singing voice separation with the iKala dataset},
@@ -74,7 +72,7 @@ Visit http://mac.citi.sinica.edu.tw/ikala/ for more details.
 
 
 class Track(core.Track):
-    """ikala Track class
+    """Ikala Track class.
 
     Args:
         track_id (str): track id of the track
@@ -94,7 +92,6 @@ class Track(core.Track):
         notes_pyin (NoteData): notes estimated by the pyin algorithm
         lyrics (LyricsData): human-annotated lyrics
         pronunciations (LyricsData): human-annotation lyric pronunciations
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -131,43 +128,39 @@ class Track(core.Track):
 
     @property
     def vocal_audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """solo vocal audio (mono)
+        """Solo vocal audio (mono)
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_vocal_audio(self.audio_path)
 
     @property
     def instrumental_audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """instrumental audio (mono)
+        """Instrumental audio (mono)
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_instrumental_audio(self.audio_path)
 
     @property
     def mix_audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """mixture audio (mono)
+        """Mixture audio (mono)
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_mix_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -185,7 +178,7 @@ class Track(core.Track):
 
 @io.coerce_to_bytes_io
 def load_vocal_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
-    """Load ikala vocal audio
+    """Load ikala vocal audio.
 
     Args:
         fhandle (str or file-like): File-like object or path to audio file
@@ -193,7 +186,6 @@ def load_vocal_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - audio signal
         * float - sample rate
-
     """
     audio, sr = librosa.load(fhandle, sr=None, mono=False)
     vocal_channel = audio[1, :]
@@ -202,7 +194,7 @@ def load_vocal_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 
 @io.coerce_to_bytes_io
 def load_instrumental_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
-    """Load ikala instrumental audio
+    """Load ikala instrumental audio.
 
     Args:
         fhandle (str or file-like): File-like object or path to audio file
@@ -210,7 +202,6 @@ def load_instrumental_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - audio signal
         * float - sample rate
-
     """
     audio, sr = librosa.load(fhandle, sr=None, mono=False)
     instrumental_channel = audio[0, :]
@@ -227,7 +218,6 @@ def load_mix_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - audio signal
         * float - sample rate
-
     """
     mixed_audio, sr = librosa.load(fhandle, sr=None, mono=True)
     # multipy by 2 because librosa averages the left and right channel.
@@ -236,7 +226,7 @@ def load_mix_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 
 @io.coerce_to_string_io
 def load_f0(fhandle: TextIO) -> annotations.F0Data:
-    """Load an ikala f0 annotation
+    """Load an ikala f0 annotation.
 
     Args:
         fhandle (str or file-like): File-like object or path to f0 annotation file
@@ -246,7 +236,6 @@ def load_f0(fhandle: TextIO) -> annotations.F0Data:
 
     Returns:
         F0Data: the f0 annotation data
-
     """
     lines = fhandle.readlines()
     f0_midi = np.array([float(line) for line in lines])
@@ -260,7 +249,7 @@ def load_f0(fhandle: TextIO) -> annotations.F0Data:
 
 @io.coerce_to_string_io
 def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
-    """load a note annotation file
+    """Load a note annotation file.
 
     Args:
         fhandle (str or file-like): str or file-like to note annotation file
@@ -270,7 +259,6 @@ def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
 
     Returns:
         NoteData: note annotation
-
     """
     intervals = []
     freqs = []
@@ -285,7 +273,7 @@ def load_notes(fhandle: TextIO) -> Optional[annotations.NoteData]:
 
 @io.coerce_to_string_io
 def load_lyrics(fhandle: TextIO) -> annotations.LyricData:
-    """Load an ikala lyrics annotation
+    """Load an ikala lyrics annotation.
 
     Args:
         fhandle (str or file-like): File-like object or path to lyric annotation file
@@ -295,7 +283,6 @@ def load_lyrics(fhandle: TextIO) -> annotations.LyricData:
 
     Returns:
         LyricData: lyric annotation data
-
     """
     # input: start time (ms), end time (ms), lyric, [pronunciation]
     reader = csv.reader(fhandle, delimiter=" ")
@@ -313,15 +300,13 @@ def load_lyrics(fhandle: TextIO) -> annotations.LyricData:
         else:
             pronunciations.append("")
 
-    lyrics_data = annotations.LyricData(
-        np.array([start_times, end_times]).T, "s", lyrics, "words"
-    )
+    lyrics_data = annotations.LyricData(np.array([start_times, end_times]).T, "s", lyrics, "words")
     return lyrics_data
 
 
 @io.coerce_to_string_io
 def load_pronunciations(fhandle: TextIO) -> annotations.LyricData:
-    """Load an ikala pronunciation annotation
+    """Load an ikala pronunciation annotation.
 
     Args:
         fhandle (str or file-like): File-like object or path to lyric annotation file
@@ -331,7 +316,6 @@ def load_pronunciations(fhandle: TextIO) -> annotations.LyricData:
 
     Returns:
         LyricData: pronunciation annotation data
-
     """
     # input: start time (ms), end time (ms), lyric, [pronunciation]
     reader = csv.reader(fhandle, delimiter=" ")
@@ -355,9 +339,7 @@ def load_pronunciations(fhandle: TextIO) -> annotations.LyricData:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The ikala dataset
-    """
+    """The ikala dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -392,9 +374,7 @@ class Dataset(core.Dataset):
     def load_vocal_audio(self, *args, **kwargs):
         return load_vocal_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.ikala.load_instrumental_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.ikala.load_instrumental_audio", version="0.3.4")
     def load_instrumental_audio(self, *args, **kwargs):
         return load_instrumental_audio(*args, **kwargs)
 
@@ -414,8 +394,6 @@ class Dataset(core.Dataset):
     def load_lyrics(self, *args, **kwargs):
         return load_lyrics(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.ikala.load_pronunciations", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.ikala.load_pronunciations", version="0.3.4")
     def load_pronunciations(self, *args, **kwargs):
         return load_pronunciations(*args, **kwargs)

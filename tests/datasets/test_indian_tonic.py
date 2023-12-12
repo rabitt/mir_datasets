@@ -1,8 +1,9 @@
 import os
+
 import pytest
-from tests.test_utils import run_track_tests
 
 from mirdata.datasets import compmusic_indian_tonic
+from tests.test_utils import run_track_tests
 
 
 def test_track():

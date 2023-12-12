@@ -1,21 +1,21 @@
-"""Can I play it? (CIPI) Dataset Loader
+"""Can I play it? (CIPI) Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
 
     The "Can I Play It?" (CIPI) dataset is a specialized collection of 652 classical piano scores, provided in a
     machine-readable MusicXML format and accompanied by integer-based difficulty levels ranging from 1 to 9, as
-    verified by expert pianists. Then, it provides embeddings for fingering and expresiveness of the piece. Each 
+    verified by expert pianists. Then, it provides embeddings for fingering and expresiveness of the piece. Each
     recording has multiple scores corresponding to it. This dataset focuses exclusively on classical piano music,
     offering a rich resource for music researchers, educators, and students. Developed by the Music Technology Group
-    in Barcelona, by P. Ramoneda et al. 
+    in Barcelona, by P. Ramoneda et al.
 
     The CIPI dataset facilitates various applications such as the study of musical complexity, the selection of
     appropriately leveled pieces for students, and general research in music education. The dataset, alongside
     embeddings of multiple dimensions of difficulty, has been made publicly available to encourage ongoing innovation
     and collaboration within the music education and research communities.
 
-    The dataset has been published alongside a paper in Expert Systems with Applications Journal. 
+    The dataset has been published alongside a paper in Expert Systems with Applications Journal.
 
     The dataset is shared under a Creative Commons Attribution Non Commercial Share Alike 4.0 International License, but
     need to be requested. Please do request the dataset here: https://zenodo.org/records/8037327. The dataset can only
@@ -24,10 +24,9 @@
 import json
 import logging
 import os
-from typing import Optional, List
+from typing import List, Optional
 
 from smart_open import open
-
 
 from mirdata import core, jams_utils
 
@@ -58,9 +57,7 @@ INDEXES = {
     "1.0": core.Index(filename="cipi_index_1.0.json"),
 }
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
-)
+LICENSE_INFO = "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
 
 DOWNLOAD_INFO = """
     Unfortunately the files of the CIPI dataset are available
@@ -77,7 +74,7 @@ DOWNLOAD_INFO = """
 
 
 class Track(core.Track):
-    """Can I play it? (CIPI) track class
+    """Can I play it? (CIPI) track class.
 
     Args:
         track_id (str): track id of the track
@@ -110,11 +107,7 @@ class Track(core.Track):
 
     @property
     def title(self) -> Optional[str]:
-        return (
-            self._track_metadata["work_name"]
-            if "work_name" in self._track_metadata
-            else None
-        )
+        return self._track_metadata["work_name"] if "work_name" in self._track_metadata else None
 
     @property
     def book(self) -> Optional[str]:
@@ -126,25 +119,15 @@ class Track(core.Track):
 
     @property
     def composer(self) -> Optional[str]:
-        return (
-            self._track_metadata["composer"]
-            if "composer" in self._track_metadata
-            else None
-        )
+        return self._track_metadata["composer"] if "composer" in self._track_metadata else None
 
     @property
     def musicxml_paths(self) -> List[str]:
-        return (
-            list(self._track_metadata["path"].values())
-            if "path" in self._track_metadata
-            else []
-        )
+        return list(self._track_metadata["path"].values()) if "path" in self._track_metadata else []
 
     @property
     def difficulty_annotation(self) -> int:
-        return (
-            self._track_metadata["henle"] if "henle" in self._track_metadata else None
-        )
+        return self._track_metadata["henle"] if "henle" in self._track_metadata else None
 
     @core.cached_property
     def scores(self) -> list:
@@ -153,18 +136,15 @@ class Track(core.Track):
         except FileNotFoundError:
             raise FileNotFoundError(
                 "Some MusicXML files for track id {} not found. "
-                "Did you request, download, and store the files as indicated?".format(
-                    self.track_id
-                )
+                "Did you request, download, and store the files as indicated?".format(self.track_id)
             )
         return scores
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             metadata={
@@ -184,7 +164,7 @@ class Track(core.Track):
 def load_score(
     fhandle: str, data_home: str = "tests/resources/mir_datasets/cipi"
 ) -> music21.stream.Score:
-    """Load cipi score in music21 stream
+    """Load cipi score in music21 stream.
 
     Args:
         fhandle (str): path to MusicXML score
@@ -202,8 +182,9 @@ def load_score(
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Can I play it? (CIPI) dataset
+    """The Can I play it?
+
+    (CIPI) dataset
     """
 
     def __init__(self, data_home=None, version="default"):

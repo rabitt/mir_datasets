@@ -1,5 +1,4 @@
-"""
-IRMAS Loader
+"""IRMAS Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -86,15 +85,14 @@ IRMAS Loader
     This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License
 
     For more details, please visit: https://www.upf.edu/web/mtg/irmas
-
 """
 import csv
 import os
 from typing import BinaryIO, List, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
 from mirdata import core, download_utils, io, jams_utils
 
@@ -156,13 +154,11 @@ INST_DICT = [
 
 GENRE_DICT = ["cou_fol", "cla", "pop_roc", "lat_sou", "jaz_blu"]
 
-LICENSE_INFO = (
-    "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License."
-)
+LICENSE_INFO = "Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License."
 
 
 class Track(core.Track):
-    """IRMAS track class
+    """IRMAS track class.
 
     Args:
         track_id (str): track id of the track
@@ -179,7 +175,6 @@ class Track(core.Track):
 
     Cached Properties:
         instrument (list): list of predominant instruments as str
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -194,9 +189,7 @@ class Track(core.Track):
 
         # Dataset attributes
         self.predominant_instrument = (
-            os.path.basename(os.path.dirname(self.audio_path))
-            if self.split == "train"
-            else None
+            os.path.basename(os.path.dirname(self.audio_path)) if self.split == "train" else None
         )
         if self.split == "train" and (
             "dru" in self._audio_filename or "nod" in self._audio_filename
@@ -223,21 +216,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio signal
+        """The track's audio signal.
 
         Returns:
             * np.ndarray - the mono audio signal
             * float - The sample rate of the audio file
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """the track's data in jams format
+        """The track's data in jams format.
 
         Returns:
             jams.JAMS: return track data in jam format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -260,14 +251,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=44100, mono=False)
 
 
 @io.coerce_to_string_io
 def load_pred_inst(fhandle: TextIO) -> List[str]:
-    """Load predominant instrument of track
+    """Load predominant instrument of track.
 
     Args:
         fhandle (str or file-like): File-like object or path where the test annotations are stored.
@@ -279,9 +269,9 @@ def load_pred_inst(fhandle: TextIO) -> List[str]:
     reader = csv.reader(fhandle, delimiter=" ")
     for line in reader:
         inst_code = line[0][:3]
-        assert (
-            inst_code in INST_DICT
-        ), "Instrument {} not in instrument dictionary".format(inst_code)
+        assert inst_code in INST_DICT, "Instrument {} not in instrument dictionary".format(
+            inst_code
+        )
         pred_inst.append(inst_code)
 
     return pred_inst
@@ -289,9 +279,7 @@ def load_pred_inst(fhandle: TextIO) -> List[str]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The irmas dataset
-    """
+    """The irmas dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

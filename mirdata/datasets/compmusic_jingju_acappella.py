@@ -1,4 +1,4 @@
-"""Jingju A Cappella Singing Dataset Loader
+"""Jingju A Cappella Singing Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -44,20 +44,18 @@
         Wav audio ending with ‘upf’ or ‘lon’ is licensed under Creative Commons Attribution-NonCommercial 4.0 International.
         For the license of .wav audio ending with ‘qm’ from C4DM Queen Mary University of London, please refer to
         this page http://isophonics.org/SingingVoiceDataset
-
 """
 
 import csv
 import os
 from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
-
 
 BIBTEX = """
 @dataset{rong_gong_2018_1323561,
@@ -116,13 +114,12 @@ REMOTES = {
 
 LICENSE_INFO = (
     "audio files ending with upf or lon: Creative Commons Attribution Non-Commercial 4.0"
-    " International, "
-    + "audio files ending with qm: http://isophonics.org/SingingVoiceDataset"
+    " International, " + "audio files ending with qm: http://isophonics.org/SingingVoiceDataset"
 )
 
 
 class Track(core.Track):
-    """Jingju A Cappella Singing Track class
+    """Jingju A Cappella Singing Track class.
 
     Args:
         track_id (str): track id of the track
@@ -143,7 +140,6 @@ class Track(core.Track):
         phrase_char (LyricsData): lyric phrase annotation in chinese
         phrase (LyricsData): lyric phrase annotation in western characters
         syllable (EventData): syllable annotation
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -182,21 +178,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -226,14 +220,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 
 @io.coerce_to_string_io
 def load_phonemes(fhandle: TextIO) -> annotations.LyricData:
-    """Load phonemes
+    """Load phonemes.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a phoneme annotation file
 
     Returns:
         LyricData: phoneme annotation
-
     """
 
     start_times = []
@@ -253,14 +246,13 @@ def load_phonemes(fhandle: TextIO) -> annotations.LyricData:
 
 @io.coerce_to_string_io
 def load_phrases(fhandle: TextIO) -> annotations.LyricData:
-    """Load lyric phrases annotation
+    """Load lyric phrases annotation.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a lyric annotation file
 
     Returns:
         LyricData: lyric phrase annotation
-
     """
     start_times = []
     end_times = []
@@ -271,21 +263,18 @@ def load_phrases(fhandle: TextIO) -> annotations.LyricData:
         end_times.append(float(line[1]))
         lyrics.append(line[2] if line[2] != "sil" else "")
 
-    return annotations.LyricData(
-        np.array([start_times, end_times]).T, "s", lyrics, "words"
-    )
+    return annotations.LyricData(np.array([start_times, end_times]).T, "s", lyrics, "words")
 
 
 @io.coerce_to_string_io
 def load_syllable(fhandle: TextIO) -> annotations.LyricData:
-    """Load syllable
+    """Load syllable.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a syllable annotation file
 
     Returns:
         LyricData: syllable annotation
-
     """
 
     start_times = []
@@ -297,16 +286,12 @@ def load_syllable(fhandle: TextIO) -> annotations.LyricData:
         end_times.append(float(line[1]))
         events.append(line[2] if line[2] != "sil" else "")
 
-    return annotations.LyricData(
-        np.array([start_times, end_times]).T, "s", events, "syllable_open"
-    )
+    return annotations.LyricData(np.array([start_times, end_times]).T, "s", events, "syllable_open")
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The compmusic_jingju_acappella dataset
-    """
+    """The compmusic_jingju_acappella dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -322,9 +307,7 @@ class Dataset(core.Dataset):
 
     @core.cached_property
     def _metadata(self):
-        metadata_path_laosheng = os.path.join(
-            self.data_home, "catalogue - laosheng.csv"
-        )
+        metadata_path_laosheng = os.path.join(self.data_home, "catalogue - laosheng.csv")
         # metadata_path_dan = os.path.join(
         #     self.data_home,
         #     "catalogue - dan.csv",
@@ -343,26 +326,18 @@ class Dataset(core.Dataset):
                 data_home = os.path.dirname(metadata_path_laosheng)
                 metadata["data_home"] = data_home
         except FileNotFoundError:
-            raise FileNotFoundError(
-                "laosheng metadata not found. Did you run .download()?"
-            )
+            raise FileNotFoundError("laosheng metadata not found. Did you run .download()?")
 
         return metadata
 
-    @deprecated(
-        reason="Use mirdata.datasets.jingju_acapella.load_phonemes", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.jingju_acapella.load_phonemes", version="0.3.4")
     def load_phonemes(self, *args, **kwargs):
         return load_phonemes(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.jingju_acapella.load_phrases", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.jingju_acapella.load_phrases", version="0.3.4")
     def load_phrases(self, *args, **kwargs):
         return load_phrases(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.jingju_acapella.load_syllable", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.jingju_acapella.load_syllable", version="0.3.4")
     def load_syllable(self, *args, **kwargs):
         return load_syllable(*args, **kwargs)

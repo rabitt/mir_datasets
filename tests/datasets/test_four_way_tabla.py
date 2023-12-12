@@ -1,10 +1,10 @@
 import os
+
 import numpy as np
 
-from tests.test_utils import run_track_tests
 from mirdata import annotations
-
 from mirdata.datasets import four_way_tabla
+from tests.test_utils import run_track_tests
 
 
 def test_track():

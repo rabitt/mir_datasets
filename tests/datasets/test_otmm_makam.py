@@ -1,5 +1,7 @@
 import os
+
 import numpy as np
+
 from mirdata import annotations
 from mirdata.datasets import compmusic_otmm_makam
 from tests.test_utils import run_track_tests
@@ -269,10 +271,7 @@ def test_to_jams():
         }
     ]
     assert metadata["title"] == "A\u015fka Merak\u0131m Ezelden"
-    assert (
-        metadata["url"]
-        == "http://musicbrainz.org/work/cafcdeaf-e966-4ff0-84fb-f660d2b68365"
-    )
+    assert metadata["url"] == "http://musicbrainz.org/work/cafcdeaf-e966-4ff0-84fb-f660d2b68365"
     assert metadata["artist_credits"] == [
         {
             "mbid": "fd8bceee-b3a4-4870-851a-0374f5542751",
@@ -429,10 +428,7 @@ def test_to_jams():
         },
     ]
     assert metadata["duration"] == 275
-    assert (
-        metadata["path"]
-        == "../data/Kurdilihicazkar/cafcdeaf-e966-4ff0-84fb-f660d2b68365.mp3"
-    )
+    assert metadata["path"] == "../data/Kurdilihicazkar/cafcdeaf-e966-4ff0-84fb-f660d2b68365.mp3"
     assert metadata["works"] == [
         {
             "mbid": "753ff394-dec1-422b-991f-227d8f848532",
@@ -540,10 +536,7 @@ def test_load_mb_tags():
         }
     ]
     assert mb_tags["title"] == "A\u015fka Merak\u0131m Ezelden"
-    assert (
-        mb_tags["url"]
-        == "http://musicbrainz.org/work/cafcdeaf-e966-4ff0-84fb-f660d2b68365"
-    )
+    assert mb_tags["url"] == "http://musicbrainz.org/work/cafcdeaf-e966-4ff0-84fb-f660d2b68365"
     assert mb_tags["artist_credits"] == [
         {
             "mbid": "fd8bceee-b3a4-4870-851a-0374f5542751",
@@ -700,10 +693,7 @@ def test_load_mb_tags():
         },
     ]
     assert mb_tags["duration"] == 275
-    assert (
-        mb_tags["path"]
-        == "../data/Kurdilihicazkar/cafcdeaf-e966-4ff0-84fb-f660d2b68365.mp3"
-    )
+    assert mb_tags["path"] == "../data/Kurdilihicazkar/cafcdeaf-e966-4ff0-84fb-f660d2b68365.mp3"
     assert mb_tags["works"] == [
         {
             "mbid": "753ff394-dec1-422b-991f-227d8f848532",

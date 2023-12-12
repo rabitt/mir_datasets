@@ -1,4 +1,4 @@
-"""MedleyDB melody Dataset Loader
+"""MedleyDB melody Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -13,7 +13,6 @@
     evaluating automatic instrument recognition.
 
     For more details, please visit: https://medleydb.weebly.com
-
 """
 
 import csv
@@ -21,9 +20,9 @@ import json
 import os
 from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, io, jams_utils
@@ -51,13 +50,11 @@ DOWNLOAD_INFO = """
     {}
 """
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
-)
+LICENSE_INFO = "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
 
 
 class Track(core.Track):
-    """medleydb_melody Track class
+    """medleydb_melody Track class.
 
     Args:
         track_id (str): track id of the track
@@ -79,7 +76,6 @@ class Track(core.Track):
         melody1 (F0Data): the pitch of the single most predominant source (often the voice)
         melody2 (F0Data): the pitch of the predominant source for each point in time
         melody3 (MultiF0Data): the pitch of any melodic source. Allows for more than one f0 value at a time
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -129,21 +125,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         # jams does not support multiF0, so we skip melody3
         return jams_utils.jams_converter(
@@ -163,14 +157,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_melody(fhandle: TextIO) -> annotations.F0Data:
-    """Load a MedleyDB melody1 or melody2 annotation file
+    """Load a MedleyDB melody1 or melody2 annotation file.
 
     Args:
         fhandle (str or file-like): File-like object or path to a melody annotation file
@@ -180,7 +173,6 @@ def load_melody(fhandle: TextIO) -> annotations.F0Data:
 
     Returns:
         F0Data: melody data
-
     """
     times = []
     freqs = []
@@ -200,7 +192,7 @@ def load_melody(fhandle: TextIO) -> annotations.F0Data:
 
 @io.coerce_to_string_io
 def load_melody3(fhandle: TextIO) -> annotations.MultiF0Data:
-    """Load a MedleyDB melody3 annotation file
+    """Load a MedleyDB melody3 annotation file.
 
     Args:
         fhandle (str or file-like): File-like object or melody 3 melody annotation path
@@ -210,7 +202,6 @@ def load_melody3(fhandle: TextIO) -> annotations.MultiF0Data:
 
     Returns:
         MultiF0Data: melody 3 annotation data
-
     """
     times = []
     freqs_list = []
@@ -222,17 +213,13 @@ def load_melody3(fhandle: TextIO) -> annotations.MultiF0Data:
         conf_list.append([1.0 for v in line[1:] if float(v) != 0])
 
     times = np.array(times)  # type: ignore
-    melody_data = annotations.MultiF0Data(
-        times, "s", freqs_list, "hz", conf_list, "binary"
-    )
+    melody_data = annotations.MultiF0Data(times, "s", freqs_list, "hz", conf_list, "binary")
     return melody_data
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The medleydb_melody dataset
-    """
+    """The medleydb_melody dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -258,20 +245,14 @@ class Dataset(core.Dataset):
 
         return metadata
 
-    @deprecated(
-        reason="Use mirdata.datasets.medleydb_melody.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.medleydb_melody.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.medleydb_melody.load_melody", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.medleydb_melody.load_melody", version="0.3.4")
     def load_melody(self, *args, **kwargs):
         return load_melody(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.medleydb_melody.load_melody3", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.medleydb_melody.load_melody3", version="0.3.4")
     def load_melody3(self, *args, **kwargs):
         return load_melody3(*args, **kwargs)

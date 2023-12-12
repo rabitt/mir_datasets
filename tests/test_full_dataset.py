@@ -1,13 +1,12 @@
-"""
-This test takes a long time, but it makes sure that the datset can be locally downloaded,
-validated successfully, and loaded.
-"""
+"""This test takes a long time, but it makes sure that the datset can be
+locally downloaded, validated successfully, and loaded."""
 import os
+
 import pytest
 import tqdm
 
-from tests.test_utils import get_attributes_and_properties
 import mirdata
+from tests.test_utils import get_attributes_and_properties
 
 
 @pytest.fixture()
@@ -44,12 +43,8 @@ def test_validation(skip_remote, dataset):
     # run validation
     missing_files, invalid_checksums = dataset.validate(verbose=True)
 
-    assert missing_files == {
-        key: {} for key in dataset._index.keys() if not key == "version"
-    }
-    assert invalid_checksums == {
-        key: {} for key in dataset._index.keys() if not key == "version"
-    }
+    assert missing_files == {key: {} for key in dataset._index.keys() if not key == "version"}
+    assert invalid_checksums == {key: {} for key in dataset._index.keys() if not key == "version"}
 
 
 def test_load_tracks(skip_remote, dataset):
@@ -70,13 +65,13 @@ def test_load_tracks(skip_remote, dataset):
         track_data = get_attributes_and_properties(track)
 
         for attr in track_data["attributes"]:
-            ret = getattr(track, attr)
+            getattr(track, attr)
 
         for prop in track_data["properties"]:
-            ret = getattr(track, prop)
+            getattr(track, prop)
 
         for cprop in track_data["cached_properties"]:
-            ret = getattr(track, cprop)
+            getattr(track, cprop)
 
         jam = track.to_jams()
         assert jam.validate()
@@ -100,13 +95,13 @@ def test_load_mtracks(skip_remote, dataset):
         mtrack_data = get_attributes_and_properties(mtrack)
 
         for attr in mtrack_data["attributes"]:
-            ret = getattr(mtrack, attr)
+            getattr(mtrack, attr)
 
         for prop in mtrack_data["properties"]:
-            ret = getattr(mtrack, prop)
+            getattr(mtrack, prop)
 
         for cprop in mtrack_data["cached_properties"]:
-            ret = getattr(mtrack, cprop)
+            getattr(mtrack, cprop)
 
         jam = mtrack.to_jams()
         assert jam.validate()
@@ -123,9 +118,7 @@ def test_index(skip_remote, dataset):
 
     if not any(key in dataset._index.keys() for key in okeys):
         raise NotImplementedError(
-            "At least one of the optional top-level keys {} should be in the index".format(
-                okeys
-            )
+            "At least one of the optional top-level keys {} should be in the index".format(okeys)
         )
 
 

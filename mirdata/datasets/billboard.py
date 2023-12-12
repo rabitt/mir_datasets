@@ -1,4 +1,4 @@
-"""McGill Billboard Dataset Loader
+"""McGill Billboard Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -11,18 +11,14 @@
 import csv
 import os
 import re
-from typing import BinaryIO, TextIO, Optional, Tuple, Dict, List
+from typing import BinaryIO, Dict, List, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import download_utils
-from mirdata import jams_utils
-from mirdata import core
-from mirdata import annotations
-from mirdata import io
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @inproceedings{burgoyne_billboard,
@@ -83,7 +79,7 @@ http://creativecommons.org/publicdomain/zero/1.0/legalcode.
 
 
 class Track(core.Track):
-    """McGill Billboard Dataset Track class
+    """McGill Billboard Dataset Track class.
 
     Args:
         track_id (str): track id of the track
@@ -175,7 +171,8 @@ class Track(core.Track):
 
     @core.cached_property
     def chroma(self):
-        """Non-negative-least-squares (NNLS) chroma vectors from the Chordino Vamp plug-in
+        """Non-negative-least-squares (NNLS) chroma vectors from the Chordino
+        Vamp plug-in.
 
         Returns:
             np.ndarray - NNLS chroma vector
@@ -186,7 +183,7 @@ class Track(core.Track):
 
     @core.cached_property
     def tuning(self):
-        """Tuning estimates from the Chordino Vamp plug-in
+        """Tuning estimates from the Chordino Vamp plug-in.
 
         Returns:
             list - list of of tuning estimates []
@@ -196,39 +193,31 @@ class Track(core.Track):
 
     @core.cached_property
     def sections(self):
-        return load_sections(
-            os.path.join(self._data_home, self._track_paths["salami"][0])
-        )
+        return load_sections(os.path.join(self._data_home, self._track_paths["salami"][0]))
 
     @core.cached_property
     def named_sections(self):
-        return load_named_sections(
-            os.path.join(self._data_home, self._track_paths["salami"][0])
-        )
+        return load_named_sections(os.path.join(self._data_home, self._track_paths["salami"][0]))
 
     @core.cached_property
     def salami_metadata(self):
-        return _parse_salami_metadata(
-            os.path.join(self._data_home, self._track_paths["salami"][0])
-        )
+        return _parse_salami_metadata(os.path.join(self._data_home, self._track_paths["salami"][0]))
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -257,7 +246,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
@@ -271,7 +259,6 @@ def load_chords(fhandle: TextIO):
 
     Returns:
         ChordData: chord data
-
     """
     start_times = []
     end_times = []
@@ -284,9 +271,7 @@ def load_chords(fhandle: TextIO):
             end_times.append(float(l[1]))
             chords.append(l[2])
 
-    chord_data = annotations.ChordData(
-        np.array([start_times, end_times]).T, "s", chords, "jams"
-    )
+    chord_data = annotations.ChordData(np.array([start_times, end_times]).T, "s", chords, "jams")
     return chord_data
 
 
@@ -298,7 +283,6 @@ def load_sections(fpath: str):
 
     Returns:
         SectionData: section data
-
     """
     return _load_sections(fpath, "letter")
 
@@ -311,7 +295,6 @@ def load_named_sections(fpath: str):
 
     Returns:
         SectionData: section data
-
     """
     return _load_sections(fpath, "name")
 
@@ -452,18 +435,14 @@ def _timed_sections(parsed: Dict) -> List:
         if len(sections):
             seconds_per_chord = dt / float(len(sections))
             for c in sections:
-                timed_sections.append(
-                    {"time": tic, "section": c, "length": seconds_per_chord}
-                )
+                timed_sections.append({"time": tic, "section": c, "length": seconds_per_chord})
                 tic = tic + seconds_per_chord
     return timed_sections
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The McGill Billboard dataset
-    """
+    """The McGill Billboard dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -511,9 +490,7 @@ class Dataset(core.Dataset):
     def load_sections(self, *args, **kwargs):
         return load_sections(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.billboard.load_named_sections", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.billboard.load_named_sections", version="0.3.4")
     def load_named_sections(self, *args, **kwargs):
         return load_named_sections(*args, **kwargs)
 

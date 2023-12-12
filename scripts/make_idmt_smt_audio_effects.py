@@ -1,11 +1,10 @@
 import argparse
 import json
 import os
+
 from mirdata.validate import md5
 
-IDMT_SMT_AUDIO_EFFECTS_INDEX_PATH = (
-    "../mirdata/datasets/indexes/idmt_smt_audio_effects_index.json"
-)
+IDMT_SMT_AUDIO_EFFECTS_INDEX_PATH = "../mirdata/datasets/indexes/idmt_smt_audio_effects_index.json"
 
 idmt_smt_audio_effects_index = {"version": "1.0", "tracks": {}, "metadata": {}}
 
@@ -51,9 +50,7 @@ def main(args):
 
 
 if __name__ == "__main__":
-    PARSER = argparse.ArgumentParser(
-        description="Make IDMT SMT AUDIO EFFECTS index file."
-    )
+    PARSER = argparse.ArgumentParser(description="Make IDMT SMT AUDIO EFFECTS index file.")
     PARSER.add_argument(
         "idmt_smt_audio_effects_data_path",
         type=str,

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""MTG jamendo autotagging moodtheme Dataset Loader
+"""MTG jamendo autotagging moodtheme Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -38,13 +38,14 @@
 """
 import csv
 import os
-from typing import Optional, Tuple, BinaryIO
+from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
-from mirdata import download_utils, jams_utils, core
+from deprecated.sphinx import deprecated
 from smart_open import open
+
+from mirdata import core, download_utils, jams_utils
 
 BIBTEX = """@conference {bogdanov2019mtg,
     author = "Bogdanov, Dmitry and Won, Minz and Tovstogan, Philip and Porter, Alastair and Serra, Xavier",
@@ -86,7 +87,7 @@ REMOTES = {
 
 
 class Track(core.Track):
-    """MTG jamendo autotagging moodtheme Track class
+    """MTG jamendo autotagging moodtheme Track class.
 
     Args:
         track_id (str): track id of the track (JAMENDO track id)
@@ -99,7 +100,6 @@ class Track(core.Track):
         album_id (str): JAMENDO album id
         duration (float): track duration
         tags (str): autotagging moodtheme annotations
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -110,12 +110,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -158,16 +157,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=False)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The MTG jamendo autotagging moodtheme dataset
-    """
+    """The MTG jamendo autotagging moodtheme dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -192,8 +188,7 @@ class Dataset(core.Dataset):
             with open(meta_path, "r") as fhandle:
                 reader = csv.DictReader(fhandle, delimiter="\t")
                 meta = {
-                    row["TRACK_ID"]: {k: row[k] for k in row if k != "TRACK_ID"}
-                    for row in reader
+                    row["TRACK_ID"]: {k: row[k] for k in row if k != "TRACK_ID"} for row in reader
                 }
         except FileNotFoundError:
             raise FileNotFoundError("Metadata not found. Did you run .download()?")
@@ -247,7 +242,7 @@ class Dataset(core.Dataset):
         return load_audio(*args, **kwargs)
 
     def get_track_splits(self, split_number=0):
-        """Get predetermined track splits released alongside this dataset
+        """Get predetermined track splits released alongside this dataset.
 
         Args:
             split_number (int): which split split_number to use (0, 1, 2, 3 or 4)
@@ -256,9 +251,7 @@ class Dataset(core.Dataset):
             dict: splits, keyed by split name and with values of lists of track_ids
         """
         if split_number not in [0, 1, 2, 3, 4]:
-            raise ValueError(
-                f"split_number must be 0, 1, 2, 3, or 4, got {split_number}"
-            )
+            raise ValueError(f"split_number must be 0, 1, 2, 3, or 4, got {split_number}")
 
         return self._metadata["splits"][split_number]
 

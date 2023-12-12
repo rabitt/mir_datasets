@@ -1,10 +1,10 @@
-"""Utility functions for mirdata"""
+"""Utility functions for mirdata."""
 
 import hashlib
 import logging
 import os
-import tqdm
 
+import tqdm
 from smart_open import open
 
 
@@ -16,7 +16,6 @@ def md5(file_path):
 
     Returns:
         str: md5 hash of data in file_path
-
     """
     hash_md5 = hashlib.md5()
     with open(file_path, "rb", compression="disable") as fhandle:
@@ -26,19 +25,18 @@ def md5(file_path):
 
 
 def log_message(message, verbose=True):
-    """Helper function to log message
+    """Helper function to log message.
 
     Args:
         message (str): message to log
         verbose (bool): if false, the message is not logged
-
     """
     if verbose:
         logging.info(message)
 
 
 def validate(local_path, checksum):
-    """Validate that a file exists and has the correct checksum
+    """Validate that a file exists and has the correct checksum.
 
     Args:
         local_path (str): file path
@@ -47,7 +45,6 @@ def validate(local_path, checksum):
     Returns:
         * bool - True if file exists
         * bool - True if checksum matches
-
     """
     # validate that the file exists on disk
     try:
@@ -66,7 +63,7 @@ def validate(local_path, checksum):
 
 
 def validate_files(file_dict, data_home, verbose):
-    """Validate files
+    """Validate files.
 
     Args:
         file_dict (dict): dictionary of file information
@@ -76,7 +73,6 @@ def validate_files(file_dict, data_home, verbose):
     Returns:
         * dict - missing files
         * dict - files with invalid checksums
-
     """
     missing = {}
     invalid = {}
@@ -105,7 +101,7 @@ def validate_files(file_dict, data_home, verbose):
 
 
 def validate_metadata(file_dict, data_home, verbose):
-    """Validate files
+    """Validate files.
 
     Args:
         file_dict (dict): dictionary of file information
@@ -115,7 +111,6 @@ def validate_metadata(file_dict, data_home, verbose):
     Returns:
         * dict - missing files
         * dict - files with invalid checksums
-
     """
     missing = {}
     invalid = {}
@@ -138,7 +133,7 @@ def validate_metadata(file_dict, data_home, verbose):
 
 
 def validate_index(dataset_index, data_home, verbose=True):
-    """Validate files in a dataset's index
+    """Validate files in a dataset's index.
 
     Args:
         dataset_index (list): dataset indices
@@ -148,7 +143,6 @@ def validate_index(dataset_index, data_home, verbose=True):
     Returns:
         * dict - file paths that are in the index but missing locally
         * dict - file paths with differing checksums
-
     """
     missing_files = {}
     invalid_checksums = {}
@@ -162,9 +156,7 @@ def validate_index(dataset_index, data_home, verbose=True):
         invalid_checksums["metadata"] = invalid_metadata
 
     if "tracks" in dataset_index and dataset_index["tracks"] is not None:
-        missing_tracks, invalid_tracks = validate_files(
-            dataset_index["tracks"], data_home, verbose
-        )
+        missing_tracks, invalid_tracks = validate_files(dataset_index["tracks"], data_home, verbose)
         missing_files["tracks"] = missing_tracks
         invalid_checksums["tracks"] = invalid_tracks
 
@@ -179,9 +171,9 @@ def validate_index(dataset_index, data_home, verbose=True):
 
 
 def validator(dataset_index, data_home, verbose=True):
-    """Checks the existence and validity of files stored locally with
-    respect to the paths and file checksums stored in the reference index.
-    Logs invalid checksums and missing files.
+    """Checks the existence and validity of files stored locally with respect
+    to the paths and file checksums stored in the reference index. Logs invalid
+    checksums and missing files.
 
     Args:
         dataset_index (list): dataset indices
@@ -195,7 +187,6 @@ def validator(dataset_index, data_home, verbose=True):
         invalid_checksums (list): List of file paths that file exists in the
             dataset index but has a different checksum compare to the reference
             checksum.
-
     """
     missing_files, invalid_checksums = validate_index(dataset_index, data_home, verbose)
 
@@ -220,9 +211,7 @@ def validator(dataset_index, data_home, verbose=True):
             has_any_invalid_checksum = True
 
     if not (has_any_missing_file or has_any_invalid_checksum):
-        log_message(
-            "Success: the dataset is complete and all files are valid.", verbose
-        )
+        log_message("Success: the dataset is complete and all files are valid.", verbose)
         log_message("-" * 20, verbose)
 
     return missing_files, invalid_checksums

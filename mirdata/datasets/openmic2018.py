@@ -1,4 +1,4 @@
-"""OpenMIC-2018 Dataset Loader
+"""OpenMIC-2018 Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -37,14 +37,14 @@
 import json
 import re
 from pathlib import Path
-from typing import BinaryIO, Optional, Tuple, Dict, List
+from typing import BinaryIO, Dict, List, Optional, Tuple
 
 import librosa
 import numpy as np
 import pandas as pd
 from smart_open import open
 
-from mirdata import download_utils, jams_utils, core, io
+from mirdata import core, download_utils, io, jams_utils
 
 BIBTEX = """
 @inproceedings{DBLP:conf/ismir/HumphreyDM18,
@@ -121,7 +121,7 @@ INSTRUMENTS = {
 
 
 class Track(core.Track):
-    """openmic2018 Track class
+    """Openmic2018 Track class.
 
     Args:
         track_id (str): track id of the track
@@ -139,7 +139,6 @@ class Track(core.Track):
         title (str): title of the track
         url (str): web address to access the original recording on the Free Music Archive
         vggish (tuple): np.ndarrays for frame times and pre-computed VGGish features
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -157,7 +156,7 @@ class Track(core.Track):
 
     @property
     def split(self):
-        """Get the pre-defined split"""
+        """Get the pre-defined split."""
         return self._track_metadata.get("split")
 
     @property
@@ -189,9 +188,7 @@ class Track(core.Track):
             * genres: list of genre strings
         """
 
-        return list(
-            [g["genre_title"] for g in self._track_metadata.get("track_genres")]
-        )
+        return list([g["genre_title"] for g in self._track_metadata.get("track_genres")])
 
     @property
     def artist(self) -> Optional[str]:
@@ -214,7 +211,7 @@ class Track(core.Track):
 
     @property
     def url(self) -> Optional[str]:
-        """The URL on Free Music Archive for this track
+        """The URL on Free Music Archive for this track.
 
         Returns:
             * str - URL
@@ -223,7 +220,8 @@ class Track(core.Track):
 
     @property
     def start_time(self) -> float:
-        """The starting time (in seconds) of the selected excerpt within the track.
+        """The starting time (in seconds) of the selected excerpt within the
+        track.
 
         Returns:
             * float - starting time
@@ -232,18 +230,17 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     @property
     def vggish(self) -> Tuple[np.ndarray, np.ndarray]:
-        """The track's pre-computed VGGish features
+        """The track's pre-computed VGGish features.
 
         Returns:
             * np.ndarray - time indices (seconds) for each frame
@@ -279,7 +276,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the audio signal
         * float - The sample rate of the audio file
-
     """
     # -- load as 44100 mono
     return librosa.load(fhandle, sr=44100, mono=True)
@@ -288,7 +284,7 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 # -- use this decorator so the docs are complete
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """The OpenMIC-2018 dataset"""
+    """The OpenMIC-2018 dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -339,9 +335,7 @@ class Dataset(core.Dataset):
         with open(label_path, "r") as fdesc:
             labels = pd.read_csv(fdesc, index_col=0)
         # Pivot the labels into its own dataframe
-        labels = labels.pivot_table(
-            columns="instrument", values="relevance", index=labels.index
-        )
+        labels = labels.pivot_table(columns="instrument", values="relevance", index=labels.index)
 
         # Join to metadata
         metadata = metadata.join(labels)

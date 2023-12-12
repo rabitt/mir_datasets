@@ -1,4 +1,4 @@
-"""MAESTRO Dataset Loader
+"""MAESTRO Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -27,7 +27,6 @@
     This loader supports MAESTRO version 2.
 
     For more details, please visit: https://magenta.tensorflow.org/datasets/maestro
-
 """
 
 import json
@@ -35,14 +34,13 @@ import logging
 import os
 from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
 import pretty_midi
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import core, download_utils, io, jams_utils
-
 
 BIBTEX = """@inproceedings{
   hawthorne2018enabling,
@@ -82,13 +80,11 @@ REMOTES = {
     ),
 }
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
-)
+LICENSE_INFO = "Creative Commons Attribution Non-Commercial Share-Alike 4.0 (CC BY-NC-SA 4.0)."
 
 
 class Track(core.Track):
-    """MAESTRO Track class
+    """MAESTRO Track class.
 
     Args:
         track_id (str): track id of the track
@@ -108,7 +104,6 @@ class Track(core.Track):
     Cached Property:
         midi (pretty_midi.PrettyMIDI): object containing MIDI annotations
         notes (NoteData): annotated piano notes
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -152,21 +147,19 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -185,16 +178,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The maestro dataset
-    """
+    """The maestro dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -238,7 +228,7 @@ class Dataset(core.Dataset):
         return io.load_notes_from_midi(*args, **kwargs)
 
     def download(self, partial_download=None, force_overwrite=False, cleanup=False):
-        """Download the dataset
+        """Download the dataset.
 
         Args:
             partial_download (list or None):
@@ -252,7 +242,6 @@ class Dataset(core.Dataset):
         Raises:
             ValueError: if invalid keys are passed to partial_download
             IOError: if a downloaded file's checksum is different from expected
-
         """
         # in MAESTRO "metadata" is contained in "midi" is contained in "all"
         if partial_download is None or "all" in partial_download:

@@ -1,8 +1,8 @@
-import pytest
 import numpy as np
+import pytest
 
-from mirdata.datasets import scms
 from mirdata import annotations
+from mirdata.datasets import scms
 from tests.test_utils import run_track_tests
 
 
@@ -14,8 +14,7 @@ def test_track():
 
     expected_attributes = {
         "track_id": "Enta_Bhagyamu_2",
-        "audio_path": "tests/resources/mir_datasets/"
-        + "scms/SCMS/audio/Enta_Bhagyamu_2.wav",
+        "audio_path": "tests/resources/mir_datasets/" + "scms/SCMS/audio/Enta_Bhagyamu_2.wav",
         "pitch_path": "tests/resources/mir_datasets/"
         + "scms/SCMS/annotations/melody/Enta_Bhagyamu_2.csv",
         "activations_path": "tests/resources/mir_datasets/"
@@ -63,8 +62,7 @@ def test_to_jams():
 def test_load_pitch():
     # load a file which exists
     pitch_path = (
-        "tests/resources/mir_datasets/scms/SCMS/"
-        + "annotations/melody/Enta_Bhagyamu_2.csv"
+        "tests/resources/mir_datasets/scms/SCMS/" + "annotations/melody/Enta_Bhagyamu_2.csv"
     )
     pitch_data = scms.load_pitch(pitch_path)
 
@@ -87,8 +85,7 @@ def test_load_pitch():
 
 def test_load_activations():
     activations_path = (
-        "tests/resources/mir_datasets/scms/SCMS/"
-        + "annotations/activations/Enta_Bhagyamu_2.lab"
+        "tests/resources/mir_datasets/scms/SCMS/" + "annotations/activations/Enta_Bhagyamu_2.lab"
     )
     activations_data = scms.load_activations(activations_path)
 
@@ -105,8 +102,7 @@ def test_load_activations():
     assert activations_data.event_unit == "open"
 
     activations_path = (
-        "tests/resources/mir_datasets/scms/SCMS/"
-        + "annotations/activations/Enta_Bhagyamu_3.lab"
+        "tests/resources/mir_datasets/scms/SCMS/" + "annotations/activations/Enta_Bhagyamu_3.lab"
     )
     activations_data = scms.load_activations(activations_path)
     assert activations_data is None

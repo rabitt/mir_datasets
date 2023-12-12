@@ -2,6 +2,7 @@ import argparse
 import glob
 import json
 import os
+
 from mirdata.validate import md5
 
 IKALA_INDEX_PATH = "mirdata/datasets/indexes/ikala_index_{}.json"
@@ -20,15 +21,9 @@ def make_ikala_index(ikala_data_path, version):
     # top-key level tracks
     index_tracks = {}
     for track_id in track_ids:
-        audio_checksum = md5(
-            os.path.join(ikala_data_path, "Wavfile/{}.wav".format(track_id))
-        )
-        pitch_checksum = md5(
-            os.path.join(ikala_data_path, "PitchLabel/{}.pv".format(track_id))
-        )
-        lyrics_checksum = md5(
-            os.path.join(ikala_data_path, "Lyrics/{}.lab".format(track_id))
-        )
+        audio_checksum = md5(os.path.join(ikala_data_path, "Wavfile/{}.wav".format(track_id)))
+        pitch_checksum = md5(os.path.join(ikala_data_path, "PitchLabel/{}.pv".format(track_id)))
+        lyrics_checksum = md5(os.path.join(ikala_data_path, "Lyrics/{}.lab".format(track_id)))
         notes_relative = "ikala-pyin-notes/{}_vamp_pyin_pyin_notes.csv".format(track_id)
         notes_path = os.path.join(ikala_data_path, notes_relative)
 

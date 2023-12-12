@@ -1,7 +1,6 @@
 import pytest
 
-from mirdata import core
-from mirdata import initialize, list_datasets
+from mirdata import core, initialize, list_datasets
 
 
 def test_list_datasets():

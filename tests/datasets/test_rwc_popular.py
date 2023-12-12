@@ -1,8 +1,9 @@
 import os
+
 import numpy as np
 
-from mirdata.datasets import rwc_popular
 from mirdata import annotations
+from mirdata.datasets import rwc_popular
 from tests.test_utils import run_track_tests
 
 
@@ -149,9 +150,7 @@ def test_load_chords():
     assert np.array_equal(
         chord_data.intervals[:, 1], np.array([0.104, 1.858, 5.387, 44.494, 47.636])
     )
-    assert np.array_equal(
-        chord_data.labels, ["N", "Ab:min", "E:maj", "Bb:maj(*3)", "C:min7"]
-    )
+    assert np.array_equal(chord_data.labels, ["N", "Ab:min", "E:maj", "Bb:maj(*3)", "C:min7"])
 
 
 def test_load_vocal_activity():
@@ -199,9 +198,7 @@ def test_load_vocal_activity():
     )
     assert np.array_equal(
         vocinst_data.events,
-        np.array(
-            ["b", "m:withm", "b", "m:withm", "b", "m:withm", "b", "s:electricguitar"]
-        ),
+        np.array(["b", "m:withm", "b", "m:withm", "b", "m:withm", "b", "s:electricguitar"]),
     )
 
 

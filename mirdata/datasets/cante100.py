@@ -1,5 +1,4 @@
-"""
-cante100 Loader
+"""Cante100 Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -42,24 +41,18 @@ cante100 Loader
         © COFLA 2015. All rights reserved.
 
     For more details, please visit: http://www.cofla-project.com/?page_id=134
-
 """
 import csv
 import os
 import xml.etree.ElementTree as ET
 from typing import Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import download_utils
-from mirdata import jams_utils
-from mirdata import core
-from mirdata import annotations
-from mirdata import io
-
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """@dataset{nadine_kroher_2018_1322542,
   author       = {Nadine Kroher and
@@ -152,7 +145,7 @@ were gathered by the COFLA team. COFLA 2015. All rights reserved.
 
 
 class Track(core.Track):
-    """cante100 track class
+    """Cante100 track class.
 
     Args:
         track_id (str): track id of the track
@@ -170,7 +163,6 @@ class Track(core.Track):
     Cached Properties:
         melody (F0Data): annotated melody
         notes (NoteData): annotated notes
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -204,18 +196,17 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Tuple[np.ndarray, float]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     @property
     def spectrogram(self) -> Optional[np.ndarray]:
-        """spectrogram of The track's audio
+        """Spectrogram of The track's audio.
 
         Returns:
             np.ndarray: spectrogram
@@ -231,11 +222,10 @@ class Track(core.Track):
         return load_notes(self.notes_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -255,7 +245,6 @@ def load_spectrogram(fhandle: TextIO) -> np.ndarray:
 
     Returns:
         np.ndarray: spectrogram
-
     """
     parsed_spectrogram = np.genfromtxt(fhandle, delimiter=" ")
     spectrogram = parsed_spectrogram.astype(np.float64)
@@ -273,14 +262,13 @@ def load_audio(fpath: str) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fpath, sr=22050, mono=False)
 
 
 @io.coerce_to_string_io
 def load_melody(fhandle: TextIO) -> Optional[annotations.F0Data]:
-    """Load cante100 f0 annotations
+    """Load cante100 f0 annotations.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing
@@ -288,7 +276,6 @@ def load_melody(fhandle: TextIO) -> Optional[annotations.F0Data]:
 
     Returns:
         F0Data: predominant melody
-
     """
     times = []
     freqs = []
@@ -308,14 +295,13 @@ def load_melody(fhandle: TextIO) -> Optional[annotations.F0Data]:
 
 @io.coerce_to_string_io
 def load_notes(fhandle: TextIO) -> annotations.NoteData:
-    """Load note data from the annotation files
+    """Load note data from the annotation files.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a notes annotation file
 
     Returns:
         NoteData: note annotations
-
     """
     intervals = []
     pitches = []
@@ -339,9 +325,7 @@ def load_notes(fhandle: TextIO) -> annotations.NoteData:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The cante100 dataset
-    """
+    """The cante100 dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -415,9 +399,7 @@ class Dataset(core.Dataset):
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.cante100.load_spectrogram", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.cante100.load_spectrogram", version="0.3.4")
     def load_spectrogram(self, *args, **kwargs):
         return load_spectrogram(*args, **kwargs)
 

@@ -18,10 +18,12 @@
 # }
 
 
-import os
 import json
-import mirdata
+import os
+
 from tqdm import tqdm
+
+import mirdata
 from mirdata.validate import md5
 
 INDEXES_PATH = "../../mirdata/datasets/indexes/"
@@ -52,6 +54,7 @@ DATASETS = [
 
 def get_metadata_paths(module):
     """Get the metadata path of each dataset.
+
     Parameters
     ----------
     module (str): dataset name
@@ -74,9 +77,7 @@ def get_metadata_paths(module):
         "irmas": None,
         "maestro": {"maestro-v2.0.0": "maestro-v2.0.0.json"},
         "medley_solos_db": {
-            "Medley-solos-DB_metadata": os.path.join(
-                "annotation", "Medley-solos-DB_metadata.csv"
-            )
+            "Medley-solos-DB_metadata": os.path.join("annotation", "Medley-solos-DB_metadata.csv")
         },
         "medleydb_pitch": {"medleydb_pitch_metadata": "medleydb_pitch_metadata.json"},
         "mridangam_stroke": None,
@@ -92,9 +93,7 @@ def get_metadata_paths(module):
             )
         },
         "saraga": None,
-        "tinysol": {
-            "TinySOL_metadata": os.path.join("annotation", "TinySOL_metadata.csv")
-        },
+        "tinysol": {"TinySOL_metadata": os.path.join("annotation", "TinySOL_metadata.csv")},
     }
 
     return customized_paths[module]
@@ -102,6 +101,7 @@ def get_metadata_paths(module):
 
 def get_dataset_version(module):
     """Get the version of each dataset.
+
     Parameters
     ----------
     module (str): dataset name
@@ -142,11 +142,10 @@ def get_dataset_version(module):
 
 def update_index(all_indexes):
     """Function to update indexes to new format.
+
     Parameters
     ----------
     all_indexes (list): list of all current dataset indexes
-
-
     """
 
     for index_name in tqdm(all_indexes):
@@ -191,10 +190,10 @@ def update_index(all_indexes):
 
 def test_index(dataset_names):
     """Test if updated indexes are as expected.
+
     Parameters
     ----------
     dataset_names (list): list of dataset names
-
     """
 
     mandatory_keys = ["version"]
@@ -206,10 +205,10 @@ def test_index(dataset_names):
 
 def test_track_load(dataset_names):
     """Function to test all loaders work and indexes are fine (run locally)
+
     Parameters
     ----------
     dataset_names (list): list of dataset names
-
     """
     for module in dataset_names:
         dataset = mirdata.initialize(module)
@@ -228,9 +227,7 @@ def main():
                     partial_download=[
                         "metadata" if "metadata" in dataset.remotes else key
                         for key in dataset.remotes
-                        if key is not "audio"
-                        and "training" not in key
-                        and "testing" not in key
+                        if key is not "audio" and "training" not in key and "testing" not in key
                     ]
                 )
 

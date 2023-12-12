@@ -1,4 +1,4 @@
-"""Acoustic Brainz Genre dataset
+"""Acoustic Brainz Genre dataset.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -16,10 +16,10 @@
 
     We provide four datasets containing genre and subgenre annotations extracted from four different online metadata sources:
 
-    - AllMusic and Discogs are based on editorial metadata databases maintained by music experts and enthusiasts. These sources 
-      contain explicit genre/subgenre annotations of music releases (albums) following a predefined genre namespace and taxonomy. 
+    - AllMusic and Discogs are based on editorial metadata databases maintained by music experts and enthusiasts. These sources
+      contain explicit genre/subgenre annotations of music releases (albums) following a predefined genre namespace and taxonomy.
       We propagated release-level annotations to recordings (tracks) in AcousticBrainz to build the datasets.
-    - Lastfm and Tagtraum are based on collaborative music tagging platforms with large amounts of genre labels provided by their 
+    - Lastfm and Tagtraum are based on collaborative music tagging platforms with large amounts of genre labels provided by their
       users for music recordings (tracks). We have automatically inferred a genre/subgenre taxonomy and annotations from these labels.
 
     For details on format and contents, please refer to the data webpage.
@@ -34,18 +34,15 @@
         The AcousticBrainz Genre Dataset: Multi-Source, Multi-Level, Multi-Label, and Large-Scale.
         20th International Society for Music Information Retrieval Conference (ISMIR 2019).
 
-    This work is partially supported by the European Union’s Horizon 2020 research and innovation programme under 
+    This work is partially supported by the European Union’s Horizon 2020 research and innovation programme under
     grant agreement No 688382 AudioCommons.
-
 """
 import json
 import os
 
 from deprecated.sphinx import deprecated
 
-from mirdata import download_utils, core, io
-from mirdata import jams_utils
-
+from mirdata import core, download_utils, io, jams_utils
 
 NAME = "acousticbrainz_genre"
 
@@ -162,7 +159,7 @@ about which license correspond to each subdataset can be found in the following 
 
 
 class Track(core.Track):
-    """AcousticBrainz Genre Dataset track class
+    """AcousticBrainz Genre Dataset track class.
 
     Args:
         track_id (str): track id of the track
@@ -186,7 +183,6 @@ class Track(core.Track):
 
     Cached Properties:
         acousticbrainz_metadata (dict): dictionary of metadata provided by AcousticBrainz
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -201,37 +197,34 @@ class Track(core.Track):
     # Metadata
     @property
     def artist(self):
-        """metadata artist annotation
+        """Metadata artist annotation.
 
         Returns:
             list: artist
-
         """
         return self.acousticbrainz_metadata["metadata"]["tags"]["artist"]
 
     @property
     def title(self):
-        """metadata title annotation
+        """Metadata title annotation.
 
         Returns:
             list: title
-
         """
         return self.acousticbrainz_metadata["metadata"]["tags"]["title"]
 
     @property
     def date(self):
-        """metadata date annotation
+        """Metadata date annotation.
 
         Returns:
             list: date
-
         """
         return self.acousticbrainz_metadata["metadata"]["tags"]["date"]
 
     @property
     def file_name(self):
-        """metadata file_name annotation
+        """Metadata file_name annotation.
 
         Returns:
             str: file name
@@ -240,7 +233,7 @@ class Track(core.Track):
 
     @property
     def album(self):
-        """metadata album annotation
+        """Metadata album annotation.
 
         Returns:
             list: album
@@ -249,7 +242,7 @@ class Track(core.Track):
 
     @property
     def tracknumber(self):
-        """metadata tracknumber annotation
+        """Metadata tracknumber annotation.
 
         Returns:
             list: tracknumber
@@ -258,7 +251,7 @@ class Track(core.Track):
 
     @property
     def tonal(self):
-        """tonal features
+        """Tonal features.
 
         Returns:
             dict:
@@ -275,7 +268,6 @@ class Track(core.Track):
                 - 'chords_changes_rate', 'chords_number_rate':  chords change rate in the progression; ratio
                   of different chords from the total number of chords in the progression; Algorithms: ChordsDetection,
                   ChordsDescriptors
-
         """
         return self.acousticbrainz_metadata["tonal"]
 
@@ -322,13 +314,12 @@ class Track(core.Track):
                 - 'spectral_complexity': spectral complexity. Algorithms: SpectralComplexity
                 - 'spectral_contrast_coeffs', 'spectral_contrast_valleys': spectral contrast features. Algorithms:
                   SpectralContrast
-
         """
         return self.acousticbrainz_metadata["lowlevel"]
 
     @property
     def rhythm(self):
-        """rhythm essentia extractor descriptors
+        """Rhythm essentia extractor descriptors.
 
         Returns:
              dict:
@@ -354,25 +345,23 @@ class Track(core.Track):
         return load_extractor(os.path.normpath(self.path))
 
     def to_jams(self):
-        """the track's data in jams format
+        """The track's data in jams format.
 
         Returns:
              jams.JAMS: return track data in jam format
-
         """
         return jams_utils.jams_converter(
             metadata={
                 "features": load_extractor(os.path.normpath(self.path)),
-                "duration": self.acousticbrainz_metadata["metadata"][
-                    "audio_properties"
-                ]["length"],
+                "duration": self.acousticbrainz_metadata["metadata"]["audio_properties"]["length"],
             }
         )
 
 
 @io.coerce_to_string_io
 def load_extractor(fhandle):
-    """Load a AcousticBrainz Dataset json file with all the features and metadata.
+    """Load a AcousticBrainz Dataset json file with all the features and
+    metadata.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to a json file
@@ -380,16 +369,13 @@ def load_extractor(fhandle):
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return json.load(fhandle)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The acousticbrainz genre dataset
-    """
+    """The acousticbrainz genre dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -411,14 +397,14 @@ class Dataset(core.Dataset):
         return load_extractor(*args, **kwargs)
 
     def filter_index(self, search_key):
-        """Load from AcousticBrainz genre dataset the indexes that match with search_key.
+        """Load from AcousticBrainz genre dataset the indexes that match with
+        search_key.
 
         Args:
             search_key (str): regex to match with folds, mbid or genres
 
         Returns:
              dict: {`track_id`: track data}
-
         """
 
         acousticbrainz_genre_data = {
@@ -427,91 +413,91 @@ class Dataset(core.Dataset):
         return acousticbrainz_genre_data
 
     def load_all_train(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for training across the four different datasets.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        training across the four different datasets.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("#train#")
 
     def load_all_validation(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for validating across the four different datasets.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        validating across the four different datasets.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("#validation#")
 
     def load_tagtraum_validation(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for validating in tagtraum dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        validating in tagtraum dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("tagtraum#validation#")
 
     def load_tagtraum_train(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for training in tagtraum dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        training in tagtraum dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("tagtraum#train#")
 
     def load_allmusic_train(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for validation in allmusic dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        validation in allmusic dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("allmusic#train#")
 
     def load_allmusic_validation(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for validation in allmusic dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        validation in allmusic dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("allmusic#validation#")
 
     def load_lastfm_train(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for training in lastfm dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        training in lastfm dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("lastfm#train#")
 
     def load_lastfm_validation(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for validation in lastfm dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        validation in lastfm dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("lastfm#validation#")
 
     def load_discogs_train(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for training in discogs dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        training in discogs dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("allmusic#train#")
 
     def load_discogs_validation(self):
-        """Load from AcousticBrainz genre dataset the tracks that are used for validation in tagtraum dataset.
+        """Load from AcousticBrainz genre dataset the tracks that are used for
+        validation in tagtraum dataset.
 
         Returns:
             dict: {`track_id`: track data}
-
         """
         return self.filter_index("allmusic#validation#")

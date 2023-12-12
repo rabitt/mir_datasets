@@ -1,7 +1,9 @@
 import os
+
 import numpy as np
-from mirdata.datasets import salami
+
 from mirdata import annotations
+from mirdata.datasets import salami
 from tests.test_utils import run_track_tests
 
 
@@ -202,9 +204,7 @@ def test_load_sections():
         section_data.intervals[:, 1],
         np.array([0.464399092, 14.379863945, 263.205419501, 264.885215419]),
     )
-    assert np.array_equal(
-        section_data.labels, np.array(["Silence", "A", "B", "Silence"])
-    )
+    assert np.array_equal(section_data.labels, np.array(["Silence", "A", "B", "Silence"]))
 
     # load none
     section_data_none = salami.load_sections(None)

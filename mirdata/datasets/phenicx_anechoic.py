@@ -1,4 +1,4 @@
-"""PHENICX-Anechoic Dataset Loader
+"""PHENICX-Anechoic Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -42,16 +42,14 @@
     - max. instruments/source: 12
 
     For more details, please visit: https://www.upf.edu/web/mtg/phenicx-anechoic
-
 """
 from typing import BinaryIO, Optional, TextIO, Tuple, cast
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
 from mirdata import annotations, core, download_utils, io, jams_utils
-
 
 BIBTEX = """
 @article{miron2016score,
@@ -108,7 +106,7 @@ DATASET_SECTIONS = {
 
 
 class Track(core.Track):
-    """Phenicx-Anechoic Track class
+    """Phenicx-Anechoic Track class.
 
     Args:
         track_id (str): track id of the track
@@ -125,7 +123,6 @@ class Track(core.Track):
     Cached Properties:
         notes (NoteData): notes annotations that have been time-aligned to the audio
         notes_original (NoteData): original score representation, not time-aligned
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -134,9 +131,7 @@ class Track(core.Track):
         self.instrument = self.track_id.split("-")[1]
         self.piece = self.track_id.split("-")[0]
 
-        self.audio_paths = [
-            self.get_path(key) for key in self._track_paths if "audio_" in key
-        ]
+        self.audio_paths = [self.get_path(key) for key in self._track_paths if "audio_" in key]
 
         self.n_voices = len(self.audio_paths)
 
@@ -145,12 +140,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """the track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - the mono audio signal
             * float - The sample rate of the audio file
-
         """
         audio_mix, sr = cast(Tuple[np.ndarray, float], load_audio(self.audio_paths[0]))
 
@@ -163,26 +157,24 @@ class Track(core.Track):
 
     @core.cached_property
     def notes(self) -> Optional[annotations.NoteData]:
-        """the track's notes corresponding to the score aligned to the audio
+        """The track's notes corresponding to the score aligned to the audio.
 
         Returns:
             NoteData: Note data for the track
-
         """
         return load_score(self.notes_path)
 
     @core.cached_property
     def notes_original(self) -> Optional[annotations.NoteData]:
-        """the track's notes corresponding to the original score
+        """The track's notes corresponding to the original score.
 
         Returns:
             NoteData: Note data for the track
-
         """
         return load_score(self.notes_original_path)
 
     def get_audio_voice(self, id_voice: int) -> Optional[Tuple[np.ndarray, float]]:
-        """the track's audio
+        """The track's audio.
 
         Args:
             id_voice (int): The integer identifier for the voice
@@ -191,18 +183,16 @@ class Track(core.Track):
         Returns:
             * np.ndarray - the mono audio signal
             * float - The sample rate of the audio file
-
         """
         if id_voice >= self.n_voices:
             raise ValueError("id_voice={} is out of range".format(id_voice))
         return load_audio(self.audio_paths[id_voice])
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_paths[0], note_data=[(self.notes, "aligned notes")]
@@ -210,7 +200,7 @@ class Track(core.Track):
 
 
 class MultiTrack(core.MultiTrack):
-    """Phenicx-Anechoic MultiTrack class
+    """Phenicx-Anechoic MultiTrack class.
 
     Args:
         mtrack_id (str): track id of the track
@@ -224,18 +214,14 @@ class MultiTrack(core.MultiTrack):
         tracks (dict): dict of track ids and the corresponding Tracks
         instruments (dict): dict of instruments and the corresponding track
         sections (dict): dict of sections and the corresponding list of tracks for each section
-
     """
 
-    def __init__(
-        self, mtrack_id, data_home, dataset_name, index, track_class, metadata
-    ):
+    def __init__(self, mtrack_id, data_home, dataset_name, index, track_class, metadata):
         super().__init__(mtrack_id, data_home, dataset_name, index, Track, metadata)
 
         #### parse the keys for the dictionary of instruments and strings
         self.instruments = {
-            source.replace(self.mtrack_id + "-", ""): source
-            for source in self.track_ids
+            source.replace(self.mtrack_id + "-", ""): source for source in self.track_ids
         }
         self.sections = {"brass": [], "strings": [], "woodwinds": []}
         for instrument, track_id in self.instruments.items():
@@ -249,14 +235,13 @@ class MultiTrack(core.MultiTrack):
         return "audio"
 
     def get_audio_for_instrument(self, instrument):
-        """Get the audio for a particular instrument
+        """Get the audio for a particular instrument.
 
         Args:
             instrument (str): the instrument to get audio for
 
         Returns:
             np.ndarray: instrument audio with shape (n_samples, n_channels)
-
         """
         if instrument not in self.instruments.keys():
             raise ValueError(
@@ -265,19 +250,16 @@ class MultiTrack(core.MultiTrack):
                 )
             )
 
-        return getattr(
-            self.tracks[self.instruments[instrument]], self.track_audio_property
-        )[0]
+        return getattr(self.tracks[self.instruments[instrument]], self.track_audio_property)[0]
 
     def get_audio_for_section(self, section):
-        """Get the audio for a particular section
+        """Get the audio for a particular section.
 
         Args:
             section (str): the section to get audio for
 
         Returns:
             np.ndarray: section audio with shape (n_samples, n_channels)
-
         """
         if section not in self.sections.keys():
             raise ValueError(
@@ -288,7 +270,7 @@ class MultiTrack(core.MultiTrack):
         return self.get_target(self.sections[section])
 
     def get_notes_target(self, track_keys, notes_property="notes"):
-        """Get the notes for all the tracks
+        """Get the notes for all the tracks.
 
         Args:
             track_keys (list): list of track keys to get the NoteData for
@@ -296,7 +278,6 @@ class MultiTrack(core.MultiTrack):
 
         Returns:
             NoteData: Note data for the tracks
-
         """
         notes_target = None
         for k in track_keys:
@@ -308,7 +289,7 @@ class MultiTrack(core.MultiTrack):
         return notes_target
 
     def get_notes_for_instrument(self, instrument, notes_property="notes"):
-        """Get the notes for a particular instrument
+        """Get the notes for a particular instrument.
 
         Args:
             instrument (str): the instrument to get the notes for
@@ -316,12 +297,11 @@ class MultiTrack(core.MultiTrack):
 
         Returns:
             NoteData: Note data for the instrument
-
         """
         return getattr(self.tracks[self.instruments[instrument]], notes_property)
 
     def get_notes_for_section(self, section, notes_property="notes"):
-        """Get the notes for a particular section
+        """Get the notes for a particular section.
 
         Args:
             section (str): the section to get the notes for
@@ -329,11 +309,8 @@ class MultiTrack(core.MultiTrack):
 
         Returns:
             NoteData: Note data for the section
-
         """
-        return self.get_notes_target(
-            self.sections[section], notes_property=notes_property
-        )
+        return self.get_notes_target(self.sections[section], notes_property=notes_property)
 
 
 @io.coerce_to_bytes_io
@@ -346,7 +323,6 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
@@ -368,18 +344,14 @@ def load_score(fhandle: TextIO) -> annotations.NoteData:
     #### read notes as string
     fhandle.seek(0)
     content = fhandle.readlines()
-    values = np.array(
-        [librosa.note_to_hz(line.split(",")[2].strip("\n")) for line in content]
-    )
+    values = np.array([librosa.note_to_hz(line.split(",")[2].strip("\n")) for line in content])
 
     return annotations.NoteData(intervals, "s", values, "hz")
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Phenicx-Anechoic dataset
-    """
+    """The Phenicx-Anechoic dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -394,14 +366,10 @@ class Dataset(core.Dataset):
             license_info=LICENSE_INFO,
         )
 
-    @deprecated(
-        reason="Use mirdata.datasets.phenicx_anechoic.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.phenicx_anechoic.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.phenicx_anechoic.load_score", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.phenicx_anechoic.load_score", version="0.3.4")
     def load_score(self, *args, **kwargs):
         return load_score(*args, **kwargs)

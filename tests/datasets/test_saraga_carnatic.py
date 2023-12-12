@@ -1,5 +1,7 @@
 import os
+
 import numpy as np
+
 from mirdata import annotations
 from mirdata.datasets import saraga_carnatic
 from tests.test_utils import run_track_tests
@@ -359,9 +361,7 @@ def test_load_pitch():
             ]
         ),
     )
-    assert np.array_equal(
-        parsed_pitch.voicing, np.array([0.0, 1.0, 1.0, 1.0, 1.0, 1.0])
-    )
+    assert np.array_equal(parsed_pitch.voicing, np.array([0.0, 1.0, 1.0, 1.0, 1.0, 1.0]))
 
     pitch_vocal_path = track.pitch_vocal_path
     parsed_vocal_pitch = saraga_carnatic.load_pitch(pitch_vocal_path)
@@ -399,9 +399,7 @@ def test_load_pitch():
             ]
         ),
     )
-    assert np.array_equal(
-        parsed_vocal_pitch.voicing, np.array([0.0, 1.0, 1.0, 1.0, 1.0, 0.0])
-    )
+    assert np.array_equal(parsed_vocal_pitch.voicing, np.array([0.0, 1.0, 1.0, 1.0, 1.0, 0.0]))
 
     assert saraga_carnatic.load_pitch(None) is None
 

@@ -1,17 +1,17 @@
-"""slakh Dataset Loader
+"""Slakh Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
 
-    The Synthesized Lakh (Slakh) Dataset is a dataset of multi-track audio and aligned 
-    MIDI for music source separation and multi-instrument automatic transcription. 
-    Individual MIDI tracks are synthesized from the Lakh MIDI Dataset v0.1 using 
-    professional-grade sample-based virtual instruments, and the resulting audio is 
-    mixed together to make musical mixtures. 
-    
-    The original release of Slakh, called Slakh2100, 
-    contains 2100 automatically mixed tracks and accompanying, aligned MIDI files, 
-    synthesized from 187 instrument patches categorized into 34 classes, totaling 
+    The Synthesized Lakh (Slakh) Dataset is a dataset of multi-track audio and aligned
+    MIDI for music source separation and multi-instrument automatic transcription.
+    Individual MIDI tracks are synthesized from the Lakh MIDI Dataset v0.1 using
+    professional-grade sample-based virtual instruments, and the resulting audio is
+    mixed together to make musical mixtures.
+
+    The original release of Slakh, called Slakh2100,
+    contains 2100 automatically mixed tracks and accompanying, aligned MIDI files,
+    synthesized from 187 instrument patches categorized into 34 classes, totaling
     145 hours of mixture data.
 
     This loader supports two versions of Slakh:
@@ -19,23 +19,22 @@
     - baby-slakh: a mini version with 16k wav audio and only the first 20 tracks
 
     This dataset was created at Mitsubishi Electric Research Labl (MERL) and
-    Interactive Audio Lab at Northwestern University by Ethan Manilow, 
+    Interactive Audio Lab at Northwestern University by Ethan Manilow,
     Gordon Wichern, Prem Seetharaman, and Jonathan Le Roux.
 
     For more information see http://www.slakh.com/
-
 """
 import os
 from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
 import pretty_midi
-from smart_open import open
 import yaml
+from deprecated.sphinx import deprecated
+from smart_open import open
 
-from mirdata import io, download_utils, jams_utils, core, annotations
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """
 @inproceedings{manilow2019cutting,
@@ -85,7 +84,7 @@ MIXING_GROUPS = {
 
 
 class Track(core.Track):
-    """slakh Track class, for individual stems
+    """Slakh Track class, for individual stems.
 
     Attributes:
         audio_path (str or None): path to the track's audio file. For some unusual tracks,
@@ -117,7 +116,6 @@ class Track(core.Track):
             If there are no notes in the midi file, returns None.
         multif0 (MultiF0Data or None): multif0 representaation of the midi data.
             If there are no notes in the midi file, returns None.
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -137,12 +135,10 @@ class Track(core.Track):
         # split (train/validation/test/omitted) is part of the relative filepath in the index
         self.split = None  # for baby_slakh, there are no data splits - set to None
         if index["version"] == "2100-redux":
-            self.split = os.path.normpath(self._track_paths["metadata"][0]).split(
-                os.sep
-            )[1]
-            assert (
-                self.split in SPLITS
-            ), "{} not a valid split - should be one of {}.".format(self.split, SPLITS)
+            self.split = os.path.normpath(self._track_paths["metadata"][0]).split(os.sep)[1]
+            assert self.split in SPLITS, "{} not a valid split - should be one of {}.".format(
+                self.split, SPLITS
+            )
 
         self.data_split = self.split  # deprecated in 0.3.6
 
@@ -204,12 +200,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -221,8 +216,8 @@ class Track(core.Track):
 
 
 class MultiTrack(core.MultiTrack):
-    """slakh multitrack class, containing information about the mix and
-    the set of associated stems
+    """Slakh multitrack class, containing information about the mix and the set
+    of associated stems.
 
     Attributes:
         mtrack_id (str): track id
@@ -245,12 +240,9 @@ class MultiTrack(core.MultiTrack):
         midi (PrettyMIDI): midi data used to generate the mixture audio
         notes (NoteData): note representation of the midi data
         multif0 (MultiF0Data): multif0 representation of the midi data
-
     """
 
-    def __init__(
-        self, mtrack_id, data_home, dataset_name, index, track_class, metadata
-    ):
+    def __init__(self, mtrack_id, data_home, dataset_name, index, track_class, metadata):
         super().__init__(
             mtrack_id=mtrack_id,
             data_home=data_home,
@@ -266,9 +258,7 @@ class MultiTrack(core.MultiTrack):
         # split (train/validation/test) is determined by the relative filepath in the index
         self.split = None  # for baby_slakh, there are no data splits - set to None
         if index["version"] == "2100-redux":
-            self.split = os.path.normpath(self._multitrack_paths["mix"][0]).split(
-                os.sep
-            )[1]
+            self.split = os.path.normpath(self._multitrack_paths["mix"][0]).split(os.sep)[1]
             assert self.split in SPLITS, "{} not in SPLITS".format(self.split)
 
         self.data_split = self.split  # deprecated in 0.3.6
@@ -320,12 +310,11 @@ class MultiTrack(core.MultiTrack):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.mix_path)
 
@@ -336,9 +325,9 @@ class MultiTrack(core.MultiTrack):
         )
 
     def get_submix_by_group(self, target_groups):
-        """Create submixes grouped by instrument type. Creates one submix
-        per target group, plus one additional "other" group for any remaining sources.
-        Only tracks with available audio are mixed.
+        """Create submixes grouped by instrument type. Creates one submix per
+        target group, plus one additional "other" group for any remaining
+        sources. Only tracks with available audio are mixed.
 
         Args:
             target_groups (list): List of target groups. Elements should be one of
@@ -347,34 +336,23 @@ class MultiTrack(core.MultiTrack):
         Returns:
             * submixes (dict): {group: audio_signal} of submixes
             * groups (dict): {group: list of track ids} of submixes
-
         """
         groups = {}
         submixes = {}
-        tracks_with_audio = [
-            track for track in self.tracks.values() if track.audio_path
-        ]
+        tracks_with_audio = [track for track in self.tracks.values() if track.audio_path]
         in_group = []
         for group in target_groups:
             groups[group] = [
-                track.track_id
-                for track in tracks_with_audio
-                if track.mixing_group == group
+                track.track_id for track in tracks_with_audio if track.mixing_group == group
             ]
             in_group.extend(groups[group])
 
-            submixes[group] = (
-                None if len(groups[group]) == 0 else self.get_target(groups[group])
-            )
+            submixes[group] = None if len(groups[group]) == 0 else self.get_target(groups[group])
 
         groups["other"] = [
-            track.track_id
-            for track in tracks_with_audio
-            if track.track_id not in in_group
+            track.track_id for track in tracks_with_audio if track.track_id not in in_group
         ]
-        submixes["other"] = (
-            None if len(groups["other"]) == 0 else self.get_target(groups["other"])
-        )
+        submixes["other"] = None if len(groups["other"]) == 0 else self.get_target(groups["other"])
         return submixes, groups
 
 
@@ -388,16 +366,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=False)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The slakh dataset
-    """
+    """The slakh dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

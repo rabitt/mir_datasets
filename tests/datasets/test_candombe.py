@@ -1,6 +1,6 @@
-"""Tests for Candombe dataset
-"""
+"""Tests for Candombe dataset."""
 import numpy as np
+
 from mirdata import annotations
 from mirdata.datasets import candombe
 from tests.test_utils import run_track_tests

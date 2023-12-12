@@ -1,4 +1,4 @@
-"""ORCHSET Dataset Loader
+"""ORCHSET Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -9,16 +9,15 @@
     annotation of the melody.
 
     For more details, please visit: https://zenodo.org/record/1289786#.XREpzaeZPx6
-
 """
 
 import csv
 import os
 from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
@@ -49,13 +48,11 @@ REMOTES = {
     )
 }
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
-)
+LICENSE_INFO = "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
 
 
 class Track(core.Track):
-    """orchset Track class
+    """Orchset Track class.
 
     Args:
         track_id (str): track id of the track
@@ -79,7 +76,6 @@ class Track(core.Track):
 
     Cached Properties:
         melody (F0Data): melody annotation
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -140,32 +136,29 @@ class Track(core.Track):
 
     @property
     def audio_mono(self) -> Optional[Tuple[np.ndarray, float]]:
-        """the track's audio (mono)
+        """The track's audio (mono)
 
         Returns:
             * np.ndarray - the mono audio signal
             * float - The sample rate of the audio file
-
         """
         return load_audio_mono(self.audio_path_mono)
 
     @property
     def audio_stereo(self) -> Optional[Tuple[np.ndarray, float]]:
-        """the track's audio (stereo)
+        """The track's audio (stereo)
 
         Returns:
             * np.ndarray - the mono audio signal
             * float - The sample rate of the audio file
-
         """
         return load_audio_stereo(self.audio_path_stereo)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path_mono,
@@ -184,7 +177,6 @@ def load_audio_mono(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
@@ -199,14 +191,13 @@ def load_audio_stereo(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the stereo audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=False)
 
 
 @io.coerce_to_string_io
 def load_melody(fhandle: TextIO) -> annotations.F0Data:
-    """Load an Orchset melody annotation file
+    """Load an Orchset melody annotation file.
 
     Args:
         fhandle (str or file-like): File-like object or path to melody annotation file
@@ -235,9 +226,7 @@ def load_melody(fhandle: TextIO) -> annotations.F0Data:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The orchset dataset
-    """
+    """The orchset dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -311,9 +300,7 @@ class Dataset(core.Dataset):
     def load_audio_mono(self, *args, **kwargs):
         return load_audio_mono(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.orchset.load_audio_stereo", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.orchset.load_audio_stereo", version="0.3.4")
     def load_audio_stereo(self, *args, **kwargs):
         return load_audio_stereo(*args, **kwargs)
 

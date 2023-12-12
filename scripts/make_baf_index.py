@@ -1,10 +1,9 @@
 import argparse
-import hashlib
 import glob
+import hashlib
 import json
 import os
 from pathlib import Path
-
 
 BAF_INDEX_PATH = "../mirdata/datasets/indexes/baf_index_1.0.json"
 
@@ -25,7 +24,7 @@ def md5(file_path: str) -> str:
 
 
 def make_baf_index(data_path: str) -> None:
-    """Create baf index
+    """Create baf index.
 
     Args:
         data_path (str): Dataset path.
@@ -38,9 +37,7 @@ def make_baf_index(data_path: str) -> None:
     queries_dir = os.path.join(data_path, "queries/*.wav")
     for filepath in sorted(glob.glob(queries_dir)):
         file_id = Path(filepath).stem
-        tracks[file_id] = {
-            "audio": (os.path.join(*filepath.split("/")[-2:]), md5(filepath))
-        }
+        tracks[file_id] = {"audio": (os.path.join(*filepath.split("/")[-2:]), md5(filepath))}
 
     queries_info_path = os.path.join(data_path, "queries_info.csv")
     xannotations_path = os.path.join(data_path, "cross_annotations.csv")
@@ -65,7 +62,5 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Make baf index file.")
-    parser.add_argument(
-        "baf_data_path", type=str, help="Path to baf data folder."
-    )
+    parser.add_argument("baf_data_path", type=str, help="Path to baf data folder.")
     main(parser.parse_args())

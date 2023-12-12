@@ -1,18 +1,17 @@
-"""Utilities for downloading from the web.
-"""
+"""Utilities for downloading from the web."""
 
-import chardet
 import glob
 import logging
 import os
 import shutil
 import tarfile
 import urllib
-import zipfile
 import warnings
+import zipfile
 
-from tqdm import tqdm
+import chardet
 from smart_open import open, parse_uri
+from tqdm import tqdm
 
 from mirdata.validate import md5
 
@@ -20,7 +19,7 @@ logging.basicConfig(format="%(levelname)s: %(message)s", level=logging.INFO)
 
 
 class RemoteFileMetadata(object):
-    """The metadata for a remote file
+    """The metadata for a remote file.
 
     Attributes:
         filename (str): the remote file's basename
@@ -29,12 +28,9 @@ class RemoteFileMetadata(object):
         destination_dir (str or None): the relative path for where to save the file
         unpack_directories (list or None): list of relative directories. For each directory
             the contents will be moved to destination_dir (or data_home if not provieds)
-
     """
 
-    def __init__(
-        self, filename, url, checksum, destination_dir=None, unpack_directories=None
-    ):
+    def __init__(self, filename, url, checksum, destination_dir=None, unpack_directories=None):
         self.filename = filename
         self.url = url
         self.checksum = checksum
@@ -76,7 +72,6 @@ def downloader(
         allow_invalid_checksum (bool):
             Allow having an invalid checksum, and whenever this happens prompt a
             warning instead of deleting the files.
-
     """
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
@@ -140,9 +135,7 @@ def downloader(
                     allow_invalid_checksum,
                 )
             else:
-                download_from_remote(
-                    remotes[k], save_dir, force_overwrite, allow_invalid_checksum
-                )
+                download_from_remote(remotes[k], save_dir, force_overwrite, allow_invalid_checksum)
 
             if remotes[k].unpack_directories:
                 for src_dir in remotes[k].unpack_directories:
@@ -170,9 +163,7 @@ def downloader(
 
 
 class DownloadProgressBar(tqdm):
-    """
-    Wrap `tqdm` to show download progress
-    """
+    """Wrap `tqdm` to show download progress."""
 
     def update_to(self, b=1, bsize=1, tsize=None):
         if tsize is not None:
@@ -181,10 +172,9 @@ class DownloadProgressBar(tqdm):
 
 
 def download_from_remote(remote, save_dir, force_overwrite, allow_invalid_checksum):
-    """Download a remote dataset into path
-    Fetch a dataset pointed by remote's url, save into path using remote's
-    filename and ensure its integrity based on the MD5 Checksum of the
-    downloaded file.
+    """Download a remote dataset into path Fetch a dataset pointed by remote's
+    url, save into path using remote's filename and ensure its integrity based
+    on the MD5 Checksum of the downloaded file.
 
     Adapted from scikit-learn's sklearn.datasets.base._fetch_remote.
 
@@ -198,7 +188,6 @@ def download_from_remote(remote, save_dir, force_overwrite, allow_invalid_checks
 
     Returns:
         str: Full path of the created file.
-
     """
     file_uri = parse_uri(save_dir)
     if file_uri.scheme != "file":
@@ -223,9 +212,7 @@ def download_from_remote(remote, save_dir, force_overwrite, allow_invalid_checks
             os.remove(download_path)
 
         # If file doesn't exist or we want to overwrite, download it
-        with DownloadProgressBar(
-            unit="B", unit_scale=True, unit_divisor=1024, miniters=1
-        ) as t:
+        with DownloadProgressBar(unit="B", unit_scale=True, unit_divisor=1024, miniters=1) as t:
             try:
                 urllib.request.urlretrieve(
                     remote.url,
@@ -257,25 +244,19 @@ def download_from_remote(remote, save_dir, force_overwrite, allow_invalid_checks
             warnings.warn(
                 "{} has an MD5 checksum ({}) "
                 "differing from expected ({}), "
-                "file may be corrupted.".format(
-                    download_path, checksum, remote.checksum
-                ),
+                "file may be corrupted.".format(download_path, checksum, remote.checksum),
                 UserWarning,
             )
         else:
             raise IOError(
                 "{} has an MD5 checksum ({}) "
                 "differing from expected ({}), "
-                "file may be corrupted.".format(
-                    download_path, checksum, remote.checksum
-                )
+                "file may be corrupted.".format(download_path, checksum, remote.checksum)
             )
     return download_path
 
 
-def download_zip_file(
-    zip_remote, save_dir, force_overwrite, cleanup, allow_invalid_checksum
-):
+def download_zip_file(zip_remote, save_dir, force_overwrite, cleanup, allow_invalid_checksum):
     """Download and unzip a zip file.
 
     Args:
@@ -287,7 +268,6 @@ def download_zip_file(
             If True, overwrites existing files
         cleanup (bool):
             If True, remove zipfile after unziping
-
     """
     zip_download_path = download_from_remote(
         zip_remote, save_dir, force_overwrite, allow_invalid_checksum
@@ -303,7 +283,6 @@ def extractall_unicode(zfile, out_dir):
     Args:
         zfile (obj): Zip file object created with zipfile.ZipFile
         out_dir (str): Output folder
-
     """
     ZIP_FILENAME_UTF8_FLAG = 0x800
 
@@ -315,13 +294,11 @@ def extractall_unicode(zfile, out_dir):
         # if block to deal with irmas and good-sounds archives
         # check if the zip archive does not have the encoding info set
         # encode-decode filename only if it's different than the original name
-        if (m.flag_bits & ZIP_FILENAME_UTF8_FLAG == 0) and filename.encode(
-            "cp437"
-        ).decode(errors="ignore") != filename:
+        if (m.flag_bits & ZIP_FILENAME_UTF8_FLAG == 0) and filename.encode("cp437").decode(
+            errors="ignore"
+        ) != filename:
             filename_bytes = filename.encode("cp437")
-            if filename_bytes.decode("utf-8", "replace") != filename_bytes.decode(
-                errors="ignore"
-            ):
+            if filename_bytes.decode("utf-8", "replace") != filename_bytes.decode(errors="ignore"):
                 guessed_encoding = chardet.detect(filename_bytes)["encoding"] or "utf8"
                 filename = filename_bytes.decode(guessed_encoding, "replace")
             else:
@@ -344,7 +321,6 @@ def unzip(zip_path, cleanup):
     Args:
         zip_path (str): Path to zip file
         cleanup (bool): If True, remove zipfile after unzipping
-
     """
     zfile = zipfile.ZipFile(zip_path, "r")
     extractall_unicode(zfile, os.path.dirname(zip_path))
@@ -353,9 +329,7 @@ def unzip(zip_path, cleanup):
         os.remove(zip_path)
 
 
-def download_tar_file(
-    tar_remote, save_dir, force_overwrite, cleanup, allow_invalid_checksum
-):
+def download_tar_file(tar_remote, save_dir, force_overwrite, cleanup, allow_invalid_checksum):
     """Download and untar a tar file.
 
     Args:
@@ -363,7 +337,6 @@ def download_tar_file(
         save_dir (str): Path to save downloaded file
         force_overwrite (bool): If True, overwrites existing files
         cleanup (bool): If True, remove tarfile after untarring
-
     """
     tar_download_path = download_from_remote(
         tar_remote, save_dir, force_overwrite, allow_invalid_checksum
@@ -377,7 +350,6 @@ def untar(tar_path, cleanup):
     Args:
         tar_path (str): Path to tar file
         cleanup (bool): If True, remove tarfile after untarring
-
     """
     tfile = tarfile.open(tar_path, "r")
     tfile.extractall(os.path.dirname(tar_path))
@@ -387,12 +359,11 @@ def untar(tar_path, cleanup):
 
 
 def move_directory_contents(source_dir, target_dir):
-    """Move the contents of source_dir into target_dir, and delete source_dir
+    """Move the contents of source_dir into target_dir, and delete source_dir.
 
     Args:
         source_dir (str): path to source directory
         target_dir (str): path to target directory
-
     """
     directory_contents = glob.glob(os.path.join(source_dir, "*"))
     for fpath in directory_contents:

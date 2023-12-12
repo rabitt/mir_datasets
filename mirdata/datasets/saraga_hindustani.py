@@ -1,4 +1,4 @@
-"""Saraga Dataset Loader
+"""Saraga Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -9,7 +9,7 @@
     The dataset contains the following manual annotations referring to audio files:
 
     - Section and tempo annotations stored as start and end timestamps together with the name of the section and
-      tempo during the section (in a separate file) 
+      tempo during the section (in a separate file)
     - Sama annotations referring to rhythmic cycle boundaries stored
       as timestamps
     - Phrase annotations stored as timestamps and transcription of the phrases using solfège symbols
@@ -27,15 +27,14 @@
 
     For more information about the dataset as well as IAM and annotations, please refer to:
     https://mtg.github.io/saraga/, where a really detailed explanation of the data and annotations is published.
-
 """
-import os
 import csv
 import json
+import os
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
 from mirdata import annotations, core, download_utils, io, jams_utils
@@ -70,13 +69,11 @@ REMOTES = {
     )
 }
 
-LICENSE_INFO = (
-    "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
-)
+LICENSE_INFO = "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
 
 
 class Track(core.Track):
-    """Saraga Hindustani Track class
+    """Saraga Hindustani Track class.
 
     Args:
         track_id (str): track id of the track
@@ -112,7 +109,6 @@ class Track(core.Track):
             - works (list, dicts): list of dicts containing the work present in the piece, and its mbid
             - taals (list, dicts): list of dicts containing the taals present in the track and its uuid
             - layas (list, dicts): list of dicts containing the layas present in the track and its uuid
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -160,21 +156,19 @@ class Track(core.Track):
 
     @property
     def audio(self):
-        """The track's audio
+        """The track's audio.
 
         Returns:
            * np.ndarray - audio signal
            * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -200,7 +194,6 @@ def load_audio(audio_path):
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     if audio_path is None:
         return None
@@ -209,7 +202,7 @@ def load_audio(audio_path):
 
 @io.coerce_to_string_io
 def load_tonic(fhandle):
-    """Load track absolute tonic
+    """Load track absolute tonic.
 
     Args:
         fhandle (str or file-like): Local path where the tonic path is stored.
@@ -217,7 +210,6 @@ def load_tonic(fhandle):
 
     Returns:
         int: Tonic annotation in Hz
-
     """
     reader = csv.reader(fhandle, delimiter="\t")
     tonic = float(next(reader)[0])
@@ -226,7 +218,7 @@ def load_tonic(fhandle):
 
 @io.coerce_to_string_io
 def load_pitch(fhandle):
-    """Load automatic extracted pitch or melody
+    """Load automatic extracted pitch or melody.
 
     Args:
         fhandle (str or file-like): Local path where the pitch annotation is stored.
@@ -234,7 +226,6 @@ def load_pitch(fhandle):
 
     Returns:
         F0Data: pitch annotation
-
     """
     times = []
     freqs = []
@@ -255,7 +246,7 @@ def load_pitch(fhandle):
 
 @io.coerce_to_string_io
 def load_tempo(fhandle):
-    """Load tempo from hindustani collection
+    """Load tempo from hindustani collection.
 
     Args:
         fhandle (str or file-like): Local path where the tempo annotation is stored.
@@ -272,7 +263,6 @@ def load_tempo(fhandle):
               of mātrā in a cycle of the tāl of the recording
             - start_time: start time of the section
             - duration: duration of the section
-
     """
     tempo_annotation = {}
     head, tail = os.path.split(fhandle.name)
@@ -307,9 +297,7 @@ def load_tempo(fhandle):
         tempo_annotation[sections[section_count]] = {
             "tempo": float(tempo) if "." in tempo else int(tempo),
             "matra_interval": float(matra) if "." in matra else int(matra),
-            "sama_interval": float(sama_interval)
-            if "." in sama_interval
-            else int(sama_interval),
+            "sama_interval": float(sama_interval) if "." in sama_interval else int(sama_interval),
             "matras_per_cycle": float(matras_per_cycle)
             if "." in matras_per_cycle
             else int(matras_per_cycle),
@@ -324,7 +312,7 @@ def load_tempo(fhandle):
 
 @io.coerce_to_string_io
 def load_sama(fhandle):
-    """Load sama
+    """Load sama.
 
     Args:
         fhandle (str or file-like): Local path where the sama annotation is stored.
@@ -332,7 +320,6 @@ def load_sama(fhandle):
 
     Returns:
         SectionData: sama annotations
-
     """
     beat_times = []
     beat_positions = []
@@ -347,21 +334,18 @@ def load_sama(fhandle):
     if not beat_times or beat_times[0] == -1.0:
         return None
 
-    return annotations.BeatData(
-        np.array(beat_times), "s", np.array(beat_positions), "global_index"
-    )
+    return annotations.BeatData(np.array(beat_times), "s", np.array(beat_positions), "global_index")
 
 
 @io.coerce_to_string_io
 def load_sections(fhandle):
-    """Load tracks sections
+    """Load tracks sections.
 
     Args:
         fhandle (str or file-like): Local path where the section annotation is stored.
 
     Returns:
         SectionData: section annotations for track
-
     """
     intervals = []
     section_labels = []
@@ -380,7 +364,7 @@ def load_sections(fhandle):
 
 @io.coerce_to_string_io
 def load_phrases(fhandle):
-    """Load phrases
+    """Load phrases.
 
     Args:
         fhandle (str or file-like): Local path where the phrase annotation is stored.
@@ -388,7 +372,6 @@ def load_phrases(fhandle):
 
     Returns:
         EventData: phrases annotation for track
-
     """
     start_times = []
     end_times = []
@@ -406,14 +389,12 @@ def load_phrases(fhandle):
     if not start_times:
         return None
 
-    return annotations.EventData(
-        np.array([start_times, end_times]).T, "s", events, "open"
-    )
+    return annotations.EventData(np.array([start_times, end_times]).T, "s", events, "open")
 
 
 @io.coerce_to_string_io
 def load_metadata(fhandle):
-    """Load a Saraga Hindustani metadata file
+    """Load a Saraga Hindustani metadata file.
 
     Args:
         fhandle (str or file-like): path to metadata json file
@@ -431,16 +412,13 @@ def load_metadata(fhandle):
             - works (list, dicts): list of dicts containing the work present in the piece, and its mbid
             - taals (list, dicts): list of dicts containing the taals present in the track and its uuid
             - layas (list, dicts): list of dicts containing the layas present in the track and its uuid
-
     """
     return json.load(fhandle)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The saraga_hindustani dataset
-    """
+    """The saraga_hindustani dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -454,44 +432,30 @@ class Dataset(core.Dataset):
             license_info=LICENSE_INFO,
         )
 
-    @deprecated(
-        reason="Use mirdata.datasets.saraga_hindustani.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.saraga_hindustani.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.saraga_hindustani.load_tonic", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.saraga_hindustani.load_tonic", version="0.3.4")
     def load_tonic(self, *args, **kwargs):
         return load_tonic(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.saraga_hindustani.load_pitch", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.saraga_hindustani.load_pitch", version="0.3.4")
     def load_pitch(self, *args, **kwargs):
         return load_pitch(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.saraga_hindustani.load_tempo", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.saraga_hindustani.load_tempo", version="0.3.4")
     def load_tempo(self, *args, **kwargs):
         return load_tempo(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.saraga_hindustani.load_sama", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.saraga_hindustani.load_sama", version="0.3.4")
     def load_sama(self, *args, **kwargs):
         return load_sama(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.saraga_hindustani.load_sections", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.saraga_hindustani.load_sections", version="0.3.4")
     def load_sections(self, *args, **kwargs):
         return load_sections(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.saraga_hindustani.load_phrases", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.saraga_hindustani.load_phrases", version="0.3.4")
     def load_phrases(self, *args, **kwargs):
         return load_phrases(*args, **kwargs)

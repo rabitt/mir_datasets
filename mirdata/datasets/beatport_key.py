@@ -1,4 +1,4 @@
-"""beatport_key Dataset Loader
+"""beatport_key Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -21,18 +21,17 @@
     dance music subgenres.
 
     Data License: Creative Commons Attribution Share Alike 4.0 International
-
 """
 import csv
-import os
 import fnmatch
 import json
+import os
 
-from deprecated.sphinx import deprecated
 import librosa
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import core, download_utils, jams_utils, io
+from mirdata import core, download_utils, io, jams_utils
 
 BIBTEX = """@phdthesis {3897,
     title = {Tonality Estimation in Electronic Dance Music: A Computational and Musically Informed Examination},
@@ -78,7 +77,7 @@ LICENSE_INFO = "Creative Commons Attribution Share Alike 4.0 International."
 
 
 class Track(core.Track):
-    """beatport_key track class
+    """beatport_key track class.
 
     Args:
         track_id (str): track id of the track
@@ -96,7 +95,6 @@ class Track(core.Track):
         artists (list): artists involved in the track
         genre (dict): genres and subgenres
         tempo (int): tempo in beats per minute
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -126,21 +124,19 @@ class Track(core.Track):
 
     @property
     def audio(self):
-        """The track's audio
+        """The track's audio.
 
         Returns:
            * np.ndarray - audio signal
            * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -164,14 +160,13 @@ def load_audio(fpath):
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fpath, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_key(fhandle):
-    """Load beatport_key format key data from a file
+    """Load beatport_key format key data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to
@@ -179,7 +174,6 @@ def load_key(fhandle):
 
     Returns:
         list: list of annotated keys
-
     """
     reader = csv.reader(fhandle, delimiter="|")
     keys = next(reader)
@@ -191,7 +185,7 @@ def load_key(fhandle):
 
 @io.coerce_to_string_io
 def load_tempo(fhandle):
-    """Load beatport_key tempo data from a file
+    """Load beatport_key tempo data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to
@@ -199,14 +193,13 @@ def load_tempo(fhandle):
 
     Returns:
         str: tempo in beats per minute
-
     """
     return json.load(fhandle)["bpm"]
 
 
 @io.coerce_to_string_io
 def load_genre(fhandle):
-    """Load beatport_key genre data from a file
+    """Load beatport_key genre data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to
@@ -214,7 +207,6 @@ def load_genre(fhandle):
 
     Returns:
         dict: with the list with genres ['genres'] and list with sub-genres ['sub_genres']
-
     """
     meta = json.load(fhandle)
     return {
@@ -225,7 +217,7 @@ def load_genre(fhandle):
 
 @io.coerce_to_string_io
 def load_artist(fhandle):
-    """Load beatport_key tempo data from a file
+    """Load beatport_key tempo data from a file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to
@@ -233,7 +225,6 @@ def load_artist(fhandle):
 
     Returns:
         list: list of artists involved in the track.
-
     """
     meta = json.load(fhandle)
     return [artist["name"] for artist in meta["artists"]]
@@ -241,9 +232,7 @@ def load_artist(fhandle):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The beatport_key dataset
-    """
+    """The beatport_key dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -278,7 +267,7 @@ class Dataset(core.Dataset):
         return load_artist(*args, **kwargs)
 
     def download(self, partial_download=None, force_overwrite=False, cleanup=False):
-        """Download the dataset
+        """Download the dataset.
 
         Args:
             partial_download (list or None):
@@ -292,7 +281,6 @@ class Dataset(core.Dataset):
         Raises:
             ValueError: if invalid keys are passed to partial_download
             IOError: if a downloaded file's checksum is different from expected
-
         """
         download_utils.downloader(
             self.data_home,
@@ -303,19 +291,16 @@ class Dataset(core.Dataset):
             cleanup=cleanup,
         )
 
-        self._find_replace(
-            os.path.join(self.data_home, "meta"), ": nan", ": null", "*.json"
-        )
+        self._find_replace(os.path.join(self.data_home, "meta"), ": nan", ": null", "*.json")
 
     def _find_replace(self, directory, find, replace, pattern):
-        """Replace all the files with the format pattern "find" by "replace"
+        """Replace all the files with the format pattern "find" by "replace".
 
         Args:
             directory (str): path to directory
             find (str): string from replace
             replace (str): string to replace
             pattern (str): regex that must match the directories searched
-
         """
         for path, dirs, files in os.walk(os.path.abspath(directory)):
             for filename in fnmatch.filter(files, pattern):

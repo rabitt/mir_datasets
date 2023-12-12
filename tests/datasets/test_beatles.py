@@ -1,8 +1,9 @@
 import os
+
 import numpy as np
 
-from mirdata.datasets import beatles
 from mirdata import annotations
+from mirdata.datasets import beatles
 from tests.test_utils import run_track_tests
 
 
@@ -49,14 +50,10 @@ def test_track():
 
     audio, sr = track.audio
     assert sr == 44100, "sample rate {} is not 44100".format(sr)
-    assert audio.shape == (44100 * 2,), "audio shape {} was not (88200,)".format(
-        audio.shape
-    )
+    assert audio.shape == (44100 * 2,), "audio shape {} was not (88200,)".format(audio.shape)
 
     track = dataset.track("10212")
-    assert track.beats is None, "expected track.beats to be None, got {}".format(
-        track.beats
-    )
+    assert track.beats is None, "expected track.beats to be None, got {}".format(track.beats)
     assert track.key is None, "expected track.key to be None, got {}".format(track.key)
 
 
@@ -146,20 +143,14 @@ def test_to_jams():
 
     keys = jam.search(namespace="key")[0]["data"]
     assert [key.time for key in keys] == [0.0], "key time does not match expected"
-    assert [key.duration for key in keys] == [
-        119.333
-    ], "key duration does not match expected"
+    assert [key.duration for key in keys] == [119.333], "key duration does not match expected"
     assert [key.value for key in keys] == ["E"], "key value does not match expected"
-    assert [key.confidence for key in keys] == [
-        None
-    ], "key confidence does not match expected"
+    assert [key.confidence for key in keys] == [None], "key confidence does not match expected"
 
     assert (
         jam["file_metadata"]["title"] == "11_-_Do_You_Want_To_Know_A_Secret"
     ), "title does not match expected"
-    assert (
-        jam["file_metadata"]["artist"] == "The Beatles"
-    ), "artist does not match expected"
+    assert jam["file_metadata"]["artist"] == "The Beatles", "artist does not match expected"
 
 
 def test_load_beats():
@@ -169,13 +160,9 @@ def test_load_beats():
     )
     beat_data = beatles.load_beats(beats_path)
 
-    assert (
-        type(beat_data) == annotations.BeatData
-    ), "beat_data is not type annotations.BeatData"
+    assert type(beat_data) == annotations.BeatData, "beat_data is not type annotations.BeatData"
     assert type(beat_data.times) == np.ndarray, "beat_data.times is not an np.ndarray"
-    assert (
-        type(beat_data.positions) == np.ndarray
-    ), "beat_data.positions is not an np.ndarray"
+    assert type(beat_data.positions) == np.ndarray, "beat_data.positions is not an np.ndarray"
 
     assert np.array_equal(
         beat_data.times,
@@ -199,12 +186,8 @@ def test_load_chords():
     assert type(chord_data.intervals) == np.ndarray
     assert type(chord_data.labels) == list
 
-    assert np.array_equal(
-        chord_data.intervals[:, 0], np.array([0.000000, 4.586464, 6.989730])
-    )
-    assert np.array_equal(
-        chord_data.intervals[:, 1], np.array([0.497838, 6.989730, 9.985104])
-    )
+    assert np.array_equal(chord_data.intervals[:, 0], np.array([0.000000, 4.586464, 6.989730]))
+    assert np.array_equal(chord_data.intervals[:, 1], np.array([0.497838, 6.989730, 9.985104]))
     assert np.array_equal(chord_data.labels, np.array(["N", "E:min", "G"]))
 
     assert beatles.load_chords(None) is None

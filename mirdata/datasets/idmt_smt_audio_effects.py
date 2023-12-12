@@ -1,4 +1,4 @@
-"""IDMT-SMT-Audio-Effects Dataset Loader
+"""IDMT-SMT-Audio-Effects Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -12,7 +12,7 @@
     20592 monophonic guitar notes
     13860 polyphonic guitar sounds
     Overall, 11 different audio effects are incorporated:
-    feedback delay, slapback delay, reverb, chorus, flanger, phaser, tremolo, vibrato, 
+    feedback delay, slapback delay, reverb, chorus, flanger, phaser, tremolo, vibrato,
     distortion, overdrive, no effect (unprocessed notes/sounds)
 
     2 different electric guitars and 2 different electric bass guitars, each with two different pick-up settings and
@@ -25,22 +25,23 @@
     To organize the database, lists in XML format are used, which record all relevant information and are provided with
     the database as well as a summary of the used effect plugins and parameter settings.
 
-    In addition, most of this information is also encoded in the first part of the file name of the audio files using 
-    a simple alpha-numeric encoding scheme. The second part of the file name contains unique identification numbers. 
+    In addition, most of this information is also encoded in the first part of the file name of the audio files using
+    a simple alpha-numeric encoding scheme. The second part of the file name contains unique identification numbers.
     This provides an option for fast and flexible structuring of the data for various purposes.
 
     DOI
     10.5281/zenodo.7544032
 """
 import os
+import xml.etree.ElementTree as ET
+from typing import BinaryIO, Optional, Tuple
+
 import librosa
 import numpy as np
-import xml.etree.ElementTree as ET
-
 from deprecated.sphinx import deprecated
-from typing import BinaryIO, Tuple, Optional
-from mirdata import download_utils, jams_utils, core, io
 from smart_open import open
+
+from mirdata import core, download_utils, io, jams_utils
 
 BIBTEX = """
 @dataset{stein_michael_2023_7544032,
@@ -147,7 +148,7 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
@@ -161,11 +162,10 @@ class Track(core.Track):
             )
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -220,7 +220,8 @@ class Dataset(core.Dataset):
 
     @core.cached_property
     def _metadata(self):
-        """Return a dictionary containing metadata information parsed from XML files.
+        """Return a dictionary containing metadata information parsed from XML
+        files.
 
         Returns:
             dict: A dictionary containing metadata information parsed from XML files.

@@ -1,4 +1,4 @@
-"""Four-Way Tabla Stroke Transcription and Classification Loader
+"""Four-Way Tabla Stroke Transcription and Classification Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -16,7 +16,7 @@
     * Bit-depth: 16 bit
     * Audio format: .wav
 
-    Dataset usage: This dataset may be used for the data-driven research of tabla stroke transcription and 
+    Dataset usage: This dataset may be used for the data-driven research of tabla stroke transcription and
     identification. In this dataset, four important tabla characteristic strokes are considered.
 
     Dataset structure: The dataset is split in two subsets, containing training and testing samples. Within each
@@ -30,15 +30,13 @@
 
     The dataset is made available by CompMusic under a Creative Commons
     Attribution 3.0 Unported (CC BY 3.0) License.
-
 """
 
 import csv
+from typing import BinaryIO, Optional, Tuple
 
 import librosa
 import numpy as np
-from typing import BinaryIO, Optional, Tuple
-
 from deprecated.sphinx import deprecated
 
 from mirdata import annotations, core, download_utils, io, jams_utils
@@ -68,7 +66,7 @@ LICENSE_INFO = "Creative Commons Attribution 4.0 International License."
 
 
 class Track(core.Track):
-    """Four-Way Tabla track class
+    """Four-Way Tabla track class.
 
     Args:
         track_id (str): track id of the track
@@ -81,7 +79,6 @@ class Track(core.Track):
         onsets_d_path (str): path to D onsets
         onsets_rb_path (str): path to RB onsets
         onsets_rt_path (str): path to RT onsets
-
     """
 
     def __init__(
@@ -110,61 +107,55 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     @property
     def onsets_b(self) -> Optional[annotations.BeatData]:
-        """Onsets for stroke B
+        """Onsets for stroke B.
 
         Returns:
             * annotations.BeatData - onsets annotation
-
         """
         return load_onsets(self.onsets_b_path)
 
     @property
     def onsets_d(self) -> Optional[annotations.BeatData]:
-        """Onsets for stroke D
+        """Onsets for stroke D.
 
         Returns:
             * annotations.BeatData - onsets annotation
-
         """
         return load_onsets(self.onsets_d_path)
 
     @property
     def onsets_rb(self) -> Optional[annotations.BeatData]:
-        """Onsets for stroke RB
+        """Onsets for stroke RB.
 
         Returns:
             * annotations.BeatData - onsets annotation
-
         """
         return load_onsets(self.onsets_rb_path)
 
     @property
     def onsets_rt(self) -> Optional[annotations.BeatData]:
-        """Onsets for stroke RT
+        """Onsets for stroke RT.
 
         Returns:
             * annotations.BeatData - onsets annotation
-
         """
         return load_onsets(self.onsets_rt_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             audio_path=self.audio_path,
@@ -194,14 +185,13 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
 
 @io.coerce_to_string_io
 def load_onsets(fhandle):
-    """Load stroke onsets
+    """Load stroke onsets.
 
     Args:
         fhandle (str or file-like): Local path where the pitch annotation is stored.
 
     Returns:
         EventData: onset annotations
-
     """
     onsets = []
     reader = csv.reader(fhandle, delimiter="\n")
@@ -220,9 +210,7 @@ def load_onsets(fhandle):
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Four-Way Tabla dataset
-    """
+    """The Four-Way Tabla dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

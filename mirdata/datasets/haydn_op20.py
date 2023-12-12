@@ -1,4 +1,4 @@
-"""haydn op20 Dataset Loader
+"""Haydn op20 Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -11,12 +11,12 @@
 """
 import logging
 import os
-from typing import Optional, TextIO, List
+from typing import List, Optional, TextIO
 
-from deprecated.sphinx import deprecated
 import numpy as np
+from deprecated.sphinx import deprecated
 
-from mirdata import core, io, jams_utils, download_utils
+from mirdata import core, download_utils, io, jams_utils
 
 try:
     import music21
@@ -27,7 +27,7 @@ except ImportError:
     )
     raise ImportError
 
-from mirdata.annotations import KeyData, ChordData
+from mirdata.annotations import ChordData, KeyData
 
 BIBTEX = """
 @dataset{nestor_napoles_lopez_2017_1095630,
@@ -55,13 +55,11 @@ REMOTES = {
         destination_dir=".",
     )
 }
-LICENSE_INFO = (
-    "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
-)
+LICENSE_INFO = "Creative Commons Attribution Non Commercial Share Alike 4.0 International."
 
 
 class Track(core.Track):
-    """haydn op20 track class
+    """Haydn op20 track class.
 
     Args:
         track_id (str): track id of the track
@@ -123,11 +121,10 @@ class Track(core.Track):
         return convert_and_save_to_midi(self.humdrum_annotated_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             metadata={
@@ -164,21 +161,21 @@ def _split_score_annotations(fhandle: TextIO):
 
 @io.coerce_to_string_io
 def load_score(fhandle: TextIO):
-    """Load haydn op20 score with annotations from a file with music21 format (music21.stream.Score).
+    """Load haydn op20 score with annotations from a file with music21 format
+    (music21.stream.Score).
 
     Args:
         fhandle (str or file-like): path to score
 
     Returns:
         music21.stream.Score: score in music21 format
-
     """
     score, rna = _split_score_annotations(fhandle)
     return score
 
 
 def _load_key_base(fhandle, resolution):
-    """Load haydn op20 key data from a file in music21 format
+    """Load haydn op20 key data from a file in music21 format.
 
     Args:
         fhandle (str or file-like): path to key annotations
@@ -186,7 +183,6 @@ def _load_key_base(fhandle, resolution):
 
     Returns:
         list: musical key data and relative time (offset (Music21Object.offset) * resolution) [(time in PPQ, local key)]
-
     """
     _, rna = _split_score_annotations(fhandle)
     annotations = []
@@ -199,7 +195,7 @@ def _load_key_base(fhandle, resolution):
 
 
 def _format_key_string(key_string):
-    """Format a key string to match key_mode format
+    """Format a key string to match key_mode format.
 
     Args:
         key_string (str): unformatted key string
@@ -212,7 +208,7 @@ def _format_key_string(key_string):
 
 @io.coerce_to_string_io
 def load_key(fhandle: TextIO, resolution=28):
-    """Load haydn op20 key data from a file
+    """Load haydn op20 key data from a file.
 
     Args:
         fhandle (str or file-like): path to key annotations
@@ -220,7 +216,6 @@ def load_key(fhandle: TextIO, resolution=28):
 
     Returns:
         KeyData: loaded key data
-
     """
     keys = _load_key_base(fhandle, resolution)
     start_times = [0]
@@ -244,7 +239,7 @@ def load_key(fhandle: TextIO, resolution=28):
 
 @io.coerce_to_string_io
 def load_key_music21(fhandle: TextIO, resolution=28):
-    """Load haydn op20 key data from a file in music21 format
+    """Load haydn op20 key data from a file in music21 format.
 
     Args:
         fhandle (str or file-like): path to key annotations
@@ -252,7 +247,6 @@ def load_key_music21(fhandle: TextIO, resolution=28):
 
     Returns:
         list: musical key data and relative time (offset (Music21Object.offset) * resolution) [(time in PPQ, local key)]
-
     """
     return _load_key_base(fhandle, resolution)
 
@@ -263,14 +257,13 @@ def load_key_music21(fhandle: TextIO, resolution=28):
 )
 @io.coerce_to_string_io
 def convert_and_save_to_midi(fpath: TextIO):
-    """convert to midi file and return the midi path
+    """Convert to midi file and return the midi path.
 
     Args:
         fpath (str or file-like): path to score file
 
     Returns:
         str: midi file path
-
     """
     midi_path = os.path.splitext(fpath.name)[0] + ".midi"
     score, _ = _split_score_annotations(fpath)
@@ -280,7 +273,7 @@ def convert_and_save_to_midi(fpath: TextIO):
 
 @io.coerce_to_string_io
 def load_roman_numerals(fhandle: TextIO, resolution=28):
-    """Load haydn op20 roman numerals data from a file
+    """Load haydn op20 roman numerals data from a file.
 
     Args:
         fhandle (str or file-like): path to roman numeral annotations
@@ -288,7 +281,6 @@ def load_roman_numerals(fhandle: TextIO, resolution=28):
 
     Returns:
         list: musical roman numerals data and relative time (offset (Music21Object.offset) * resolution) [(time in PPQ, roman numerals)]
-
     """
     _, rna = _split_score_annotations(fhandle)
     annotations = []
@@ -300,7 +292,7 @@ def load_roman_numerals(fhandle: TextIO, resolution=28):
 
 
 def _load_chords_base(fhandle: TextIO, resolution: int = 28):
-    """Load haydn op20 chords data from a file in music21 format
+    """Load haydn op20 chords data from a file in music21 format.
 
     Args:
         fhandle (str or file-like): path to chord annotations
@@ -308,7 +300,6 @@ def _load_chords_base(fhandle: TextIO, resolution: int = 28):
 
     Returns:
         list: musical chords data and relative time (offset (Music21Object.offset) * resolution) [(time in PPQ, chord)]
-
     """
     _, rna = _split_score_annotations(fhandle)
     annotations = []
@@ -321,7 +312,7 @@ def _load_chords_base(fhandle: TextIO, resolution: int = 28):
 
 @io.coerce_to_string_io
 def load_chords(fhandle: TextIO, resolution: int = 28):
-    """Load haydn op20 chords data from a file
+    """Load haydn op20 chords data from a file.
 
     Args:
         fhandle (str or file-like): path to chord annotations
@@ -329,7 +320,6 @@ def load_chords(fhandle: TextIO, resolution: int = 28):
 
     Returns:
         ChordData: chord annotations
-
     """
     chords = _load_chords_base(fhandle, resolution)
     start_times, end_times, chord_names = [0], [], [str(chords[0]["chord"])]
@@ -346,7 +336,7 @@ def load_chords(fhandle: TextIO, resolution: int = 28):
 
 @io.coerce_to_string_io
 def load_chords_music21(fhandle: TextIO, resolution: int = 28):
-    """Load haydn op20 chords data from a file in music21 format
+    """Load haydn op20 chords data from a file in music21 format.
 
     Args:
         fhandle (str or file-like): path to chord annotations
@@ -354,16 +344,13 @@ def load_chords_music21(fhandle: TextIO, resolution: int = 28):
 
     Returns:
         list: musical chords data and relative time (offset (Music21Object.offset) * resolution) [(time in PPQ, chord)]
-
     """
     return _load_chords_base(fhandle, resolution)
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The haydn op20 dataset
-    """
+    """The haydn op20 dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -380,9 +367,7 @@ class Dataset(core.Dataset):
     def load_score(self, *args, **kwargs):
         return load_score(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.haydn_op20.load_key_music21", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.haydn_op20.load_key_music21", version="0.3.4")
     def load_key_music21(self, *args, **kwargs):
         return load_key_music21(*args, **kwargs)
 
@@ -394,15 +379,11 @@ class Dataset(core.Dataset):
     def load_chords(self, *args, **kwargs):
         return load_chords(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.haydn_op20.load_chords_music21", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.haydn_op20.load_chords_music21", version="0.3.4")
     def load_chords_music21(self, *args, **kwargs):
         return load_chords_music21(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.haydn_op20.load_roman_numerals", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.haydn_op20.load_roman_numerals", version="0.3.4")
     def load_roman_numerals(self, *args, **kwargs):
         return load_roman_numerals(*args, **kwargs)
 

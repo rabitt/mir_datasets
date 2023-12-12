@@ -1,19 +1,17 @@
 import argparse
-import hashlib
+import glob
 import json
 import os
-import glob
-from mirdata.validate import md5
 
+from mirdata.validate import md5
 
 CARNATIC_RHYTHM_INDEX_PATH = "../mirdata/datasets/indexes/compmusic_carnatic_rhythm_full_index.json"
 
 
 def make_compmusic_carnatic_rhythm_index(dataset_data_path, version="full_dataset"):
-
     cmr_index = {
-        'version': version + "_1.0",
-        'tracks': {},
+        "version": version + "_1.0",
+        "tracks": {},
     }
     idx = 0
     dataset_folder_name = "CMR_" + version + "_1.0"
@@ -29,16 +27,34 @@ def make_compmusic_carnatic_rhythm_index(dataset_data_path, version="full_datase
                 md5(os.path.join(dataset_data_path, "audio", filename)),
             ),
             "beats": (
-                os.path.join(dataset_folder_name, "annotations", "beats", filename.replace(".wav", ".beats")),
-                md5(os.path.join(dataset_data_path, "annotations", "beats", filename.replace(".wav", ".beats"))),
+                os.path.join(
+                    dataset_folder_name, "annotations", "beats", filename.replace(".wav", ".beats")
+                ),
+                md5(
+                    os.path.join(
+                        dataset_data_path,
+                        "annotations",
+                        "beats",
+                        filename.replace(".wav", ".beats"),
+                    )
+                ),
             ),
             "meter": (
-                os.path.join(dataset_folder_name, "annotations", "meter", filename.replace(".wav", ".meter")),
-                md5(os.path.join(dataset_data_path, "annotations", "meter", filename.replace(".wav", ".meter"))),
-            )
+                os.path.join(
+                    dataset_folder_name, "annotations", "meter", filename.replace(".wav", ".meter")
+                ),
+                md5(
+                    os.path.join(
+                        dataset_data_path,
+                        "annotations",
+                        "meter",
+                        filename.replace(".wav", ".meter"),
+                    )
+                ),
+            ),
         }
 
-    with open(CARNATIC_RHYTHM_INDEX_PATH, 'w') as fhandle:
+    with open(CARNATIC_RHYTHM_INDEX_PATH, "w") as fhandle:
         json.dump(cmr_index, fhandle, indent=2)
 
 
@@ -48,10 +64,10 @@ def main(args):
     print("done!")
 
 
-if __name__ == '__main__':
-    PARSER = argparse.ArgumentParser(description='Make CompMusic Carnatic Rhythm index file.')
+if __name__ == "__main__":
+    PARSER = argparse.ArgumentParser(description="Make CompMusic Carnatic Rhythm index file.")
     PARSER.add_argument(
-        'dataset_data_path', type=str, help='Path to CompMusic Carnatic Rhythm data folder.'
+        "dataset_data_path", type=str, help="Path to CompMusic Carnatic Rhythm data folder."
     )
 
     main(PARSER.parse_args())

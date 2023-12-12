@@ -1,4 +1,4 @@
-"""giantsteps_tempo Dataset Loader
+"""giantsteps_tempo Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -63,17 +63,15 @@
         1855660.LOFI.mp3  119
         3419452.LOFI.mp3  119
         3577631.LOFI.mp3  119
-
 """
 from typing import Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import jams
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 
 from mirdata import annotations, core, download_utils, io
-
 
 BIBTEX = """@inproceedings{knees2015two,
   title={Two data sets for tempo estimation and key detection in electronic dance music annotated from user corrections},
@@ -118,7 +116,7 @@ LICENSE_INFO = "Creative Commons Attribution Share Alike 4.0 International."
 
 
 class Track(core.Track):
-    """giantsteps_tempo track class
+    """giantsteps_tempo track class.
 
     Args:
         track_id (str): track id of the track
@@ -134,7 +132,6 @@ class Track(core.Track):
         genre (dict): Human-labeled metadata annotation
         tempo (list): List of annotations.TempoData, ordered by confidence
         tempo_v2 (list): List of annotations.TempoData for version 2, ordered by confidence
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -161,30 +158,27 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Tuple[np.ndarray, float]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams.load(self.annotation_v1_path)
 
     def to_jams_v2(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams.load(self.annotation_v2_path)
 
@@ -198,14 +192,13 @@ def load_audio(fhandle: str) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=None, mono=True)
 
 
 @io.coerce_to_string_io
 def load_genre(fhandle: TextIO) -> str:
-    """Load genre data from a file
+    """Load genre data from a file.
 
     Args:
         path (str): path to metadata annotation file
@@ -219,14 +212,13 @@ def load_genre(fhandle: TextIO) -> str:
 
 @io.coerce_to_string_io
 def load_tempo(fhandle: TextIO) -> annotations.TempoData:
-    """Load giantsteps_tempo tempo data from a file ordered by confidence
+    """Load giantsteps_tempo tempo data from a file ordered by confidence.
 
     Args:
         fhandle (str or file-like): File-like object or path to tempo annotation file
 
     Returns:
         annotations.TempoData: Tempo data
-
     """
     annotation = jams.load(fhandle)
 
@@ -244,9 +236,7 @@ def load_tempo(fhandle: TextIO) -> annotations.TempoData:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The giantsteps_tempo dataset
-    """
+    """The giantsteps_tempo dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -261,20 +251,14 @@ class Dataset(core.Dataset):
             license_info=LICENSE_INFO,
         )
 
-    @deprecated(
-        reason="Use mirdata.datasets.giantsteps_tempo.load_audio", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.giantsteps_tempo.load_audio", version="0.3.4")
     def load_audio(self, *args, **kwargs):
         return load_audio(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.giantsteps_tempo.load_genre", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.giantsteps_tempo.load_genre", version="0.3.4")
     def load_genre(self, *args, **kwargs):
         return load_genre(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.giantsteps_tempo.load_tempo", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.giantsteps_tempo.load_tempo", version="0.3.4")
     def load_tempo(self, *args, **kwargs):
         return load_tempo(*args, **kwargs)

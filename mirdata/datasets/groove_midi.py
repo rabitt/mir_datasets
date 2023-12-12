@@ -1,4 +1,4 @@
-"""Groove MIDI Loader
+"""Groove MIDI Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -43,24 +43,18 @@
     Attribution 4.0 International (CC BY 4.0) License.
 
     For more details, please visit: http://magenta.tensorflow.org/datasets/groove
-
 """
 import csv
 import os
 from typing import BinaryIO, Optional, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
 import pretty_midi
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import annotations
-from mirdata import core
-from mirdata import download_utils
-from mirdata import io
-from mirdata import jams_utils
-
+from mirdata import annotations, core, download_utils, io, jams_utils
 
 BIBTEX = """@inproceedings{groove2019,
     Author = {Jon Gillick and Adam Roberts and Jesse Engel and Douglas Eck
@@ -198,7 +192,7 @@ DRUM_MAPPING = {
 
 
 class Track(core.Track):
-    """Groove MIDI Track class
+    """Groove MIDI Track class.
 
     Args:
         track_id (str): track id of the track
@@ -221,7 +215,6 @@ class Track(core.Track):
         beats (BeatData): Machine-generated beat annotations
         drum_events (EventData): Annotated drum kit events
         midi (pretty_midi.PrettyMIDI): object containing MIDI information
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -273,12 +266,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Tuple[Optional[np.ndarray], Optional[float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -295,11 +287,10 @@ class Track(core.Track):
         return load_midi(self.midi_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         return jams_utils.jams_converter(
             beat_data=[(self.beats, "midi beats")],
@@ -318,7 +309,6 @@ def load_audio(path: str) -> Tuple[Optional[np.ndarray], Optional[float]]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     if not path:
         return None, None
@@ -334,7 +324,6 @@ def load_midi(fhandle: BinaryIO) -> Optional[pretty_midi.PrettyMIDI]:
 
     Returns:
         midi_data (pretty_midi.PrettyMIDI): pretty_midi object
-
     """
     return pretty_midi.PrettyMIDI(fhandle)
 
@@ -349,7 +338,6 @@ def load_beats(midi_path, midi=None):
 
     Returns:
         annotations.BeatData: machine generated beat data
-
     """
     if midi is None:
         midi = load_midi(midi_path)
@@ -370,7 +358,6 @@ def load_drum_events(midi_path, midi=None):
 
     Returns:
         annotations.EventData: drum event data
-
     """
     if midi is None:
         midi = load_midi(midi_path)
@@ -383,16 +370,12 @@ def load_drum_events(midi_path, midi=None):
         end_times.append(note.end)
         events.append(DRUM_MAPPING[note.pitch]["Roland"])
 
-    return annotations.EventData(
-        np.array([start_times, end_times]).T, "s", events, "open"
-    )
+    return annotations.EventData(np.array([start_times, end_times]).T, "s", events, "open")
 
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The groove_midi dataset
-    """
+    """The groove_midi dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(
@@ -418,9 +401,7 @@ class Dataset(core.Dataset):
     def load_beats(self, *args, **kwargs):
         return load_beats(*args, **kwargs)
 
-    @deprecated(
-        reason="Use mirdata.datasets.groove_midi.load_drum_events", version="0.3.4"
-    )
+    @deprecated(reason="Use mirdata.datasets.groove_midi.load_drum_events", version="0.3.4")
     def load_drum_events(self, *args, **kwargs):
         return load_drum_events(*args, **kwargs)
 
@@ -433,12 +414,8 @@ class Dataset(core.Dataset):
                 csv_reader = csv.DictReader(fhandle, delimiter=",")
                 for row in csv_reader:
                     track_id = row["id"]
-                    metadata_index[track_id] = {
-                        key: row[key] for key in row.keys() if key != "id"
-                    }
-                    metadata_index[track_id]["tempo"] = int(
-                        metadata_index[track_id].pop("bpm")
-                    )
+                    metadata_index[track_id] = {key: row[key] for key in row.keys() if key != "id"}
+                    metadata_index[track_id]["tempo"] = int(metadata_index[track_id].pop("bpm"))
                     metadata_index[track_id]["duration"] = float(
                         metadata_index[track_id]["duration"]
                     )

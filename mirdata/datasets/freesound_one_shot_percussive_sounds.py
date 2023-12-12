@@ -1,5 +1,4 @@
-"""
-Freesound One-Shot Percussive Sounds Dataset Loader
+"""Freesound One-Shot Percussive Sounds Dataset Loader.
 
 .. admonition:: Dataset Info
     :class: dropdown
@@ -41,15 +40,14 @@ Freesound One-Shot Percussive Sounds Dataset Loader
 
 import json
 import os
-from typing import BinaryIO, TextIO, Tuple, Optional
+from typing import BinaryIO, Optional, TextIO, Tuple
 
-from deprecated.sphinx import deprecated
 import librosa
 import numpy as np
+from deprecated.sphinx import deprecated
 from smart_open import open
 
-from mirdata import download_utils, jams_utils, core, io
-
+from mirdata import core, download_utils, io, jams_utils
 
 BIBTEX = """
 @inproceedings{ramires2020, 
@@ -101,7 +99,7 @@ Please check the specific license of each sound by running track.license
 
 
 class Track(core.Track):
-    """Freesound one-shot percussive sounds track class
+    """Freesound one-shot percussive sounds track class.
 
     Args:
         track_id (str): track id of the track
@@ -122,7 +120,6 @@ class Track(core.Track):
 
     Cached Properties:
         file_metadata (dict): metadata parameters of the track file in form of Python dictionary
-
     """
 
     def __init__(self, track_id, data_home, dataset_name, index, metadata):
@@ -161,12 +158,11 @@ class Track(core.Track):
 
     @property
     def audio(self) -> Optional[Tuple[np.ndarray, float]]:
-        """The track's audio
+        """The track's audio.
 
         Returns:
             * np.ndarray - audio signal
             * float - sample rate
-
         """
         return load_audio(self.audio_path)
 
@@ -175,17 +171,14 @@ class Track(core.Track):
         return load_file_metadata(self.file_metadata_path)
 
     def to_jams(self):
-        """Get the track's data in jams format
+        """Get the track's data in jams format.
 
         Returns:
             jams.JAMS: the track's data in jams format
-
         """
         jams_metadata = dict(self._track_metadata)
         jams_metadata.update(self.file_metadata)
-        return jams_utils.jams_converter(
-            audio_path=self.audio_path, metadata=jams_metadata
-        )
+        return jams_utils.jams_converter(audio_path=self.audio_path, metadata=jams_metadata)
 
 
 @io.coerce_to_bytes_io
@@ -198,21 +191,19 @@ def load_audio(fhandle: BinaryIO) -> Tuple[np.ndarray, float]:
     Returns:
         * np.ndarray - the mono audio signal
         * float - The sample rate of the audio file
-
     """
     return librosa.load(fhandle, sr=16000, mono=True)
 
 
 @io.coerce_to_string_io
 def load_file_metadata(fhandle: TextIO) -> Optional[dict]:
-    """Extract file metadata from analysis json file
+    """Extract file metadata from analysis json file.
 
     Args:
         fhandle (str or file-like): path or file-like object pointing to f0 annotation file
 
     Returns:
         analysis: track analysis dict
-
     """
     file_metadata = json.load(fhandle)
     # Dropping analysis keys that are included in dataset general metadata files
@@ -240,9 +231,7 @@ def load_file_metadata(fhandle: TextIO) -> Optional[dict]:
 
 @core.docstring_inherit(core.Dataset)
 class Dataset(core.Dataset):
-    """
-    The Freesound One-Shot Percussive Sounds dataset
-    """
+    """The Freesound One-Shot Percussive Sounds dataset."""
 
     def __init__(self, data_home=None, version="default"):
         super().__init__(

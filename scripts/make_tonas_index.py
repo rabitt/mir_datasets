@@ -1,14 +1,13 @@
 import argparse
 import json
 import os
-from mirdata.validate import md5
 
+from mirdata.validate import md5
 
 TONAS_INDEX_PATH = "../mirdata/datasets/indexes/tonas_index.json"
 
 
 def make_tonas_index(dataset_data_path):
-
     tonas_index = {"version": "1.0", "tracks": {}}
 
     for style in os.listdir(os.path.join(dataset_data_path)):

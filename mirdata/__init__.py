@@ -4,17 +4,13 @@ import pkgutil
 
 from .version import version as __version__
 
-
 DATASETS = [
-    d.name
-    for d in pkgutil.iter_modules(
-        [os.path.dirname(os.path.abspath(__file__)) + "/datasets"]
-    )
+    d.name for d in pkgutil.iter_modules([os.path.dirname(os.path.abspath(__file__)) + "/datasets"])
 ]
 
 
 def list_datasets():
-    """Get a list of all mirdata dataset names
+    """Get a list of all mirdata dataset names.
 
     Returns:
         list: list of dataset names as strings
@@ -23,7 +19,7 @@ def list_datasets():
 
 
 def initialize(dataset_name, data_home=None, version="default"):
-    """Load a mirdata dataset by name
+    """Load a mirdata dataset by name.
 
     Example:
         .. code-block:: python
@@ -45,7 +41,6 @@ def initialize(dataset_name, data_home=None, version="default"):
 
     Returns:
         Dataset: a mirdata.core.Dataset object
-
     """
     if dataset_name not in DATASETS:
         raise ValueError("Invalid dataset {}".format(dataset_name))
