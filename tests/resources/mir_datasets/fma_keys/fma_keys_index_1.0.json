@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "tracks": {
+    "10": {
+      "audio": [
+        "000/000010.mp3",
+        "b1ca8926d40bbb97fb1f3a728ca55aa6"
+      ]
+    },
+    "141": {
+      "audio": [
+        "000/000141.mp3",
+        "9e5e11f5f677c8a58599ab9456d5b582"
+      ]
+    }
+  },
+  "metadata": {
+    "fma_keys_metadata": [
+      "fma_keys_metadata.csv",
+      "d80a03bc8659edc60e335bd7f6bdf12a"
+    ]
+  }
+}
