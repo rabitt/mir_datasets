@@ -552,17 +552,25 @@ def lyrics_to_jams(lyric_data, description=None):
 
 
 def tag_to_jams(tag_data, namespace="tag_open", description=None):
-    """Convert lyric annotations into jams format.
+    """Convert tag annotations into jams format.
 
     Args:
-        lyric_data (annotations.LyricData): lyric annotation object
+        tags (annotations.Tags): tags annotation object
         namespace (str): the jams-compatible tag namespace
-        description (str): annotation descriptoin
+        description (str): annotation description (default is None)
 
     Returns:
         jams.Annotation: jams annotation object.
 
     """
+    ann = jams.Annotation(namespace=namespace)
+    ann.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
+    for t, c in zip(tag_data.labels, tag_data.confidence):
+        ann.append(time=0.0, duration=duration, value=t, confidence=c)
+    if description is not None:
+        ann.sandbox = jams.Sandbox(name=description)
+    return ann
+
     jannot_tag = jams.Annotation(namespace=namespace)
     jannot_tag.annotation_metadata = jams.AnnotationMetadata(data_source="mirdata")
     if tag_data is not None:

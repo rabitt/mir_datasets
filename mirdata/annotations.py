@@ -77,6 +77,29 @@ class Annotation(object):
         return repr_str
 
 
+class Tags(Annotation):
+    """Tags class
+    Attributes:
+        labels (list): list of string tags
+        confidence (np.ndarray or None): array of confidence values, float in [0, 1]
+        labels_unit (str): labels unit, one of LABELS_UNITS
+        time (float): time of the tag (default is 0.0)
+        duration (float): duration of the tag (default is None)
+    """
+
+    def __init__(self, labels, labels_unit, confidence=None) -> None:
+
+        validate_array_like(labels, list, str)
+        validate_array_like(confidence, np.ndarray, float, none_allowed=True)
+        validate_confidence(confidence)
+        validate_lengths_equal([labels, confidence])
+        validate_unit(labels_unit, LABEL_UNITS)
+
+        self.labels = labels
+        self.confidence = confidence
+        self.labels_unit = labels_unit
+
+
 class BeatData(Annotation):
     """BeatData class
 
