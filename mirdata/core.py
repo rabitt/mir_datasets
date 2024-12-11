@@ -192,8 +192,11 @@ class Dataset(object):
             str: Local path to the dataset
 
         """
-        mir_datasets_dir = os.path.join(os.getenv("HOME", "/tmp"), "mir_datasets")
-        return os.path.join(mir_datasets_dir, self.name)
+        return os.path.join(self._default_dir(), self.name)
+
+    @classmethod
+    def _default_dir(cls):
+        return os.path.join(os.getenv("HOME", tempfile.gettempdir()), "mir_datasets")
 
     def _track(self, track_id):
         """Load a track by track_id.

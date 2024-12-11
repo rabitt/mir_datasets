@@ -41,6 +41,12 @@ orchset.validate()  # validate that all the expected files are there
 example_track = orchset.choice_track()  # choose a random example track
 print(example_track)  # see the available data
 ```
+
+Or using the CLI:
+```bash
+python -m mirdata orchset  # download and validate the dataset
+```
+
 See the [documentation](https://mirdata.readthedocs.io/) for more examples and the API reference.
 
 

@@ -26,11 +26,11 @@ dependencies = [
     "chardet>=5.0.0",
     "Deprecated>=1.2.14",
     "h5py>=3.7.0",
-    "jams>=0.3.4",
+    "jams>0.3.4",
     "librosa>=0.10.1",
     "numpy>=1.21.6,<2.0",
     "pandas>=1.3.5",
-    "pretty_midi>=0.2.10",
+    "pretty_midi>0.2.10",
     "pyyaml>=6.0",
     "openpyxl>=3.0.10",
     "requests>=2.31.0",
@@ -77,9 +77,13 @@ cipi = ["music21==6.7.1"]
 gcs = ["smart_open[gcs]"]
 s3 = ["smart_open[s3]"]
 http = ["smart_open[http]"]
+all = ["openpyxl==3.0.10", "dali-dataset==1.1", "music21==6.7.1", "smart_open[gcs,s3,http]"]
 
 [project.urls]
 Homepage = "https://github.com/mir-dataset-loaders/mirdata"
 Documentation = "https://mirdata.readthedocs.io/en/stable/"
 Issues = "https://github.com/mir-dataset-loaders/mirdata/issues"
 Releases = "https://github.com/mir-dataset-loaders/mirdata/releases"
+
+[tool.pytest.ini_options]
+testpaths = ['tests']
