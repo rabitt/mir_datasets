@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "tracks": {
+    "amy_3_01": {
+      "audio": [
+        "Wavfile/amy_3_01.wav",
+        "60304d5698e632f9ee5df117da6e36d5"
+      ],
+      "lyrics": [
+        "Lyrics/amy_3_01.txt",
+        "9eee41a192fe478cf913b4355ab6f255"
+      ],
+      "f0": [
+        "PitchLabel/amy_3_01.pv",
+        "d1edb3d6bd5cd642bb35c0778291b850"
+      ],
+      "unvoiced-category": [
+        "UnvoicedFrameLabel/amy_3_01.unv",
+        "9cb8e441a5f36cfcd4a7adee9b6a3717"
+      ],
+      "vocal-flag": [
+        "vocal-nonvocalLabel/amy_3_01.vocal",
+        "8d39472bd80d13eea08fe83978c86a03"
+      ]
+    }
+  }
+}

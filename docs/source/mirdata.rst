@@ -336,6 +336,14 @@ medleydb\_pitch
    :inherited-members:
 
 
+mir_1k
+^^^^^^
+
+.. automodule:: mirdata.datasets.mir_1k
+   :members:
+   :inherited-members:
+
+
 mridangam_stroke
 ^^^^^^^^^^^^^^^^
 

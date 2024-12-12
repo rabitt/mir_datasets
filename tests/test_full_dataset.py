@@ -92,7 +92,7 @@ def test_load_mtracks(skip_remote, dataset):
 
     assert isinstance(all_data, dict)
 
-    mtrack_ids = dataset.mm
+    mtrack_ids = dataset.mtrack_ids
     assert set(mtrack_ids) == set(all_data.keys())
 
     # test that all attributes and properties can be called

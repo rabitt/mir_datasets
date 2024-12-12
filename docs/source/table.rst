@@ -403,6 +403,16 @@
      - .. image:: https://licensebuttons.net/l/by-nc-sa/4.0/80x15.png
           :target: https://creativecommons.org/licenses/by-nc-sa/4.0
 
+   * - MIR-1K
+     - - audio: ✅
+       - annotations: ✅
+     - - Vocal :ref:`f0`
+       - :ref:`lyrics`
+       - :ref:`vocal-activity`
+       - Categories of unvoiced segments
+     - 1000
+     - ❌
+
    * - Mridangam Stroke
      - - audio: ✅
        - annotations: ✅
