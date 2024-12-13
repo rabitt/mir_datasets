@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "tracks": {
+    "Singer9_BlackShriek_Mid_i": {
+      "audio": [
+        "audio/Singer9_BlackShriek_Mid_i.wav",
+        "f94c181391edb98b2177db6c0bb02a2d"
+      ]
+    }
+  },
+  "metadata": {
+    "metadata_files": [
+      "metadata_files.csv",
+      "2878e4c26056f6108e1d00e3b206f307"
+    ],
+    "metadata_singers": [
+      "metadata_singers.csv",
+      "c56193a9ed875bdc68141a5f7b0bf456"
+    ],
+    "split_kfolds": [
+      "split_kfolds.csv",
+      "b2a0b7b9482c4e61a52b02439620cf2b"
+    ]
+  }
+}

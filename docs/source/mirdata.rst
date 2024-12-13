@@ -175,6 +175,13 @@ egfxset
    :members:
    :inherited-members:
    
+emvd
+^^^^
+
+.. automodule:: mirdata.datasets.emvd
+   :members:
+   :inherited-members:
+
 
 filosax
 ^^^^^^^

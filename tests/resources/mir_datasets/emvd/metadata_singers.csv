@@ -1,0 +1,2 @@
+singer_id,gender,status,recording,distance_to_microphone(cm),microphone,audio_interface,DAW,ClearVoice_High,ClearVoice_Mid,ClearVoice_Low,BlackShriek_High,BlackShriek_Mid,DeathGrowl_Mid,DeathGrowl_Low,HardcoreScream_High,HardcoreScream_Mid,HardcoreScream_Low,GrindInhale,PigSqueal,DeepGutturals,TunnelThroat
+9,M,Non-professional,Onsite,2,SM58,Focusrite 6i6,Protools,2,3,2,4,4,4,3,1,2,3,3,1,1,1

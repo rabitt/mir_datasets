@@ -143,7 +143,12 @@ def downloader(
                     cleanup,
                     allow_invalid_checksum,
                 )
-            elif ".gz" in extension or ".tar" in extension or ".bz2" in extension:
+            elif (
+                ".gz" in extension
+                or ".tar" in extension
+                or ".bz2" in extension
+                or ".xz" in extension
+            ):
                 download_tar_file(
                     remotes[k],
                     save_dir,
