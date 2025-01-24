@@ -1,0 +1,60 @@
+{
+    "track_name": "All Gods Children",
+    "album_name": "The Only One",
+    "recording_year": "1990",
+    "in_30_corpus": false,
+    "bandleader": "Kenny Barron",
+    "pianist": "Kenny Barron",
+    "channel_overrides": {},
+    "mbz_id": "8b77c067-7620-4705-bb2d-c33e15e1912f",
+    "notes": "",
+    "time_signature": 4,
+    "first_downbeat": NaN,
+    "rating_bass_audio": NaN,
+    "rating_bass_detection": NaN,
+    "rating_drums_audio": NaN,
+    "rating_drums_detection": NaN,
+    "rating_mix": NaN,
+    "rating_piano_audio": NaN,
+    "rating_piano_detection": NaN,
+    "rating_comments": NaN,
+    "has_annotations": false,
+    "links": {
+        "external": [
+            "https://www.youtube.com/watch?v=XE1wjT92yfs"
+        ]
+    },
+    "excerpt_duration": "00:05",
+    "timestamps": {
+        "start": "01:04",
+        "end": "01:09"
+    },
+    "log": [],
+    "musicians": {
+        "pianist": "Kenny Barron",
+        "bassist": "Ray Drummond",
+        "drummer": "Ben Riley",
+        "leader": "pianist"
+    },
+    "photos": {
+        "musicians": {
+            "pianist": null,
+            "bassist": null,
+            "drummer": null
+        },
+        "album_artwork": null
+    },
+    "fname": "barronk-allgodschildren-drummondrrileyb-1990-8b77c067",
+    "tempo": 297.62226615397657,
+    "validation": {
+        "piano": null,
+        "bass": null,
+        "drums": null,
+        "mix": null
+    },
+    "stem_silent_perc": {
+        "piano": 0.0004334552033470329,
+        "bass": 0.0,
+        "drums": 0.0
+    }
+}

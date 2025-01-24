@@ -354,6 +354,17 @@
      - .. image:: https://licensebuttons.net/l/by-nc-sa/3.0/80x15.png
           :target: https://creativecommons.org/licenses/by-nc-sa/3.0
 
+   * - Jazz Trio Database
+     - - audio: 🔑
+       - annotations: ✅
+       - midi: ✅
+     - - :ref:`beats`
+       - Global :ref:`tempo`
+       - Piano :ref:`notes`
+     - 1294
+     - .. image:: https://img.shields.io/badge/License-MIT-blue.svg
+          :target: https://lbesson.mit-license.org/
+
    * - MTG_jamendo_autotagging_moodtheme
      - - audio: ✅
        - annotations: ✅

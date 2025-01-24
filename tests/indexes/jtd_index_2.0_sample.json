@@ -1,0 +1,100 @@
+{
+  "version": "sample",
+  "tracks": {
+    "barronk-allgodschildren-drummondrrileyb-1990-8b77c067_piano": {
+      "metadata": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/metadata.json",
+        "685a44e51b0f2991f84577de575a7186"
+      ],
+      "audio": [
+        "processed/barronk-allgodschildren-drummondrrileyb-1990-8b77c067_piano.wav",
+        "fe5f025813675f301b458dcad361db19"
+      ],
+      "onsets": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/piano_onsets.csv",
+        "ad03567467f6c2212c98b2c02d6569cf"
+      ],
+      "beats": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/beats.csv",
+        "25f4ad5092b0381bb7472cde86db86cf"
+      ],
+      "midi": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/piano_midi.mid",
+        "c4e6659f654c1e28c12d31db5e29d5d2"
+      ]
+    },
+    "barronk-allgodschildren-drummondrrileyb-1990-8b77c067_bass": {
+      "metadata": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/metadata.json",
+        "685a44e51b0f2991f84577de575a7186"
+      ],
+      "audio": [
+        "processed/barronk-allgodschildren-drummondrrileyb-1990-8b77c067_bass.wav",
+        "ae76ba353b5e868b7e4db0e941247b97"
+      ],
+      "onsets": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/bass_onsets.csv",
+        "b63270c65026256ea91e1064587e9772"
+      ],
+      "beats": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/beats.csv",
+        "25f4ad5092b0381bb7472cde86db86cf"
+      ],
+      "midi": [
+        null,
+        null
+      ]
+    },
+    "barronk-allgodschildren-drummondrrileyb-1990-8b77c067_drums": {
+      "metadata": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/metadata.json",
+        "685a44e51b0f2991f84577de575a7186"
+      ],
+      "audio": [
+        "processed/barronk-allgodschildren-drummondrrileyb-1990-8b77c067_drums.wav",
+        "4ba00aad147fdce7f5e7c574a313f15c"
+      ],
+      "onsets": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/drums_onsets.csv",
+        "862794fbfdc45aa16382adc4bdb44189"
+      ],
+      "beats": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/beats.csv",
+        "25f4ad5092b0381bb7472cde86db86cf"
+      ],
+      "midi": [
+        null,
+        null
+      ]
+    }
+  },
+  "multitracks": {
+    "barronk-allgodschildren-drummondrrileyb-1990-8b77c067": {
+      "tracks": [
+        "barronk-allgodschildren-drummondrrileyb-1990-8b77c067_piano",
+        "barronk-allgodschildren-drummondrrileyb-1990-8b77c067_bass",
+        "barronk-allgodschildren-drummondrrileyb-1990-8b77c067_drums"
+      ],
+      "metadata": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/metadata.json",
+        "685a44e51b0f2991f84577de575a7186"
+      ],
+      "beats": [
+        "annotations/barronk-allgodschildren-drummondrrileyb-1990-8b77c067/beats.csv",
+        "25f4ad5092b0381bb7472cde86db86cf"
+      ],
+      "audio": [
+        "raw/barronk-allgodschildren-drummondrrileyb-1990-8b77c067.wav",
+        "591500042659246459028e2bbe6d5ca9"
+      ],
+      "audio-lchan": [
+        null,
+        null
+      ],
+      "audio-rchan": [
+        null,
+        null
+      ]
+    }
+  }
+}
